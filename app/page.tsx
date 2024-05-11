@@ -2,47 +2,46 @@
 
 import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
-import { useRef, useState } from "react";
-import { Layer, Rect, Stage, Star } from "react-konva";
+import { useRef } from "react";
+import { Layer, Rect, Stage } from "react-konva";
+import { Html } from "react-konva-utils";
 
 export default function Home() {
 	const width = 800;
-	const height = 800;
-
-	const [scale, setScale] = useState(1);
-	const [position, setPosition] = useState({ x: 0, y: 0 });
+	const height = 500;
 
 	const stageRef = useRef<Konva.Stage>(null);
 
-	const handleZoom = (e: KonvaEventObject<WheelEvent>): void => {
+	const handleScroll = (e: KonvaEventObject<WheelEvent>): void => {
 		e.evt.preventDefault();
 		const currentStageRef = stageRef.current;
+		const stage = currentStageRef?.getStage();
 
-		if (currentStageRef) {
-			const stage = currentStageRef.getStage();
-
+		if (stage) {
 			if (e.evt.ctrlKey) {
-				const oldScale = stage.scaleX();
-
 				const pointerPosition = stage.getPointerPosition();
 
 				if (pointerPosition) {
 					const mousePointTo = {
-						x: pointerPosition.x / oldScale - stage.x() / oldScale,
-						y: pointerPosition.y / oldScale - stage.y() / oldScale,
+						x:
+							pointerPosition.x / stage.scaleX() -
+							stage.x() / stage.scaleX(),
+						y:
+							pointerPosition.y / stage.scaleY() -
+							stage.y() / stage.scaleY(),
 					};
 
-					const scrollSpeed = 0.3;
+					const scrollSpeed = 1;
 
 					const unboundedNewScale =
-						oldScale - (e.evt.deltaY * scrollSpeed) / 100;
+						stage.scaleX() - (e.evt.deltaY * scrollSpeed) / 100;
 
-					let newScale = Math.min(
+					const newScale = Math.min(
 						Math.max(unboundedNewScale, 1),
 						10.0
 					);
 
-					let x_position = Math.max(
+					const x_position = Math.max(
 						Math.min(
 							-(mousePointTo.x - pointerPosition.x / newScale) *
 								newScale,
@@ -51,7 +50,7 @@ export default function Home() {
 						width - width * newScale
 					);
 
-					let y_position = Math.max(
+					const y_position = Math.max(
 						Math.min(
 							-(mousePointTo.y - pointerPosition.y / newScale) *
 								newScale,
@@ -60,19 +59,16 @@ export default function Home() {
 						height - height * newScale
 					);
 
-					const newPosition = {
-						x: x_position,
-						y: y_position,
-					};
-
-					setScale(newScale);
-					setPosition(newPosition);
+					stage.scale({ x: newScale, y: newScale });
+					stage.x(x_position);
+					stage.y(y_position);
+					stage.batchDraw();
 				}
 			} else if (e.evt.shiftKey) {
 				const oldX = stage.x();
 				const newX = Math.max(
 					Math.min(0, oldX - e.evt.deltaY / 2),
-					width - width * scale
+					width - width * stage.scaleX()
 				);
 				stage.x(newX);
 				stage.batchDraw();
@@ -80,7 +76,7 @@ export default function Home() {
 				const oldY = stage.y();
 				const newY = Math.max(
 					Math.min(0, oldY - e.evt.deltaY / 2),
-					height - height * scale
+					height - height * stage.scaleX()
 				);
 				stage.y(newY);
 				stage.batchDraw();
@@ -89,45 +85,98 @@ export default function Home() {
 	};
 
 	const handleDragStage = (e: KonvaEventObject<DragEvent>): void => {
-		const x_position = -e.target.x() / scale;
-		const y_position = -e.target.y() / scale;
+		const currentStageRef = stageRef.current;
+		const stage = currentStageRef?.getStage();
 
-		if (x_position > width - width / scale) {
-			e.target.setPosition({
-				x: -(width - width / scale) * scale,
-				y: e.target.y(),
-			});
+		if (stage) {
+			const newX = -e.target.x() / stage.scaleX();
+			const newY = -e.target.y() / stage.scaleY();
+
+			if (newX > width - width / stage.scaleX()) {
+				e.target.setPosition({
+					x: -(width - width / stage.scaleX()) * stage.scaleX(),
+					y: e.target.y(),
+				});
+			}
+			if (newX < 0) {
+				e.target.setPosition({ x: 0, y: e.target.y() });
+			}
+			if (newY > height - height / stage.scaleY()) {
+				e.target.setPosition({
+					x: e.target.x(),
+					y: -(height - height / stage.scaleY()) * stage.scaleY(),
+				});
+			}
+			if (newY < 0) {
+				e.target.setPosition({ x: e.target.x(), y: 0 });
+			}
 		}
+	};
 
-		if (x_position < 0) {
-			e.target.setPosition({ x: 0, y: e.target.y() });
-		}
+	const handleZoom = (type: "in" | "out"): void => {
+		const currentStageRef = stageRef.current;
+		const stage = currentStageRef?.getStage();
 
-		if (y_position > height - height / scale) {
-			e.target.setPosition({
-				x: e.target.x(),
-				y: -(height - height / scale) * scale,
-			});
-		}
+		if (stage) {
+			var oldScale = stage.scaleX();
 
-		if (y_position < 0) {
-			e.target.setPosition({ x: e.target.x(), y: 0 });
+			var newScale =
+				type === "in"
+					? Math.min(Math.max(oldScale * 1.5, 1), 10.0)
+					: Math.min(Math.max(oldScale / 1.5, 1), 10.0);
+
+			const centerX = width / 2;
+			const centerY = height / 2;
+
+			const x_position = centerX / oldScale - stage.x() / oldScale;
+			const y_position = centerY / oldScale - stage.y() / oldScale;
+
+			const newX = Math.min(
+				width - centerX / newScale,
+				Math.max(centerX / newScale, x_position)
+			);
+
+			const newY = Math.min(
+				height - centerY / newScale,
+				Math.max(centerY / newScale, y_position)
+			);
+
+			stage.scale({ x: newScale, y: newScale });
+
+			var newPos = {
+				x: -(newX - centerX / newScale) * newScale,
+				y: -(newY - centerY / newScale) * newScale,
+			};
+
+			stage.position(newPos);
+			stage.batchDraw();
 		}
 	};
 
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-center bg-zinc-950">
-			<div className="flex flex-col">
+			<div className="flex flex-col items-start gap-5">
+				<div className="flex gap-1">
+					<button
+						className="flex items-center justify-center w-6 h-6 rounded-sm bg-indigo-500"
+						onClick={() => handleZoom("in")}
+					>
+						+
+					</button>
+
+					<button
+						className="flex items-center justify-center w-6 h-6 rounded-sm bg-indigo-500"
+						onClick={() => handleZoom("out")}
+					>
+						-
+					</button>
+				</div>
 				<Stage
 					width={width}
 					height={height}
 					className="bg-neutral-900"
-					onWheel={handleZoom}
+					onWheel={handleScroll}
 					ref={stageRef}
-					x={position.x}
-					y={position.y}
-					scaleX={scale}
-					scaleY={scale}
 					draggable
 					opacity={0.5}
 					onDragMove={handleDragStage}
@@ -186,22 +235,6 @@ export default function Home() {
 							id={"4"}
 							x={(100 * (width - 50)) / 100}
 							y={(100 * (height - 50)) / 100}
-							numPoints={5}
-							innerRadius={20}
-							outerRadius={40}
-							fill="#f8d823"
-							opacity={1}
-							rotation={0}
-							scaleX={1}
-							scaleY={1}
-							width={50}
-							height={50}
-						/>
-						<Rect
-							key={5}
-							id={""}
-							x={(50 * (width - 50)) / 100}
-							y={(50 * (height - 50)) / 100}
 							numPoints={5}
 							innerRadius={20}
 							outerRadius={40}
