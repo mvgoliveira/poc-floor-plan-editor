@@ -3,11 +3,9 @@
 import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
 import { useRef, useState } from "react";
-import { Layer, Stage, Star } from "react-konva";
+import { Layer, Rect, Stage, Star } from "react-konva";
 
 export default function Home() {
-	const [x_position, setX_position] = useState(50);
-	const [y_position, setY_position] = useState(50);
 	const width = 800;
 	const height = 500;
 
@@ -15,11 +13,6 @@ export default function Home() {
 	const [position, setPosition] = useState({ x: 0, y: 0 });
 
 	const stageRef = useRef<Konva.Stage>(null);
-
-	const handleDragMove = (e: KonvaEventObject<DragEvent>): void => {
-		setX_position((e.target.attrs.x * 100) / width);
-		setY_position((e.target.attrs.y * 100) / height);
-	};
 
 	const handleZoom = (e: KonvaEventObject<WheelEvent>): void => {
 		e.evt.preventDefault();
@@ -46,37 +39,72 @@ export default function Home() {
 					} else if (unboundedNewScale > 10.0) {
 						newScale = 10.0;
 					}
+					let x_position =
+						-(mousePointTo.x - pointerPosition.x / newScale) *
+						newScale;
+
+					let y_position =
+						-(mousePointTo.y - pointerPosition.y / newScale) *
+						newScale;
+
+					if (x_position < width - width * newScale) {
+						x_position = width - width * newScale;
+					}
+
+					if (x_position > 0) {
+						x_position = 0;
+					}
+
+					if (y_position < height - height * newScale) {
+						y_position = height - height * newScale;
+					}
+
+					if (y_position > 0) {
+						y_position = 0;
+					}
 
 					const newPosition = {
-						x:
-							-(mousePointTo.x - pointerPosition.x / newScale) *
-							newScale,
-						y:
-							-(mousePointTo.y - pointerPosition.y / newScale) *
-							newScale,
+						x: x_position,
+						y: y_position,
 					};
 
 					setScale(newScale);
 					setPosition(newPosition);
 				}
-			} else {
-				const dragDistanceScale = 0.75;
-				const newPosition = {
-					x: position.x - dragDistanceScale * e.evt.deltaX,
-					y: position.y - dragDistanceScale * e.evt.deltaY,
-				};
-
-				setPosition(newPosition);
 			}
+		}
+	};
+
+	const handleDragStage = (e: KonvaEventObject<DragEvent>): void => {
+		const x_position = -e.target.x() / scale;
+		const y_position = -e.target.y() / scale;
+
+		if (x_position > width - width / scale) {
+			e.target.setPosition({
+				x: -(width - width / scale) * scale,
+				y: e.target.y(),
+			});
+		}
+
+		if (x_position < 0) {
+			e.target.setPosition({ x: 0, y: e.target.y() });
+		}
+
+		if (y_position > height - height / scale) {
+			e.target.setPosition({
+				x: e.target.x(),
+				y: -(height - height / scale) * scale,
+			});
+		}
+
+		if (y_position < 0) {
+			e.target.setPosition({ x: e.target.x(), y: 0 });
 		}
 	};
 
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-center bg-zinc-950">
 			<div className="flex flex-col">
-				<p className="text-sm">{`\n\t\t\tX = ${stageRef.current && stageRef.current.getStage().getPointerPosition()?.x}`}</p>
-				<p className="text-sm">{`\n\n\t\t\tY = ${y_position}%`}</p>
-
 				<Stage
 					width={width}
 					height={height}
@@ -88,23 +116,89 @@ export default function Home() {
 					scaleX={scale}
 					scaleY={scale}
 					draggable
+					opacity={0.5}
+					onDragMove={handleDragStage}
 				>
 					<Layer>
-						<Star
+						<Rect
 							key={1}
 							id={"1"}
-							x={(x_position * width) / 100}
-							y={height * 0.5}
+							x={(0 * (width - 50)) / 100}
+							y={(0 * (height - 50)) / 100}
 							numPoints={5}
 							innerRadius={20}
 							outerRadius={40}
-							fill="#3c8676"
+							fill="#f8d823"
 							opacity={1}
-							draggable
 							rotation={0}
 							scaleX={1}
 							scaleY={1}
-							onDragMove={handleDragMove}
+							width={50}
+							height={50}
+						/>
+						<Rect
+							key={2}
+							id={"2"}
+							x={(100 * (width - 50)) / 100}
+							y={(0 * (height - 50)) / 100}
+							numPoints={5}
+							innerRadius={20}
+							outerRadius={40}
+							fill="#f8d823"
+							opacity={1}
+							rotation={0}
+							scaleX={1}
+							scaleY={1}
+							width={50}
+							height={50}
+						/>
+						<Rect
+							key={3}
+							id={"3"}
+							x={(0 * (width - 50)) / 100}
+							y={(100 * (height - 50)) / 100}
+							numPoints={5}
+							innerRadius={20}
+							outerRadius={40}
+							fill="#f8d823"
+							opacity={1}
+							rotation={0}
+							scaleX={1}
+							scaleY={1}
+							width={50}
+							height={50}
+						/>
+						<Rect
+							key={4}
+							id={"4"}
+							x={(100 * (width - 50)) / 100}
+							y={(100 * (height - 50)) / 100}
+							numPoints={5}
+							innerRadius={20}
+							outerRadius={40}
+							fill="#f8d823"
+							opacity={1}
+							rotation={0}
+							scaleX={1}
+							scaleY={1}
+							width={50}
+							height={50}
+						/>
+						<Rect
+							key={5}
+							id={""}
+							x={(50 * (width - 50)) / 100}
+							y={(50 * (height - 50)) / 100}
+							numPoints={5}
+							innerRadius={20}
+							outerRadius={40}
+							fill="#f8d823"
+							opacity={1}
+							rotation={0}
+							scaleX={1}
+							scaleY={1}
+							width={50}
+							height={50}
 						/>
 					</Layer>
 				</Stage>
