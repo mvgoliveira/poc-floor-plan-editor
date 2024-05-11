@@ -7,7 +7,7 @@ import { Layer, Rect, Stage, Star } from "react-konva";
 
 export default function Home() {
 	const width = 800;
-	const height = 500;
+	const height = 800;
 
 	const [scale, setScale] = useState(1);
 	const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -32,36 +32,33 @@ export default function Home() {
 						y: pointerPosition.y / oldScale - stage.y() / oldScale,
 					};
 
-					const unboundedNewScale = oldScale - e.evt.deltaY * 0.01;
-					let newScale = unboundedNewScale;
-					if (unboundedNewScale < 1) {
-						newScale = 1;
-					} else if (unboundedNewScale > 10.0) {
-						newScale = 10.0;
-					}
-					let x_position =
-						-(mousePointTo.x - pointerPosition.x / newScale) *
-						newScale;
+					const scrollSpeed = 0.3;
 
-					let y_position =
-						-(mousePointTo.y - pointerPosition.y / newScale) *
-						newScale;
+					const unboundedNewScale =
+						oldScale - (e.evt.deltaY * scrollSpeed) / 100;
 
-					if (x_position < width - width * newScale) {
-						x_position = width - width * newScale;
-					}
+					let newScale = Math.min(
+						Math.max(unboundedNewScale, 1),
+						10.0
+					);
 
-					if (x_position > 0) {
-						x_position = 0;
-					}
+					let x_position = Math.max(
+						Math.min(
+							-(mousePointTo.x - pointerPosition.x / newScale) *
+								newScale,
+							0
+						),
+						width - width * newScale
+					);
 
-					if (y_position < height - height * newScale) {
-						y_position = height - height * newScale;
-					}
-
-					if (y_position > 0) {
-						y_position = 0;
-					}
+					let y_position = Math.max(
+						Math.min(
+							-(mousePointTo.y - pointerPosition.y / newScale) *
+								newScale,
+							0
+						),
+						height - height * newScale
+					);
 
 					const newPosition = {
 						x: x_position,
@@ -71,6 +68,22 @@ export default function Home() {
 					setScale(newScale);
 					setPosition(newPosition);
 				}
+			} else if (e.evt.shiftKey) {
+				const oldX = stage.x();
+				const newX = Math.max(
+					Math.min(0, oldX - e.evt.deltaY / 2),
+					width - width * scale
+				);
+				stage.x(newX);
+				stage.batchDraw();
+			} else {
+				const oldY = stage.y();
+				const newY = Math.max(
+					Math.min(0, oldY - e.evt.deltaY / 2),
+					height - height * scale
+				);
+				stage.y(newY);
+				stage.batchDraw();
 			}
 		}
 	};
