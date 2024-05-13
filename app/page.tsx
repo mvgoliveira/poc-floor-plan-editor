@@ -74,10 +74,16 @@ export default function Home() {
 				stage.batchDraw();
 			} else {
 				const oldY = stage.y();
+				const oldX = stage.x();
 				const newY = Math.max(
 					Math.min(0, oldY - e.evt.deltaY / 2),
 					height - height * stage.scaleX()
 				);
+				const newX = Math.max(
+					Math.min(0, oldX - e.evt.deltaX / 2),
+					width - width * stage.scaleY()
+				);
+				stage.x(newX);
 				stage.y(newY);
 				stage.batchDraw();
 			}
