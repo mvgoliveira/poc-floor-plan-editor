@@ -2,10 +2,8 @@
 
 import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
-import { KeyboardEvent, KeyboardEventHandler, useRef, useState } from "react";
+import { KeyboardEvent, MouseEvent, useRef, useState } from "react";
 import { Layer, Rect, Stage } from "react-konva";
-import { Html } from "react-konva-utils";
-
 interface IFloorPlanProps {
 	width: number;
 	height: number;
@@ -101,6 +99,8 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 		e.evt.preventDefault();
 		if (e.evt.buttons === 1 && !isSpaceBarPressed) {
 			e.target.stopDrag();
+		} else {
+			document.body.style.cursor = "grabbing";
 		}
 	};
 
@@ -109,7 +109,7 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 		const currentStageRef = stageRef.current;
 		const stage = currentStageRef?.getStage();
 
-		if (stage) {
+		if (stage && (e.evt.buttons === 4 || isSpaceBarPressed)) {
 			const newX = -e.target.x() / stage.scaleX();
 			const newY = -e.target.y() / stage.scaleY();
 
@@ -131,6 +131,20 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 			if (newY < 0) {
 				e.target.setPosition({ x: e.target.x(), y: 0 });
 			}
+		} else {
+			e.target.stopDrag();
+			e.target.setPosition({
+				x: e.target.x() - e.evt.movementX,
+				y: e.target.y() - e.evt.movementY,
+			});
+		}
+	};
+
+	const handleDragStageEnd = (e: KonvaEventObject<DragEvent>) => {
+		if (isSpaceBarPressed) {
+			document.body.style.cursor = "grab";
+		} else {
+			document.body.style.cursor = "default";
 		}
 	};
 
@@ -174,14 +188,28 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 		}
 	};
 
+	const handleSpaceBarKeyDown = (e: KeyboardEvent<HTMLDivElement>): void => {
+		if (e.code === "Space" && !isSpaceBarPressed) {
+			document.body.style.cursor = "grab";
+			setIsSpaceBarPressed(true);
+		}
+	};
+
+	const handleSpaceBarKeyUp = (e: KeyboardEvent<HTMLDivElement>): void => {
+		if (e.code === "Space" && isSpaceBarPressed) {
+			document.body.style.cursor = "default";
+			setIsSpaceBarPressed(false);
+		}
+	};
+
 	return (
 		<div
 			tabIndex={1}
 			style={{
 				outline: "none",
 			}}
-			onKeyDown={(e) => e.code === "Space" && setIsSpaceBarPressed(true)}
-			onKeyUp={(e) => e.code === "Space" && setIsSpaceBarPressed(false)}
+			onKeyDown={handleSpaceBarKeyDown}
+			onKeyUp={handleSpaceBarKeyUp}
 		>
 			<Stage
 				width={width}
@@ -193,6 +221,7 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 				opacity={0.5}
 				onDragStart={handleDragStageStart}
 				onDragMove={handleDragStage}
+				onDragEnd={handleDragStageEnd}
 			>
 				<Layer>
 					<Rect
