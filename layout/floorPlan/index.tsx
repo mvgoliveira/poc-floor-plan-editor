@@ -2,8 +2,9 @@
 
 import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
-import { KeyboardEvent, MouseEvent, useEffect, useRef, useState } from "react";
-import { Layer, Rect, Stage } from "react-konva";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { Image, Layer, Stage } from "react-konva";
+import useImage from "use-image";
 interface IFloorPlanProps {
 	width: number;
 	height: number;
@@ -12,15 +13,26 @@ interface IFloorPlanProps {
 export default function FloorPlan({ width, height }: IFloorPlanProps) {
 	const stageRef = useRef<Konva.Stage>(null);
 
+	const [image] = useImage(
+		"https://images.adsttc.com/media/images/5e4d/5730/6ee6/7e29/3700/03bc/slideshow/Unit_Kharkiv_Ground_Floor.jpg?1582126824"
+	);
+
 	const [limitWidth, setLimitWidth] = useState(0);
 	const [limitHeight, setLimitHeight] = useState(0);
 
 	const [isSpaceBarPressed, setIsSpaceBarPressed] = useState(false);
 
 	useEffect(() => {
-		setLimitWidth(width + 100);
-		setLimitHeight(height + 100);
-	}, [width, height]);
+		if (image) {
+			image.width < width
+				? setLimitWidth(width)
+				: setLimitWidth(image.width);
+
+			image.height < height
+				? setLimitHeight(height)
+				: setLimitHeight(image.height);
+		}
+	}, [image]);
 
 	const handleScroll = (e: KonvaEventObject<WheelEvent>): void => {
 		e.evt.preventDefault();
@@ -41,7 +53,7 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 							stage.y() / stage.scaleY(),
 					};
 
-					const scrollSpeed = 1;
+					const scrollSpeed = 0.3;
 
 					const unboundedNewScale =
 						stage.scaleX() - (e.evt.deltaY * scrollSpeed) / 100;
@@ -224,128 +236,21 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 			<Stage
 				width={width}
 				height={height}
-				className="bg-zinc-950"
 				onWheel={handleScroll}
 				ref={stageRef}
 				draggable
-				opacity={0.5}
 				onDragStart={handleDragStageStart}
 				onDragMove={handleDragStage}
 				onDragEnd={handleDragStageEnd}
+				style={{ background: "#fff", opacity: 0.7 }}
 			>
 				<Layer>
-					<Rect
-						key={1}
-						x={0}
-						y={0}
-						width={limitWidth - 100}
-						height={limitHeight - 100}
-						numPoints={5}
-						innerRadius={20}
-						outerRadius={40}
-						fill="#f8d823"
-						opacity={1}
-						rotation={0}
-						scaleX={1}
-						scaleY={1}
-					/>
-
-					<Rect
+					<Image
 						key={2}
-						x={width}
+						x={(limitWidth - Number(image?.width)) / 2}
 						y={0}
-						width={100}
-						height={limitHeight}
-						numPoints={5}
-						innerRadius={20}
-						outerRadius={40}
-						fill="#23f851"
-						opacity={1}
-						rotation={0}
-						scaleX={1}
-						scaleY={1}
+						image={image}
 					/>
-
-					<Rect
-						key={3}
-						x={0}
-						y={height}
-						width={limitWidth}
-						height={100}
-						numPoints={5}
-						innerRadius={20}
-						outerRadius={40}
-						fill="#23f851"
-						opacity={1}
-						rotation={0}
-						scaleX={1}
-						scaleY={1}
-					/>
-
-					{/* <Rect
-						key={1}
-						id={"1"}
-						x={(0 * (width - 50)) / 100}
-						y={(0 * (height - 50)) / 100}
-						numPoints={5}
-						innerRadius={20}
-						outerRadius={40}
-						fill="#f8d823"
-						opacity={1}
-						rotation={0}
-						scaleX={1}
-						scaleY={1}
-						width={50}
-						height={50}
-					/>
-					<Rect
-						key={2}
-						id={"2"}
-						x={(100 * (width - 50)) / 100}
-						y={(0 * (height - 50)) / 100}
-						numPoints={5}
-						innerRadius={20}
-						outerRadius={40}
-						fill="#f8d823"
-						opacity={1}
-						rotation={0}
-						scaleX={1}
-						scaleY={1}
-						width={50}
-						height={50}
-					/>
-					<Rect
-						key={3}
-						id={"3"}
-						x={(0 * (width - 50)) / 100}
-						y={(100 * (height - 50)) / 100}
-						numPoints={5}
-						innerRadius={20}
-						outerRadius={40}
-						fill="#f8d823"
-						opacity={1}
-						rotation={0}
-						scaleX={1}
-						scaleY={1}
-						width={50}
-						height={50}
-					/>
-					<Rect
-						key={4}
-						id={"4"}
-						x={(100 * (width - 50)) / 100}
-						y={(100 * (height - 50)) / 100}
-						numPoints={5}
-						innerRadius={20}
-						outerRadius={40}
-						fill="#f8d823"
-						opacity={1}
-						rotation={0}
-						scaleX={1}
-						scaleY={1}
-						width={50}
-						height={50}
-					/> */}
 				</Layer>
 			</Stage>
 		</div>

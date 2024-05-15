@@ -18,7 +18,8 @@
     "react-icons": "^5.2.1",
     "react-konva": "^18.2.10",
     "react-konva-utils": "^1.0.6",
-    "styled-components": "^6.1.11"
+    "styled-components": "^6.1.11",
+    "use-image": "^1.1.1"
   },
   "devDependencies": {
     "@types/node": "^20",
