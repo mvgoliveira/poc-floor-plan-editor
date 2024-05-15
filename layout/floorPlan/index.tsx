@@ -19,7 +19,7 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 
 	useEffect(() => {
 		setLimitWidth(width + 100);
-		setLimitHeight(height);
+		setLimitHeight(height + 100);
 	}, [width, height]);
 
 	const handleScroll = (e: KonvaEventObject<WheelEvent>): void => {
@@ -78,7 +78,7 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 				const oldX = stage.x();
 				const newX = Math.max(
 					Math.min(0, oldX - e.evt.deltaY / 2),
-					width - width * stage.scaleX()
+					width - limitWidth * stage.scaleX()
 				);
 				stage.x(newX);
 				stage.batchDraw();
@@ -87,11 +87,11 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 				const oldX = stage.x();
 				const newY = Math.max(
 					Math.min(0, oldY - e.evt.deltaY / 2),
-					height - height * stage.scaleX()
+					height - limitHeight * stage.scaleX()
 				);
 				const newX = Math.max(
 					Math.min(0, oldX - e.evt.deltaX / 2),
-					width - width * stage.scaleY()
+					width - limitWidth * stage.scaleY()
 				);
 				stage.x(newX);
 				stage.y(newY);
@@ -236,11 +236,10 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 				<Layer>
 					<Rect
 						key={1}
-						id={"1"}
 						x={0}
 						y={0}
 						width={limitWidth - 100}
-						height={limitHeight}
+						height={limitHeight - 100}
 						numPoints={5}
 						innerRadius={20}
 						outerRadius={40}
@@ -253,11 +252,26 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 
 					<Rect
 						key={2}
-						id={"2"}
 						x={width}
 						y={0}
 						width={100}
 						height={limitHeight}
+						numPoints={5}
+						innerRadius={20}
+						outerRadius={40}
+						fill="#23f851"
+						opacity={1}
+						rotation={0}
+						scaleX={1}
+						scaleY={1}
+					/>
+
+					<Rect
+						key={3}
+						x={0}
+						y={height}
+						width={limitWidth}
+						height={100}
 						numPoints={5}
 						innerRadius={20}
 						outerRadius={40}
