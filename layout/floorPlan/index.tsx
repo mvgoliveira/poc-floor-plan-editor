@@ -57,7 +57,7 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 								newScale,
 							0
 						),
-						width - width * newScale
+						width - limitWidth * newScale
 					);
 
 					const y_position = Math.max(
@@ -66,7 +66,7 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 								newScale,
 							0
 						),
-						height - height * newScale
+						height - limitHeight * newScale
 					);
 
 					stage.scale({ x: newScale, y: newScale });
