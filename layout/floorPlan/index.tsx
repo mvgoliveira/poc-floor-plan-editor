@@ -2,7 +2,7 @@
 
 import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
-import { KeyboardEvent, MouseEvent, useRef, useState } from "react";
+import { KeyboardEvent, MouseEvent, useEffect, useRef, useState } from "react";
 import { Layer, Rect, Stage } from "react-konva";
 interface IFloorPlanProps {
 	width: number;
@@ -12,10 +12,15 @@ interface IFloorPlanProps {
 export default function FloorPlan({ width, height }: IFloorPlanProps) {
 	const stageRef = useRef<Konva.Stage>(null);
 
-	const [x_position, setX_position] = useState(0);
-	const [y_position, setY_position] = useState(0);
+	const [limitWidth, setLimitWidth] = useState(0);
+	const [limitHeight, setLimitHeight] = useState(0);
 
 	const [isSpaceBarPressed, setIsSpaceBarPressed] = useState(false);
+
+	useEffect(() => {
+		setLimitWidth(width + 100);
+		setLimitHeight(height);
+	}, [width, height]);
 
 	const handleScroll = (e: KonvaEventObject<WheelEvent>): void => {
 		e.evt.preventDefault();
@@ -113,23 +118,28 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 			const newX = -e.target.x() / stage.scaleX();
 			const newY = -e.target.y() / stage.scaleY();
 
-			if (newX > width - width / stage.scaleX()) {
-				e.target.setPosition({
-					x: -(width - width / stage.scaleX()) * stage.scaleX(),
-					y: e.target.y(),
-				});
-			}
 			if (newX < 0) {
 				e.target.setPosition({ x: 0, y: e.target.y() });
 			}
-			if (newY > height - height / stage.scaleY()) {
+
+			if (newX > limitWidth - width / stage.scaleX()) {
 				e.target.setPosition({
-					x: e.target.x(),
-					y: -(height - height / stage.scaleY()) * stage.scaleY(),
+					x: -(limitWidth - width / stage.scaleX()) * stage.scaleX(),
+					y: e.target.y(),
 				});
 			}
+
 			if (newY < 0) {
 				e.target.setPosition({ x: e.target.x(), y: 0 });
+			}
+
+			if (newY > limitHeight - height / stage.scaleY()) {
+				e.target.setPosition({
+					x: e.target.x(),
+					y:
+						-(limitHeight - height / stage.scaleY()) *
+						stage.scaleY(),
+				});
 			}
 		} else {
 			e.target.stopDrag();
@@ -227,6 +237,40 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 					<Rect
 						key={1}
 						id={"1"}
+						x={0}
+						y={0}
+						width={limitWidth - 100}
+						height={limitHeight}
+						numPoints={5}
+						innerRadius={20}
+						outerRadius={40}
+						fill="#f8d823"
+						opacity={1}
+						rotation={0}
+						scaleX={1}
+						scaleY={1}
+					/>
+
+					<Rect
+						key={2}
+						id={"2"}
+						x={width}
+						y={0}
+						width={100}
+						height={limitHeight}
+						numPoints={5}
+						innerRadius={20}
+						outerRadius={40}
+						fill="#23f851"
+						opacity={1}
+						rotation={0}
+						scaleX={1}
+						scaleY={1}
+					/>
+
+					{/* <Rect
+						key={1}
+						id={"1"}
 						x={(0 * (width - 50)) / 100}
 						y={(0 * (height - 50)) / 100}
 						numPoints={5}
@@ -287,7 +331,7 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 						scaleY={1}
 						width={50}
 						height={50}
-					/>
+					/> */}
 				</Layer>
 			</Stage>
 		</div>
