@@ -49,9 +49,14 @@ const slideLeftAndFade = keyframes`
     }
 `;
 
-export const PopoverContent = styled(Content)<{ width: string }>`
+export const PopoverContent = styled(Content)<{
+	width: string;
+	margin: string;
+}>`
 	border-radius: 2px;
 	width: ${({ width }) => width};
+	margin: ${({ margin }) => margin};
+	/* background-color: ${({ theme }) => theme.colors.gray80}; */
 	background-color: ${({ theme }) => theme.colors.gray90};
 	border: 1px solid ${({ theme }) => theme.colors.gray70};
 	box-shadow:
@@ -82,6 +87,8 @@ export const PopoverContent = styled(Content)<{ width: string }>`
 
 export const PopoverArrow = styled(Arrow)`
 	fill: ${({ theme }) => theme.colors.gray70};
+	/* fill: transparent; */
+	/* height: 0; */
 `;
 
 export const PopoverClose = styled(Close)`

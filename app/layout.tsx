@@ -3,6 +3,8 @@ import "./globals.css";
 import ClientThemeWrapper from "./client-theme-wrapper";
 import StyledComponentsRegistry from "@/lib/registry";
 import { poppins, roboto } from "./fonts";
+import { AppContextProvider } from "@/contexts/appContext";
+import ClientContextWrapper from "./client-context-wrapper";
 
 export const metadata: Metadata = {
 	title: "Floor Plan",
@@ -18,7 +20,9 @@ export default function RootLayout({
 		<html lang="en">
 			<body className={`${roboto.className} ${poppins.className}`}>
 				<StyledComponentsRegistry>
-					<ClientThemeWrapper>{children}</ClientThemeWrapper>
+					<ClientContextWrapper>
+						<ClientThemeWrapper>{children}</ClientThemeWrapper>
+					</ClientContextWrapper>
 				</StyledComponentsRegistry>
 			</body>
 		</html>

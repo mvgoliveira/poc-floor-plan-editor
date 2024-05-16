@@ -1,5 +1,6 @@
 "use client";
 
+import { useApp } from "@/hooks/useApp";
 import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
@@ -11,6 +12,8 @@ interface IFloorPlanProps {
 }
 
 export default function FloorPlan({ width, height }: IFloorPlanProps) {
+	const { scale, setScale, setZoom } = useApp();
+
 	const stageRef = useRef<Konva.Stage>(null);
 
 	const [image] = useImage(
@@ -33,6 +36,41 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 				: setLimitHeight(image.height);
 		}
 	}, [image]);
+
+	useEffect(() => {
+		const currentStageRef = stageRef.current;
+		const stage = currentStageRef?.getStage();
+
+		if (stage) {
+			var oldScale = stage.scaleX();
+
+			const centerX = width / 2;
+			const centerY = height / 2;
+
+			const x_position = centerX / oldScale - stage.x() / oldScale;
+			const y_position = centerY / oldScale - stage.y() / oldScale;
+
+			const newX = Math.min(
+				width - centerX / scale,
+				Math.max(centerX / scale, x_position)
+			);
+
+			const newY = Math.min(
+				height - centerY / scale,
+				Math.max(centerY / scale, y_position)
+			);
+
+			stage.scale({ x: scale, y: scale });
+
+			var newPos = {
+				x: -(newX - centerX / scale) * scale,
+				y: -(newY - centerY / scale) * scale,
+			};
+
+			stage.position(newPos);
+			stage.batchDraw();
+		}
+	}, [scale]);
 
 	const handleScroll = (e: KonvaEventObject<WheelEvent>): void => {
 		e.evt.preventDefault();
@@ -82,6 +120,8 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 					);
 
 					stage.scale({ x: newScale, y: newScale });
+					setScale(newScale);
+					setZoom(Math.floor(((newScale - 1) * 200) / 9));
 					stage.x(x_position);
 					stage.y(y_position);
 					stage.batchDraw();

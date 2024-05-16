@@ -33,6 +33,7 @@ Popover.Trigger = Trigger;
 
 export interface IContentProps extends IReactChildren {
 	hasCloseIcon?: boolean;
+	margin?: string;
 	width?: string;
 }
 
@@ -40,10 +41,11 @@ const Content = ({
 	children,
 	hasCloseIcon = true,
 	width = "260px",
+	margin = "0",
 	...props
 }: ComponentProps<typeof RadixRootTypes> & IContentProps): ReactElement => (
 	<RadixPortal>
-		<PopoverContent width={width} {...props}>
+		<PopoverContent width={width} margin={margin} {...props}>
 			{children}
 			{hasCloseIcon && (
 				<PopoverClose aria-label="Close">
