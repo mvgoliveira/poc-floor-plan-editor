@@ -51,12 +51,12 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 			const y_position = centerY / oldScale - stage.y() / oldScale;
 
 			const newX = Math.min(
-				width - centerX / scale,
+				limitWidth - centerX / scale,
 				Math.max(centerX / scale, x_position)
 			);
 
 			const newY = Math.min(
-				height - centerY / scale,
+				limitHeight - centerY / scale,
 				Math.max(centerY / scale, y_position)
 			);
 
@@ -81,11 +81,11 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 			if (e.evt.ctrlKey) {
 				const pointerPosition = stage.getPointerPosition();
 
+				var oldScale = stage.scaleX();
+
 				if (pointerPosition) {
 					const mousePointTo = {
-						x:
-							pointerPosition.x / stage.scaleX() -
-							stage.x() / stage.scaleX(),
+						x: pointerPosition.x / oldScale - stage.x() / oldScale,
 						y:
 							pointerPosition.y / stage.scaleY() -
 							stage.y() / stage.scaleY(),
@@ -94,7 +94,7 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 					const scrollSpeed = 0.3;
 
 					const unboundedNewScale =
-						stage.scaleX() - (e.evt.deltaY * scrollSpeed) / 100;
+						oldScale - (e.evt.deltaY * scrollSpeed) / 100;
 
 					const newScale = Math.min(
 						Math.max(unboundedNewScale, 1),
@@ -135,15 +135,15 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 				stage.x(newX);
 				stage.batchDraw();
 			} else {
-				const oldY = stage.y();
 				const oldX = stage.x();
-				const newY = Math.max(
-					Math.min(0, oldY - e.evt.deltaY / 2),
-					height - limitHeight * stage.scaleX()
-				);
+				const oldY = stage.y();
 				const newX = Math.max(
 					Math.min(0, oldX - e.evt.deltaX / 2),
 					width - limitWidth * stage.scaleY()
+				);
+				const newY = Math.max(
+					Math.min(0, oldY - e.evt.deltaY / 2),
+					height - limitHeight * stage.scaleX()
 				);
 				stage.x(newX);
 				stage.y(newY);
@@ -222,31 +222,7 @@ export default function FloorPlan({ width, height }: IFloorPlanProps) {
 					? Math.min(Math.max(oldScale * 1.5, 1), 10.0)
 					: Math.min(Math.max(oldScale / 1.5, 1), 10.0);
 
-			const centerX = width / 2;
-			const centerY = height / 2;
-
-			const x_position = centerX / oldScale - stage.x() / oldScale;
-			const y_position = centerY / oldScale - stage.y() / oldScale;
-
-			const newX = Math.min(
-				width - centerX / newScale,
-				Math.max(centerX / newScale, x_position)
-			);
-
-			const newY = Math.min(
-				height - centerY / newScale,
-				Math.max(centerY / newScale, y_position)
-			);
-
-			stage.scale({ x: newScale, y: newScale });
-
-			var newPos = {
-				x: -(newX - centerX / newScale) * newScale,
-				y: -(newY - centerY / newScale) * newScale,
-			};
-
-			stage.position(newPos);
-			stage.batchDraw();
+			setScale(newScale);
 		}
 	};
 
