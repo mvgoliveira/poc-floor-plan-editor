@@ -3,9 +3,10 @@
 import { ActionButton } from "@/components/button/action";
 import Icon from "@/components/icon";
 import { useWindowSize } from "@/hooks/useWindowSize";
+import { FloorPlan } from "@/layout/floorPlan";
 import { Header } from "@/layout/header";
-import { FC, ReactElement, useEffect, useState } from "react";
-import { IconBaseProps, IconType } from "react-icons";
+import { Sidebar } from "@/layout/sidebar";
+import { ReactElement, useEffect, useState } from "react";
 import { FaFaucetDrip } from "react-icons/fa6";
 import { MdBolt, MdDeviceThermostat, MdOutlineDeviceHub } from "react-icons/md";
 
@@ -134,38 +135,8 @@ export default function Home() {
 					height: "100%",
 				}}
 			>
-				{dataStats.map((dataItemStats, idx) => (
-					<ActionButton>
-						<ActionButton.Menu isOpen={true}>
-							<ActionButton.Menu.Item
-								icon={FaFaucetDrip}
-								size={18}
-								hoverColor="blue80"
-							/>
-							<ActionButton.Menu.Item
-								icon={MdDeviceThermostat}
-								size={25}
-								hoverColor="red80"
-							/>
-							<ActionButton.Menu.Item
-								icon={MdBolt}
-								size={25}
-								hoverColor="yellow80"
-							/>
-						</ActionButton.Menu>
-						<ActionButton.Badge value={dataItemStats.totalCount} />
-						<ActionButton.RingProgress
-							sections={getSectionData(dataItemStats)}
-						>
-							<ActionButton.Trigger>
-								{dataItemStats && getIcon(dataItemStats)}
-							</ActionButton.Trigger>
-						</ActionButton.RingProgress>
-					</ActionButton>
-				))}
-
-				{/* <Sidebar /> */}
-				{/* <FloorPlan width={width - 300} height={height - 50} /> */}
+				<Sidebar />
+				<FloorPlan width={width - 300} height={height - 50} />
 			</div>
 		</main>
 	);

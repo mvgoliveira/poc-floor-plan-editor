@@ -41,8 +41,10 @@ export const MenuContainer = styled.div<{
 	isOpen: boolean;
 }>`
 	position: absolute;
-	left: -50px;
-	display: ${({ isOpen }) => (isOpen ? "flex" : "none")};
+	transition: transform 0.1s ease-in-out;
+	transform: ${({ isOpen }) =>
+		isOpen ? "translateX(-50px) scale(1)" : "translateX(0) scale(0)"};
+	left: 0;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;

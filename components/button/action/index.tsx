@@ -6,12 +6,14 @@ import {
 	MenuContainer,
 	MenuItem,
 } from "./styles";
-import { forwardRef, ReactElement } from "react";
+import { forwardRef, ReactElement, useState } from "react";
 import { Center, RingProgress as MantineRingProgress } from "@mantine/core";
 import { Typography } from "@/components/typography";
 import Icon from "@/components/icon";
 import { IconType } from "react-icons";
 import { Theme } from "@/themes";
+import { ActionButtonContextProvider } from "@/contexts/actionButtonContext";
+import { useActionButton } from "@/hooks/useActionButton";
 
 interface IFloatActionButtonProps {
 	padding?: string;
@@ -19,7 +21,11 @@ interface IFloatActionButtonProps {
 }
 
 export const ActionButton = ({ children }: IReactChildren): ReactElement => {
-	return <Container>{children}</Container>;
+	return (
+		<ActionButtonContextProvider>
+			<Container>{children}</Container>
+		</ActionButtonContextProvider>
+	);
 };
 
 interface IRingProgressProps {
@@ -54,9 +60,15 @@ const Trigger = forwardRef<
 	IFloatActionButtonProps & IReactChildren
 >((props, ref): ReactElement => {
 	const { padding = "0px", children } = props;
+	const { setIsOpen } = useActionButton();
 
 	return (
-		<Button padding={padding} ref={ref} {...props}>
+		<Button
+			padding={padding}
+			ref={ref}
+			{...props}
+			onClick={() => setIsOpen((prevState) => !prevState)}
+		>
 			{children}
 		</Button>
 	);
@@ -86,14 +98,10 @@ const Badge = ({ value }: IBadgeProps): ReactElement => {
 Badge.displayName = "Badge";
 ActionButton.Badge = Badge;
 
-interface IMenuProps {
-	isOpen?: boolean;
-}
+interface IMenuProps {}
 
-const Menu = ({
-	children,
-	isOpen = true,
-}: IReactChildren & IMenuProps): ReactElement => {
+const Menu = ({ children }: IReactChildren & IMenuProps): ReactElement => {
+	const { isOpen } = useActionButton();
 	return <MenuContainer isOpen={isOpen}>{children}</MenuContainer>;
 };
 Menu.displayName = "Menu";
