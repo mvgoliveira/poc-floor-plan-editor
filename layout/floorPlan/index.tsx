@@ -1,5 +1,3 @@
-"use client";
-
 import { useApp } from "@/hooks/useApp";
 import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
@@ -11,7 +9,7 @@ interface IFloorPlanProps {
 	height: number;
 }
 
-export default function FloorPlan({ width, height }: IFloorPlanProps) {
+export function FloorPlan({ width, height }: IFloorPlanProps) {
 	const { scale, setScale, setZoom } = useApp();
 
 	const stageRef = useRef<Konva.Stage>(null);

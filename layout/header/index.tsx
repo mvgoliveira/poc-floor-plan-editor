@@ -1,5 +1,3 @@
-"use client";
-
 import { Container, Input } from "./styles";
 import { PrimaryButton } from "@/components/button/primary";
 import { LogoIcon } from "@/assets/svg/icons";
@@ -8,7 +6,7 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { FormEvent, useState } from "react";
 import { useApp } from "@/hooks/useApp";
 
-export default function Header() {
+export function Header() {
 	const { zoom, setZoom, setScale } = useApp();
 	const [zoomInput, setZoomInput] = useState("0%");
 

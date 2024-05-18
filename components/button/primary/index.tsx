@@ -1,5 +1,3 @@
-"use client";
-
 import { Typography } from "@/components/typography";
 import { Container } from "./styles";
 import { forwardRef, ReactElement } from "react";
