@@ -1,7 +1,6 @@
 import { ActionButton } from "@/components/button/action";
 import Icon from "@/components/icon";
-import { useApp } from "@/hooks/useApp";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useState } from "react";
 import { FaFaucetDrip } from "react-icons/fa6";
 import { MdBolt, MdDeviceThermostat, MdOutlineDeviceHub } from "react-icons/md";
 import { Circle } from "react-konva";
