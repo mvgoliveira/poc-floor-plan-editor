@@ -1,0 +1,134 @@
+import { ActionButton } from "@/components/button/action";
+import Icon from "@/components/icon";
+import { ReactElement, useEffect, useState } from "react";
+import { FaFaucetDrip } from "react-icons/fa6";
+import { MdBolt, MdDeviceThermostat, MdOutlineDeviceHub } from "react-icons/md";
+import { Group } from "react-konva";
+import { Html } from "react-konva-utils";
+
+interface IAssetsProps {
+	data: IActionButtonDataProps[];
+	disablePointerEvent?: boolean;
+}
+
+export const Assets = ({
+	data,
+	disablePointerEvent = false,
+}: IAssetsProps): ReactElement => {
+	const [dataStats, setDataStats] = useState<DataItemStats[]>([]);
+
+	const getDataStats = (dataItem: IActionButtonDataProps): DataItemStats => {
+		const itemCounts: Record<string, number> = {};
+		const totalCount = dataItem.devices.length;
+
+		dataItem.devices.forEach((item) => {
+			const type = item.type;
+			itemCounts[type] = (itemCounts[type] || 0) + 1;
+		});
+
+		return {
+			totalCount,
+			water: {
+				count: itemCounts.water || 0,
+				percentage: (itemCounts.water / totalCount) * 100 || 0,
+			},
+			temperature: {
+				count: itemCounts.temperature || 0,
+				percentage: (itemCounts.temperature / totalCount) * 100 || 0,
+			},
+			energy: {
+				count: itemCounts.energy || 0,
+				percentage: (itemCounts.energy / totalCount) * 100 || 0,
+			},
+		};
+	};
+
+	const getSectionData = (dataItemStats: DataItemStats): ISectionsProps[] => {
+		return [
+			{
+				value: dataItemStats.water.percentage,
+				color: "blue",
+				tooltip: `Água: ${dataItemStats.water.count} ${dataItemStats.water.count === 1 ? "dispositivo" : "dispositivos"}`,
+			},
+			{
+				value: dataItemStats.temperature.percentage,
+				color: "red",
+				tooltip: `Temperatura: ${dataItemStats.temperature.count} ${dataItemStats.temperature.count === 1 ? "dispositivo" : "dispositivos"}`,
+			},
+			{
+				value: dataItemStats.energy.percentage,
+				color: "yellow",
+				tooltip: `Energia: ${dataItemStats.energy.count} ${dataItemStats.energy.count === 1 ? "dispositivo" : "dispositivos"}`,
+			},
+		];
+	};
+
+	const getIcon = (dataItemStats: DataItemStats): ReactElement => {
+		if (dataItemStats.energy.percentage === 100) {
+			return <Icon Icon={MdBolt} size={50} />;
+		} else if (dataItemStats.water.percentage === 100) {
+			return <Icon Icon={FaFaucetDrip} size={35} />;
+		} else if (dataItemStats.temperature.percentage === 100) {
+			return <Icon Icon={MdDeviceThermostat} size={50} />;
+		} else {
+			return <Icon Icon={MdOutlineDeviceHub} size={50} />;
+		}
+	};
+
+	useEffect(() => {
+		const dataStats = data.map((dataItem) => {
+			return getDataStats(dataItem);
+		});
+
+		setDataStats(dataStats);
+	}, [data]);
+
+	return (
+		<>
+			{dataStats.map((dataItemStats, idx) => (
+				<Group x={data[idx].x} y={data[idx].y}>
+					<Html
+						key={idx + 1}
+						divProps={{
+							style: {
+								pointerEvents: disablePointerEvent
+									? "none"
+									: "all",
+							},
+						}}
+					>
+						<ActionButton>
+							<ActionButton.Menu>
+								<ActionButton.Menu.Item
+									icon={FaFaucetDrip}
+									size={18}
+									hoverColor="blue80"
+								/>
+								<ActionButton.Menu.Item
+									icon={MdDeviceThermostat}
+									size={25}
+									hoverColor="red80"
+								/>
+								<ActionButton.Menu.Item
+									icon={MdBolt}
+									size={25}
+									hoverColor="yellow80"
+								/>
+							</ActionButton.Menu>
+							<ActionButton.Badge
+								value={dataItemStats.totalCount}
+							/>
+							<ActionButton.RingProgress
+								sections={getSectionData(dataItemStats)}
+							>
+								<ActionButton.Trigger>
+									{dataItemStats && getIcon(dataItemStats)}
+								</ActionButton.Trigger>
+							</ActionButton.RingProgress>
+						</ActionButton>
+					</Html>
+				</Group>
+			))}
+		</>
+	);
+};

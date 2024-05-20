@@ -3,9 +3,11 @@ import styled from "styled-components";
 
 export const Container = styled.div`
 	position: relative;
+	z-index: -1;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	transform: scale(0.7);
 `;
 
 export const Button = styled.button<{

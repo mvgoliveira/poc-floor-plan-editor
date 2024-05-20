@@ -4,6 +4,7 @@ import { KonvaEventObject } from "konva/lib/Node";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { Image, Layer, Stage } from "react-konva";
 import useImage from "use-image";
+import { Assets } from "./components/assets";
 interface IFloorPlanProps {
 	width: number;
 	height: number;
@@ -11,6 +12,19 @@ interface IFloorPlanProps {
 
 export function FloorPlan({ width, height }: IFloorPlanProps) {
 	const { scale, setScale, setZoom } = useApp();
+
+	const [assets, setAssets] = useState<IActionButtonDataProps[]>([
+		{
+			id: "1",
+			x: 450,
+			y: 500,
+			devices: [
+				{ type: "temperature" },
+				{ type: "energy" },
+				{ type: "water" },
+			],
+		},
+	]);
 
 	const stageRef = useRef<Konva.Stage>(null);
 
@@ -22,6 +36,8 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 	const [limitHeight, setLimitHeight] = useState(0);
 
 	const [isSpaceBarPressed, setIsSpaceBarPressed] = useState(false);
+
+	const [disablePointerEvent, setDisablePointerEvent] = useState(true);
 
 	useEffect(() => {
 		if (image) {
@@ -160,6 +176,8 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 	};
 
 	const handleDragStage = (e: KonvaEventObject<DragEvent>): void => {
+		console.log("exec");
+
 		e.evt.preventDefault();
 		const currentStageRef = stageRef.current;
 		const stage = currentStageRef?.getStage();
@@ -228,6 +246,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		if (e.code === "Space" && !isSpaceBarPressed) {
 			document.body.style.cursor = "grab";
 			setIsSpaceBarPressed(true);
+			setDisablePointerEvent(true);
 		}
 	};
 
@@ -235,6 +254,18 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		if (e.code === "Space" && isSpaceBarPressed) {
 			document.body.style.cursor = "default";
 			setIsSpaceBarPressed(false);
+			setDisablePointerEvent(false);
+		}
+	};
+
+	const handleClick = (e: KonvaEventObject<MouseEvent>) => {
+		const emptySpace = e.target === e.target.getStage();
+
+		console.log(e.target.getStage());
+		console.log(e.target);
+
+		if (emptySpace) {
+			alert("EXEC");
 		}
 	};
 
@@ -243,6 +274,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 			tabIndex={1}
 			style={{
 				outline: "none",
+				overflow: "hidden",
 			}}
 			onKeyDown={handleSpaceBarKeyDown}
 			onKeyUp={handleSpaceBarKeyUp}
@@ -253,14 +285,20 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 				onWheel={handleScroll}
 				ref={stageRef}
 				draggable
+				dragDistance={5}
 				onDragStart={handleDragStageStart}
 				onDragMove={handleDragStage}
 				onDragEnd={handleDragStageEnd}
-				style={{ background: "#fff", opacity: 0.7 }}
+				onClick={handleClick}
+				style={{ background: "#fff", opacity: 1 }}
 			>
 				<Layer>
+					<Assets
+						data={assets}
+						disablePointerEvent={disablePointerEvent}
+					/>
 					<Image
-						key={2}
+						key={1}
 						x={(limitWidth - Number(image?.width)) / 2}
 						y={0}
 						image={image}

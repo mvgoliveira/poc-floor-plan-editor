@@ -5,6 +5,6 @@ export const Container = styled.div`
 	align-items: center;
 	justify-content: space-between;
 	height: 100%;
-	width: 100%;
+	width: 300px;
 	border-right: 1px solid ${({ theme }) => theme.colors.gray70};
 `;
