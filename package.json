@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@blueprintjs/core": "^5.10.3",
     "@mantine/core": "^7.9.2",
     "@mantine/hooks": "^7.9.2",
     "canvas": "^2.11.2",

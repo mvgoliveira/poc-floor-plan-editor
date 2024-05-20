@@ -6,7 +6,7 @@ import {
 	MenuContainer,
 	MenuItem,
 } from "./styles";
-import { forwardRef, ReactElement } from "react";
+import { forwardRef, ReactElement, useState } from "react";
 import { Center, RingProgress as MantineRingProgress } from "@mantine/core";
 import { Typography } from "@/components/typography";
 import Icon from "@/components/icon";
@@ -14,23 +14,16 @@ import { IconType } from "react-icons";
 import { Theme } from "@/themes";
 import { ActionButtonContextProvider } from "@/contexts/actionButtonContext";
 import { useActionButton } from "@/hooks/useActionButton";
-import { Popover } from "@/components/popover";
 
-interface IActionButtonProps {
-	open: boolean;
-	onOpenChange: () => void;
+interface IFloatActionButtonProps {
+	padding?: string;
+	onClick?: () => any;
 }
 
-export const ActionButton = ({
-	children,
-	open,
-	onOpenChange,
-}: IActionButtonProps & IReactChildren): ReactElement => {
+export const ActionButton2 = ({ children }: IReactChildren): ReactElement => {
 	return (
 		<ActionButtonContextProvider>
-			<Popover open={open} onOpenChange={onOpenChange}>
-				<Container>{children}</Container>
-			</Popover>
+			<Container>{children}</Container>
 		</ActionButtonContextProvider>
 	);
 };
@@ -51,43 +44,37 @@ const RingProgress = ({
 	children,
 	sections,
 }: IReactChildren & IRingProgressProps): ReactElement => (
-	<Popover.Trigger asChild>
-		<MantineRingProgress
-			size={size}
-			thickness={thickness}
-			sections={sections}
-			label={<Center>{children}</Center>}
-			rootColor="transparent"
-		/>
-	</Popover.Trigger>
+	<MantineRingProgress
+		size={size}
+		thickness={thickness}
+		sections={sections}
+		label={<Center>{children}</Center>}
+		rootColor="transparent"
+	/>
 );
 RingProgress.displayName = "RingProgress";
-ActionButton.RingProgress = RingProgress;
+ActionButton2.RingProgress = RingProgress;
 
-interface ITriggerProps {
-	padding?: string;
-	onClick?: () => any;
-}
+const Trigger = forwardRef<
+	HTMLButtonElement,
+	IFloatActionButtonProps & IReactChildren
+>((props, ref): ReactElement => {
+	const { padding = "0px", children } = props;
+	const { setIsOpen } = useActionButton();
 
-const Trigger = forwardRef<HTMLButtonElement, ITriggerProps & IReactChildren>(
-	(props, ref): ReactElement => {
-		const { padding = "0px", children } = props;
-		const { setIsOpen } = useActionButton();
-
-		return (
-			<Button
-				padding={padding}
-				ref={ref}
-				{...props}
-				onClick={() => setIsOpen((prevState) => !prevState)}
-			>
-				{children}
-			</Button>
-		);
-	}
-);
+	return (
+		<Button
+			padding={padding}
+			ref={ref}
+			{...props}
+			onClick={() => setIsOpen((prevState) => !prevState)}
+		>
+			{children}
+		</Button>
+	);
+});
 Trigger.displayName = "Trigger";
-ActionButton.Trigger = Trigger;
+ActionButton2.Trigger = Trigger;
 
 interface IBadgeProps {
 	value: number;
@@ -109,27 +96,25 @@ const Badge = ({ value }: IBadgeProps): ReactElement => {
 	);
 };
 Badge.displayName = "Badge";
-ActionButton.Badge = Badge;
+ActionButton2.Badge = Badge;
 
-interface IMenuProps {}
+interface IMenuProps {
+	open?: boolean | null;
+}
 
-const Menu = ({ children }: IReactChildren & IMenuProps): ReactElement => {
+const Menu = ({
+	children,
+	open = null,
+}: IReactChildren & IMenuProps): ReactElement => {
+	const { isOpen } = useActionButton();
 	return (
-		<Popover.Content
-			side="left"
-			width="45px"
-			height="135px"
-			hasCloseIcon={false}
-			hasArrow={false}
-			margin="0"
-			background="transparent"
-		>
-			<MenuContainer>{children}</MenuContainer>
-		</Popover.Content>
+		<MenuContainer isOpen={open === null ? isOpen : open}>
+			{children}
+		</MenuContainer>
 	);
 };
 Menu.displayName = "Menu";
-ActionButton.Menu = Menu;
+ActionButton2.Menu = Menu;
 
 interface IItemProps {
 	icon: IconType;

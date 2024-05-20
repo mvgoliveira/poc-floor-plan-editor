@@ -2,7 +2,7 @@ import { useApp } from "@/hooks/useApp";
 import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
-import { Image, Layer, Stage } from "react-konva";
+import { Image, Layer, Stage, Circle } from "react-konva";
 import useImage from "use-image";
 import { Assets } from "./components/assets";
 interface IFloorPlanProps {
@@ -21,6 +21,19 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 			devices: [
 				{ type: "temperature" },
 				{ type: "energy" },
+				{ type: "water" },
+			],
+		},
+		{
+			id: "1",
+			x: 750,
+			y: 500,
+			devices: [
+				{ type: "temperature" },
+				{ type: "temperature" },
+				{ type: "temperature" },
+				{ type: "energy" },
+				{ type: "water" },
 				{ type: "water" },
 			],
 		},
@@ -176,8 +189,6 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 	};
 
 	const handleDragStage = (e: KonvaEventObject<DragEvent>): void => {
-		console.log("exec");
-
 		e.evt.preventDefault();
 		const currentStageRef = stageRef.current;
 		const stage = currentStageRef?.getStage();
@@ -258,17 +269,6 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		}
 	};
 
-	const handleClick = (e: KonvaEventObject<MouseEvent>) => {
-		const emptySpace = e.target === e.target.getStage();
-
-		console.log(e.target.getStage());
-		console.log(e.target);
-
-		if (emptySpace) {
-			alert("EXEC");
-		}
-	};
-
 	return (
 		<div
 			tabIndex={1}
@@ -289,20 +289,16 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 				onDragStart={handleDragStageStart}
 				onDragMove={handleDragStage}
 				onDragEnd={handleDragStageEnd}
-				onClick={handleClick}
 				style={{ background: "#fff", opacity: 1 }}
 			>
 				<Layer>
-					<Assets
-						data={assets}
-						disablePointerEvent={disablePointerEvent}
-					/>
 					<Image
-						key={1}
+						key={0}
 						x={(limitWidth - Number(image?.width)) / 2}
 						y={0}
 						image={image}
 					/>
+					<Assets data={assets} />
 				</Layer>
 			</Stage>
 		</div>

@@ -20,6 +20,7 @@ export const Button = styled.button<{
 	border-radius: 50%;
 	min-width: 90px;
 	min-height: 90px;
+	/* pointer-events: all; */
 `;
 
 export const BadgeContainer = styled.div`
@@ -38,17 +39,18 @@ export const BadgeContainer = styled.div`
 	cursor: default;
 `;
 
-export const MenuContainer = styled.div`
+export const MenuContainer = styled.div<{
+	isOpen: boolean;
+}>`
+	position: absolute;
+	transition: transform 0.1s ease-in-out;
+	transform: ${({ isOpen }) =>
+		isOpen ? "translateX(-50px) scale(1)" : "translateX(0) scale(0)"};
+	left: 0;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	pointer-events: all;
-
-	:hover,
-	:active,
-	:focus {
-		outline: none;
-	}
 `;
 
 export const MenuItem = styled.button<{

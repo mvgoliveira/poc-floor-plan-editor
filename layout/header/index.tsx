@@ -61,7 +61,7 @@ export function Header() {
 						<PrimaryButton
 							text={`${zoom}%`}
 							iconPosition="right"
-							icon={<MdKeyboardArrowDown />}
+							icon={<MdKeyboardArrowDown color="white" />}
 						/>
 					</Popover.Trigger>
 					<Popover.Content

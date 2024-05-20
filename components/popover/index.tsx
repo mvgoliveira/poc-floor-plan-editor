@@ -12,6 +12,7 @@ import React, { ComponentProps, ReactElement } from "react";
 import { MdClose } from "react-icons/md";
 
 import { PopoverContent, PopoverClose, PopoverArrow } from "./styles";
+import { Theme } from "@/themes";
 
 const Popover = ({
 	children,
@@ -35,24 +36,37 @@ export interface IContentProps extends IReactChildren {
 	hasCloseIcon?: boolean;
 	margin?: string;
 	width?: string;
+	height?: string;
+	side?: "top" | "right" | "bottom" | "left";
+	hasArrow?: boolean;
+	background?: keyof typeof Theme.colors;
 }
 
 const Content = ({
 	children,
 	hasCloseIcon = true,
 	width = "260px",
+	height = "fit-content",
 	margin = "0",
-	...props
-}: ComponentProps<typeof RadixRootTypes> & IContentProps): ReactElement => (
+	side = "bottom",
+	hasArrow = true,
+	background = "gray90",
+}: IContentProps): ReactElement => (
 	<RadixPortal>
-		<PopoverContent width={width} margin={margin} {...props}>
+		<PopoverContent
+			height={height}
+			side={side}
+			width={width}
+			margin={margin}
+			background={background}
+		>
 			{children}
 			{hasCloseIcon && (
 				<PopoverClose aria-label="Close">
 					<MdClose />
 				</PopoverClose>
 			)}
-			<PopoverArrow />
+			{hasArrow && <PopoverArrow />}
 		</PopoverContent>
 	</RadixPortal>
 );

@@ -1,3 +1,4 @@
+import { Theme } from "@/themes";
 import { Content, Arrow, Close } from "@radix-ui/react-popover";
 import styled, { keyframes } from "styled-components";
 
@@ -15,12 +16,11 @@ const slideUpAndFade = keyframes`
 
 const slideRightAndFade = keyframes`
     from {
-        opacity: 0;
         transform: translateX(-2px);
     }
     
     to {
-        opacity: 1;
+		opacity: 1;
         transform: translateX(0);
     }
 `;
@@ -40,25 +40,28 @@ const slideDownAndFade = keyframes`
 const slideLeftAndFade = keyframes`
     from {
         opacity: 0;
-        transform: translateX(2px);
+		scale: 0;
+        transform: translateX(50px);
     }
     
     to {
         opacity: 1;
+		scale: 1;
         transform: translateY(0);
     }
 `;
 
 export const PopoverContent = styled(Content)<{
 	width: string;
+	height: string;
 	margin: string;
+	background: keyof typeof Theme.colors;
 }>`
 	border-radius: 2px;
 	width: ${({ width }) => width};
+	height: ${({ height }) => height};
 	margin: ${({ margin }) => margin};
-	/* background-color: ${({ theme }) => theme.colors.gray80}; */
-	background-color: ${({ theme }) => theme.colors.gray90};
-	border: 1px solid ${({ theme }) => theme.colors.gray70};
+	background: ${({ background, theme }) => theme.colors[background]};
 	box-shadow:
 		hsl(206 22% 7% / 35%) 0 10px 38px -10px,
 		hsl(206 22% 7% / 20%) 0 10px 20px -15px;
@@ -72,7 +75,7 @@ export const PopoverContent = styled(Content)<{
 		}
 
 		&[data-side="right"] {
-			animation-name: ${slideLeftAndFade};
+			animation-name: ${slideRightAndFade};
 		}
 
 		&[data-side="bottom"] {
@@ -80,15 +83,13 @@ export const PopoverContent = styled(Content)<{
 		}
 
 		&[data-side="left"] {
-			animation-name: ${slideRightAndFade};
+			animation-name: ${slideLeftAndFade};
 		}
 	}
 `;
 
 export const PopoverArrow = styled(Arrow)`
 	fill: ${({ theme }) => theme.colors.gray70};
-	/* fill: transparent; */
-	/* height: 0; */
 `;
 
 export const PopoverClose = styled(Close)`

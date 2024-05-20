@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "normalize.css";
+import "@blueprintjs/core/lib/css/blueprint.css";
+import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@mantine/core/styles.css";
 import ClientThemeWrapper from "./client-theme-wrapper";
 import StyledComponentsRegistry from "@/lib/registry";
