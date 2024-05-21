@@ -5,6 +5,8 @@ import { KeyboardEvent, useEffect, useState } from "react";
 import { Image, Layer, Stage } from "react-konva";
 import useImage from "use-image";
 import { Assets } from "./components/assets";
+import { DelimitationArea } from "./components/delimitationArea";
+import { IActionButtonDataProps, IDelimitationArea } from "@/interfaces/assets";
 interface IFloorPlanProps {
 	width: number;
 	height: number;
@@ -32,10 +34,16 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		},
 		{
 			id: "2",
-			x: 700,
-			y: 250,
+			x: 912 - 55,
+			y: 384 - 55,
 			devices: [{ type: "water" }, { type: "water" }],
 		},
+	]);
+
+	const [delimitationAreas, setDelimitationAreas] = useState<
+		IDelimitationArea[]
+	>([
+		{ points: [797, 308, 1028, 308, 1028, 460, 797, 460], color: "blue80" },
 	]);
 
 	const [image] = useImage(
@@ -282,6 +290,11 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 				onDragStart={handleDragStageStart}
 				onDragMove={handleDragStage}
 				onDragEnd={handleDragStageEnd}
+				onClick={(e) =>
+					console.log(
+						`X = ${e.currentTarget.getRelativePointerPosition()?.x} \nY = ${e.currentTarget.getRelativePointerPosition()?.y}`
+					)
+				}
 				style={{ background: "rgba(100,100,100, 0.9)" }}
 			>
 				<Layer>
@@ -294,6 +307,11 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 							opacity={0.9}
 						/>
 					)}
+
+					{delimitationAreas.map((delimitationArea) => (
+						<DelimitationArea metadata={delimitationArea} />
+					))}
+
 					<Assets data={assets} />
 				</Layer>
 			</Stage>

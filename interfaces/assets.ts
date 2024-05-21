@@ -1,15 +1,17 @@
+import { Theme } from "@/themes";
+
 interface IDevice {
 	type: "water" | "energy" | "temperature";
 }
 
-interface IActionButtonDataProps {
+export interface IActionButtonDataProps {
 	id: string;
 	x: number;
 	y: number;
 	devices: IDevice[];
 }
 
-interface ISectionsProps {
+export interface ISectionsProps {
 	value: number;
 	color: string;
 	tooltip?: string;
@@ -20,9 +22,14 @@ type DeviceTypeStats = {
 	percentage: number;
 };
 
-type DataItemStats = {
+export type DataItemStats = {
 	totalCount: number;
 	water: DeviceTypeStats;
 	energy: DeviceTypeStats;
 	temperature: DeviceTypeStats;
 };
+
+export interface IDelimitationArea {
+	points: number[];
+	color: keyof typeof Theme.colors;
+}
