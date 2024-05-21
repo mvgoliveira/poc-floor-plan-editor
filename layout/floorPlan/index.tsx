@@ -11,7 +11,7 @@ interface IFloorPlanProps {
 }
 
 export function FloorPlan({ width, height }: IFloorPlanProps) {
-	const { scale, setScale, setZoom } = useApp();
+	const { scale, setScale, setZoom, stageRef } = useApp();
 
 	const [assets, setAssets] = useState<IActionButtonDataProps[]>([
 		{
@@ -39,8 +39,6 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		},
 	]);
 
-	const stageRef = useRef<Konva.Stage>(null);
-
 	const [image] = useImage(
 		"https://images.adsttc.com/media/images/5e4d/5730/6ee6/7e29/3700/03bc/slideshow/Unit_Kharkiv_Ground_Floor.jpg?1582126824"
 	);
@@ -49,8 +47,6 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 	const [limitHeight, setLimitHeight] = useState(0);
 
 	const [isSpaceBarPressed, setIsSpaceBarPressed] = useState(false);
-
-	const [disablePointerEvent, setDisablePointerEvent] = useState(true);
 
 	useEffect(() => {
 		if (image) {
@@ -257,7 +253,6 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		if (e.code === "Space" && !isSpaceBarPressed) {
 			document.body.style.cursor = "grab";
 			setIsSpaceBarPressed(true);
-			setDisablePointerEvent(true);
 		}
 	};
 
@@ -265,7 +260,6 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		if (e.code === "Space" && isSpaceBarPressed) {
 			document.body.style.cursor = "default";
 			setIsSpaceBarPressed(false);
-			setDisablePointerEvent(false);
 		}
 	};
 
@@ -289,15 +283,18 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 				onDragStart={handleDragStageStart}
 				onDragMove={handleDragStage}
 				onDragEnd={handleDragStageEnd}
-				style={{ background: "#fff", opacity: 1 }}
+				style={{ background: "rgba(100,100,100, 0.9)" }}
 			>
 				<Layer>
-					<Image
-						key={0}
-						x={(limitWidth - Number(image?.width)) / 2}
-						y={0}
-						image={image}
-					/>
+					{image && (
+						<Image
+							key={0}
+							x={(limitWidth - Number(image.width)) / 2}
+							y={0}
+							image={image}
+							opacity={0.9}
+						/>
+					)}
 					<Assets data={assets} />
 				</Layer>
 			</Stage>

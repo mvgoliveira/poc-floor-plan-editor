@@ -64,7 +64,6 @@ export const MenuItem = styled.button<{
 	height: 45px;
 	cursor: pointer;
 	transition: 0.06s linear background;
-	/* pointer-events: all; */
 
 	&:hover {
 		background: ${({ theme, hoverColor }) => theme.colors[hoverColor]};

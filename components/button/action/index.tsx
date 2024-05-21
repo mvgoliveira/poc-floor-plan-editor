@@ -12,8 +12,6 @@ import { Typography } from "@/components/typography";
 import Icon from "@/components/icon";
 import { IconType } from "react-icons";
 import { Theme } from "@/themes";
-import { ActionButtonContextProvider } from "@/contexts/actionButtonContext";
-import { useActionButton } from "@/hooks/useActionButton";
 import { Popover } from "@/components/popover";
 
 interface IActionButtonProps {
@@ -27,11 +25,9 @@ export const ActionButton = ({
 	onOpenChange,
 }: IActionButtonProps & IReactChildren): ReactElement => {
 	return (
-		<ActionButtonContextProvider>
-			<Popover open={open} onOpenChange={onOpenChange}>
-				<Container>{children}</Container>
-			</Popover>
-		</ActionButtonContextProvider>
+		<Popover open={open} onOpenChange={onOpenChange}>
+			<Container>{children}</Container>
+		</Popover>
 	);
 };
 
@@ -51,7 +47,7 @@ const RingProgress = ({
 	children,
 	sections,
 }: IReactChildren & IRingProgressProps): ReactElement => (
-	<Popover.Trigger asChild>
+	<Popover.Trigger>
 		<MantineRingProgress
 			size={size}
 			thickness={thickness}
@@ -72,15 +68,9 @@ interface ITriggerProps {
 const Trigger = forwardRef<HTMLButtonElement, ITriggerProps & IReactChildren>(
 	(props, ref): ReactElement => {
 		const { padding = "0px", children } = props;
-		const { setIsOpen } = useActionButton();
 
 		return (
-			<Button
-				padding={padding}
-				ref={ref}
-				{...props}
-				onClick={() => setIsOpen((prevState) => !prevState)}
-			>
+			<Button padding={padding} ref={ref} {...props}>
 				{children}
 			</Button>
 		);
@@ -111,9 +101,7 @@ const Badge = ({ value }: IBadgeProps): ReactElement => {
 Badge.displayName = "Badge";
 ActionButton.Badge = Badge;
 
-interface IMenuProps {}
-
-const Menu = ({ children }: IReactChildren & IMenuProps): ReactElement => {
+const Menu = ({ children }: IReactChildren): ReactElement => {
 	return (
 		<Popover.Content
 			side="left"

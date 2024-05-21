@@ -46,7 +46,11 @@ export const Assets = ({ data }: IAssetsProps): ReactElement => {
 	return (
 		<>
 			{dataStats.map((dataItemStats, idx) => (
-				<Group x={data[idx].x} y={data[idx].y}>
+				<Group
+					x={data[idx].x}
+					y={data[idx].y}
+					key={`AssetButton-${idx}`}
+				>
 					<AssetButton dataItemStats={dataItemStats} />
 				</Group>
 			))}

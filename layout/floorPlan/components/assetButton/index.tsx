@@ -1,6 +1,7 @@
 import { ActionButton } from "@/components/button/action";
 import Icon from "@/components/icon";
-import { ReactElement, useState } from "react";
+import { useApp } from "@/hooks/useApp";
+import { ReactElement, useEffect, useState } from "react";
 import { FaFaucetDrip } from "react-icons/fa6";
 import { MdBolt, MdDeviceThermostat, MdOutlineDeviceHub } from "react-icons/md";
 import { Circle } from "react-konva";
@@ -47,12 +48,27 @@ export const AssetButton = ({
 		}
 	};
 
-	const handleClick = () => {
-		setIsOpen((prevState) => !prevState);
+	const handleOpenMenu = () => {
+		setIsOpen(true);
 	};
 
 	const handleCloseMenu = () => {
 		setIsOpen(false);
+	};
+
+	const handleMouseEnter = () => {
+		if (
+			document.body.style.cursor === "default" ||
+			!document.body.style.cursor
+		) {
+			document.body.style.cursor = "pointer";
+		}
+	};
+
+	const handleMouseLeave = () => {
+		if (document.body.style.cursor === "pointer") {
+			document.body.style.cursor = "default";
+		}
 	};
 
 	return (
@@ -62,8 +78,10 @@ export const AssetButton = ({
 				x={61}
 				y={61}
 				radius={35}
-				opacity={0.5}
-				onClick={handleClick}
+				opacity={0}
+				onClick={!isOpen ? handleOpenMenu : () => {}}
+				onMouseMove={handleMouseEnter}
+				onMouseLeave={handleMouseLeave}
 			/>
 
 			<Html
