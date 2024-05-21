@@ -1,8 +1,8 @@
 import { useApp } from "@/hooks/useApp";
 import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
-import { KeyboardEvent, useEffect, useRef, useState } from "react";
-import { Image, Layer, Stage, Circle } from "react-konva";
+import { KeyboardEvent, useEffect, useState } from "react";
+import { Image, Layer, Stage } from "react-konva";
 import useImage from "use-image";
 import { Assets } from "./components/assets";
 interface IFloorPlanProps {
@@ -25,17 +25,16 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 			],
 		},
 		{
-			id: "1",
+			id: "2",
 			x: 750,
 			y: 500,
-			devices: [
-				{ type: "temperature" },
-				{ type: "temperature" },
-				{ type: "temperature" },
-				{ type: "energy" },
-				{ type: "water" },
-				{ type: "water" },
-			],
+			devices: [{ type: "energy" }, { type: "water" }, { type: "water" }],
+		},
+		{
+			id: "2",
+			x: 700,
+			y: 250,
+			devices: [{ type: "water" }, { type: "water" }],
 		},
 	]);
 

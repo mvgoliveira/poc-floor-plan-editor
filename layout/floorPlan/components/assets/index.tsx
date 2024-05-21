@@ -1,5 +1,6 @@
 import { ReactElement, useEffect, useState } from "react";
 import { Group } from "react-konva";
+import { AssetsButton } from "../assetsButton";
 import { AssetButton } from "../assetButton";
 
 interface IAssetsProps {
@@ -51,7 +52,13 @@ export const Assets = ({ data }: IAssetsProps): ReactElement => {
 					y={data[idx].y}
 					key={`AssetButton-${idx}`}
 				>
-					<AssetButton dataItemStats={dataItemStats} />
+					{dataItemStats.energy.percentage !== 100 &&
+					dataItemStats.temperature.percentage !== 100 &&
+					dataItemStats.water.percentage !== 100 ? (
+						<AssetsButton dataItemStats={dataItemStats} />
+					) : (
+						<AssetButton dataItemStats={dataItemStats} />
+					)}
 				</Group>
 			))}
 		</>

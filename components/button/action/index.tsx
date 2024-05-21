@@ -106,7 +106,6 @@ const Menu = ({ children }: IReactChildren): ReactElement => {
 		<Popover.Content
 			side="left"
 			width="45px"
-			height="135px"
 			hasCloseIcon={false}
 			hasArrow={false}
 			margin="0"

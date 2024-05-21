@@ -11,7 +11,7 @@ interface IAssetButtonProps {
 	dataItemStats: DataItemStats;
 }
 
-export const AssetButton = ({
+export const AssetsButton = ({
 	dataItemStats,
 }: IAssetButtonProps): ReactElement => {
 	const [isOpen, setIsOpen] = useState(false);
@@ -48,6 +48,14 @@ export const AssetButton = ({
 		}
 	};
 
+	const handleOpenMenu = () => {
+		setIsOpen(true);
+	};
+
+	const handleCloseMenu = () => {
+		setIsOpen(false);
+	};
+
 	const handleMouseEnter = () => {
 		if (
 			document.body.style.cursor === "default" ||
@@ -71,7 +79,7 @@ export const AssetButton = ({
 				y={61}
 				radius={35}
 				opacity={0}
-				onClick={() => {}}
+				onClick={handleOpenMenu}
 				onMouseMove={handleMouseEnter}
 				onMouseLeave={handleMouseLeave}
 			/>
@@ -84,7 +92,7 @@ export const AssetButton = ({
 					},
 				}}
 			>
-				<ActionButton open={false} onOpenChange={() => {}}>
+				<ActionButton open={isOpen} onOpenChange={handleCloseMenu}>
 					<ActionButton.Badge value={dataItemStats.totalCount} />
 					<ActionButton.RingProgress
 						sections={getSectionData(dataItemStats)}
@@ -93,6 +101,30 @@ export const AssetButton = ({
 							{dataItemStats && getIcon(dataItemStats)}
 						</ActionButton.Trigger>
 					</ActionButton.RingProgress>
+
+					<ActionButton.Menu>
+						{dataItemStats.water.percentage > 0 && (
+							<ActionButton.Menu.Item
+								icon={FaFaucetDrip}
+								size={18}
+								hoverColor="blue80"
+							/>
+						)}
+						{dataItemStats.energy.percentage > 0 && (
+							<ActionButton.Menu.Item
+								icon={MdDeviceThermostat}
+								size={25}
+								hoverColor="red80"
+							/>
+						)}
+						{dataItemStats.temperature.percentage > 0 && (
+							<ActionButton.Menu.Item
+								icon={MdBolt}
+								size={25}
+								hoverColor="yellow80"
+							/>
+						)}
+					</ActionButton.Menu>
 				</ActionButton>
 			</Html>
 		</>
