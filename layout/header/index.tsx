@@ -6,6 +6,7 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { FormEvent, useState } from "react";
 import { useApp } from "@/hooks/useApp";
 import { SectionList } from "@/components/sectionList";
+import { Link } from "@/components/Link";
 
 export function Header() {
 	const {
@@ -54,8 +55,15 @@ export function Header() {
 				<PrimaryButton text="Arquivo" onClick={() => {}} />
 			</div>
 
-			<div>
+			<div
+				style={{
+					display: "flex",
+					gap: 12,
+				}}
+			>
 				<SectionList sections={["Projetos", "Rio de Janeiro"]} />
+
+				<Link text="Somente visualização" color="gray30" />
 			</div>
 
 			<div
@@ -68,6 +76,7 @@ export function Header() {
 				<Popover onOpenChange={handleOpenPopoverChange}>
 					<Popover.Trigger>
 						<PrimaryButton
+							width="80px"
 							text={`${zoom}%`}
 							iconPosition="right"
 							icon={<MdKeyboardArrowDown color="white" />}

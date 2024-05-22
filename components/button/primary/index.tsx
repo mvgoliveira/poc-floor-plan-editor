@@ -7,6 +7,7 @@ interface IPrimaryButtonProps {
 	icon?: ReactElement;
 	iconPosition?: "left" | "right";
 	height?: string;
+	width?: string;
 	padding?: string;
 	onClick?: () => any;
 }
@@ -15,6 +16,7 @@ export const PrimaryButton = forwardRef<HTMLButtonElement, IPrimaryButtonProps>(
 	(props, ref): ReactElement => {
 		const {
 			height = "100%",
+			width = "100%",
 			padding = "0 15px",
 			iconPosition = "left",
 			icon,
@@ -22,7 +24,13 @@ export const PrimaryButton = forwardRef<HTMLButtonElement, IPrimaryButtonProps>(
 		} = props;
 
 		return (
-			<Container height={height} padding={padding} ref={ref} {...props}>
+			<Container
+				width={width}
+				height={height}
+				padding={padding}
+				ref={ref}
+				{...props}
+			>
 				{iconPosition === "left" && icon}
 
 				<Typography

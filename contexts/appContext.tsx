@@ -34,7 +34,7 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 	const [zoom, setZoom] = useState(0);
 	const [scale, setScale] = useState(1);
 	const [minScale, setMinScale] = useState(1);
-	const [maxScale, setMaxScale] = useState(10);
+	const [maxScale, setMaxScale] = useState(3);
 	const [maxZoom, setMaxZoom] = useState(200);
 	const stageRef = useRef<Konva.Stage>(null);
 

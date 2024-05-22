@@ -37,7 +37,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 			id: "2",
 			x: 590,
 			y: 445,
-			devices: [{ type: "energy" }, { type: "water" }, { type: "water" }],
+			devices: [{ type: "energy" }],
 		},
 		{
 			id: "3",
