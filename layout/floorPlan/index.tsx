@@ -13,7 +13,14 @@ interface IFloorPlanProps {
 }
 
 export function FloorPlan({ width, height }: IFloorPlanProps) {
-	const { scale, setScale, setZoom, stageRef } = useApp();
+	const {
+		scale,
+		changeZoomByScale,
+		setMinScale,
+		stageRef,
+		minScale,
+		maxScale,
+	} = useApp();
 
 	const [assets, setAssets] = useState<IActionButtonDataProps[]>([
 		{
@@ -71,15 +78,28 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 
 	useEffect(() => {
 		if (image) {
-			image.width < width
-				? setLimitWidth(width)
-				: setLimitWidth(image.width);
+			if (
+				image.width < width ||
+				image.height < height ||
+				(image.width > width && image.height > height)
+			) {
+				const widthInitialScale = width / image.width;
+				const heightInitialScale = height / image.height;
 
-			image.height < height
-				? setLimitHeight(height)
-				: setLimitHeight(image.height);
+				const minScale = Math.max(
+					widthInitialScale,
+					heightInitialScale
+				);
+
+				setMinScale(minScale);
+
+				setLimitWidth(image.width);
+				setLimitHeight(image.height);
+			}
+			setLimitWidth(image.width);
+			setLimitHeight(image.height);
 		}
-	}, [image]);
+	}, [image, width, height]);
 
 	useEffect(() => {
 		const currentStageRef = stageRef.current;
@@ -127,6 +147,8 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 
 				var oldScale = stage.scaleX();
 
+				console.log(oldScale);
+
 				if (pointerPosition) {
 					const mousePointTo = {
 						x: pointerPosition.x / oldScale - stage.x() / oldScale,
@@ -141,8 +163,8 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 						oldScale - (e.evt.deltaY * scrollSpeed) / 100;
 
 					const newScale = Math.min(
-						Math.max(unboundedNewScale, 1),
-						10.0
+						Math.max(unboundedNewScale, minScale),
+						maxScale
 					);
 
 					const x_position = Math.max(
@@ -164,8 +186,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 					);
 
 					stage.scale({ x: newScale, y: newScale });
-					setScale(newScale);
-					setZoom(Math.floor(((newScale - 1) * 200) / 9));
+					changeZoomByScale(newScale);
 					stage.x(x_position);
 					stage.y(y_position);
 					stage.batchDraw();
@@ -263,10 +284,10 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 
 			var newScale =
 				type === "in"
-					? Math.min(Math.max(oldScale * 1.5, 1), 10.0)
-					: Math.min(Math.max(oldScale / 1.5, 1), 10.0);
+					? Math.min(Math.max(oldScale * 1.5, minScale), maxScale)
+					: Math.min(Math.max(oldScale / 1.5, minScale), maxScale);
 
-			setScale(newScale);
+			changeZoomByScale(newScale);
 		}
 	};
 
@@ -309,7 +330,8 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 						`X = ${e.currentTarget.getRelativePointerPosition()?.x} \nY = ${e.currentTarget.getRelativePointerPosition()?.y}`
 					)
 				}
-				style={{ background: "rgba(100,100,100, 0.9)" }}
+				style={{ background: "#000" }}
+				// style={{ background: "rgba(100,100,100, 0.9)" }}
 			>
 				<Layer>
 					{image && (
@@ -318,7 +340,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 							x={(limitWidth - Number(image.width)) / 2}
 							y={0}
 							image={image}
-							opacity={0.9}
+							opacity={0.5}
 						/>
 					)}
 

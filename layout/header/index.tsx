@@ -7,7 +7,14 @@ import { FormEvent, useState } from "react";
 import { useApp } from "@/hooks/useApp";
 
 export function Header() {
-	const { zoom, setZoom, setScale } = useApp();
+	const {
+		zoom,
+		changeZoomByScale,
+		maxScale,
+		minScale,
+		maxZoom,
+		getScaleByZoom,
+	} = useApp();
 	const [zoomInput, setZoomInput] = useState("0%");
 
 	function inputValidation(e: FormEvent<HTMLInputElement>) {
@@ -16,18 +23,15 @@ export function Header() {
 
 	function handleZoomSubmit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
-		if (Number(zoomInput) > 200) {
-			setZoom(200);
-			setZoomInput("200%");
-			setScale(10);
+		if (Number(zoomInput) > maxZoom) {
+			changeZoomByScale(maxScale);
+			setZoomInput(`${maxZoom}%`);
 		} else if (Number(zoomInput) < 0) {
-			setZoom(0);
+			changeZoomByScale(minScale);
 			setZoomInput("0%");
-			setScale(1);
 		} else {
-			setZoom(Number(zoomInput));
+			changeZoomByScale(getScaleByZoom(Number(zoomInput)));
 			setZoomInput(`${Number(zoomInput)}%`);
-			setScale((Number(zoomInput) * 9) / 200 + 1);
 		}
 	}
 
