@@ -6,7 +6,7 @@ import {
 	MenuContainer,
 	MenuItem,
 } from "./styles";
-import { forwardRef, ReactElement } from "react";
+import { forwardRef, MouseEventHandler, ReactElement } from "react";
 import { Center, RingProgress as MantineRingProgress } from "@mantine/core";
 import { Typography } from "@/components/typography";
 import Icon from "@/components/icon";
@@ -122,11 +122,17 @@ interface IItemProps {
 	icon: IconType;
 	size: number;
 	hoverColor: keyof typeof Theme.colors;
+	onClick?: () => void;
 }
 
-const Item = ({ icon, size, hoverColor }: IItemProps): ReactElement => {
+const Item = ({
+	icon,
+	size,
+	hoverColor,
+	onClick,
+}: IItemProps): ReactElement => {
 	return (
-		<MenuItem hoverColor={hoverColor}>
+		<MenuItem hoverColor={hoverColor} onClick={onClick}>
 			<Icon Icon={icon} size={size} />
 		</MenuItem>
 	);

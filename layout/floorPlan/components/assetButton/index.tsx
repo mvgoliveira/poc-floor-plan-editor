@@ -1,4 +1,5 @@
 import { ActionButton } from "@/components/button/action";
+import { Drawer } from "@/components/drawer";
 import Icon from "@/components/icon";
 import { useApp } from "@/hooks/useApp";
 import { DataItemStats, ISectionsProps } from "@/interfaces/assets";
@@ -15,7 +16,7 @@ interface IAssetButtonProps {
 export const AssetButton = ({
 	dataItemStats,
 }: IAssetButtonProps): ReactElement => {
-	const [isOpen, setIsOpen] = useState(false);
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
 	const getSectionData = (dataItemStats: DataItemStats): ISectionsProps[] => {
 		return [
@@ -64,15 +65,29 @@ export const AssetButton = ({
 		}
 	};
 
+	const handleClick = () => {
+		setIsDrawerOpen(true);
+	};
+
 	return (
 		<>
+			<Html>
+				<Drawer
+					closeIcon
+					open={isDrawerOpen}
+					onClose={() => setIsDrawerOpen(false)}
+				>
+					<></>
+				</Drawer>
+			</Html>
+
 			<Circle
 				name="actionButton"
 				x={61}
 				y={61}
 				radius={35}
 				opacity={0}
-				onClick={() => {}}
+				onClick={handleClick}
 				onMouseMove={handleMouseEnter}
 				onMouseLeave={handleMouseLeave}
 			/>

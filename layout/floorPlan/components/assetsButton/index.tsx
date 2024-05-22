@@ -1,4 +1,5 @@
 import { ActionButton } from "@/components/button/action";
+import { Drawer } from "@/components/drawer";
 import Icon from "@/components/icon";
 import { useApp } from "@/hooks/useApp";
 import { DataItemStats, ISectionsProps } from "@/interfaces/assets";
@@ -15,6 +16,7 @@ interface IAssetButtonProps {
 export const AssetsButton = ({
 	dataItemStats,
 }: IAssetButtonProps): ReactElement => {
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [isOpen, setIsOpen] = useState(false);
 
 	const getSectionData = (dataItemStats: DataItemStats): ISectionsProps[] => {
@@ -72,8 +74,22 @@ export const AssetsButton = ({
 		}
 	};
 
+	const handleMenuItemClick = () => {
+		setIsDrawerOpen(true);
+	};
+
 	return (
 		<>
+			<Html>
+				<Drawer
+					closeIcon
+					open={isDrawerOpen}
+					onClose={() => setIsDrawerOpen(false)}
+				>
+					<></>
+				</Drawer>
+			</Html>
+
 			<Circle
 				name="actionButton"
 				x={61}
@@ -109,6 +125,7 @@ export const AssetsButton = ({
 								icon={FaFaucetDrip}
 								size={18}
 								hoverColor="blue80"
+								onClick={handleMenuItemClick}
 							/>
 						)}
 						{dataItemStats.temperature.percentage > 0 && (
@@ -116,6 +133,7 @@ export const AssetsButton = ({
 								icon={MdDeviceThermostat}
 								size={25}
 								hoverColor="red80"
+								onClick={handleMenuItemClick}
 							/>
 						)}
 						{dataItemStats.energy.percentage > 0 && (
@@ -123,6 +141,7 @@ export const AssetsButton = ({
 								icon={MdBolt}
 								size={25}
 								hoverColor="yellow80"
+								onClick={handleMenuItemClick}
 							/>
 						)}
 					</ActionButton.Menu>

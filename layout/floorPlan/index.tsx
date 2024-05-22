@@ -1,5 +1,4 @@
 import { useApp } from "@/hooks/useApp";
-import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { Image, Layer, Stage } from "react-konva";
@@ -7,6 +6,7 @@ import useImage from "use-image";
 import { Assets } from "./components/assets";
 import { DelimitationArea } from "./components/delimitationArea";
 import { IActionButtonDataProps, IDelimitationArea } from "@/interfaces/assets";
+
 interface IFloorPlanProps {
 	width: number;
 	height: number;
@@ -47,7 +47,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		{
 			points: [
 				493, 811, 934, 811, 934, 671, 880, 671, 880, 603, 537, 603, 537,
-				561, 421, 557, 419, 620, 492, 625, 491, 810,
+				561, 421, 561, 419, 625, 491, 625, 491, 810,
 			],
 			color: "purple80",
 		},
