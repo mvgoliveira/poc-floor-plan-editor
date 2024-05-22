@@ -147,8 +147,6 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 
 				var oldScale = stage.scaleX();
 
-				console.log(oldScale);
-
 				if (pointerPosition) {
 					const mousePointTo = {
 						x: pointerPosition.x / oldScale - stage.x() / oldScale,
