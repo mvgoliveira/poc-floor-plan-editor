@@ -328,8 +328,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 						`X = ${e.currentTarget.getRelativePointerPosition()?.x} \nY = ${e.currentTarget.getRelativePointerPosition()?.y}`
 					)
 				}
-				style={{ background: "#000" }}
-				// style={{ background: "rgba(100,100,100, 0.9)" }}
+				style={{ background: "rgba(100,100,100, 0.8)" }}
 			>
 				<Layer>
 					{image && (
@@ -338,7 +337,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 							x={(limitWidth - Number(image.width)) / 2}
 							y={0}
 							image={image}
-							opacity={0.5}
+							opacity={0.8}
 						/>
 					)}
 

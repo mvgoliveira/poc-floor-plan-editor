@@ -5,6 +5,7 @@ import { Popover } from "@/components/popover";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { FormEvent, useState } from "react";
 import { useApp } from "@/hooks/useApp";
+import { SectionList } from "@/components/sectionList";
 
 export function Header() {
 	const {
@@ -51,6 +52,10 @@ export function Header() {
 				<PrimaryButton icon={<LogoIcon />} onClick={() => {}} />
 				<PrimaryButton text="Início" onClick={() => {}} />
 				<PrimaryButton text="Arquivo" onClick={() => {}} />
+			</div>
+
+			<div>
+				<SectionList sections={["Projetos", "Rio de Janeiro"]} />
 			</div>
 
 			<div
