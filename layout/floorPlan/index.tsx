@@ -18,8 +18,8 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 	const [assets, setAssets] = useState<IActionButtonDataProps[]>([
 		{
 			id: "1",
-			x: 450,
-			y: 500,
+			x: 694,
+			y: 708,
 			devices: [
 				{ type: "temperature" },
 				{ type: "energy" },
@@ -28,14 +28,14 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		},
 		{
 			id: "2",
-			x: 750,
-			y: 500,
+			x: 590,
+			y: 445,
 			devices: [{ type: "energy" }, { type: "water" }, { type: "water" }],
 		},
 		{
-			id: "2",
-			x: 912 - 55,
-			y: 384 - 55,
+			id: "3",
+			x: 912,
+			y: 384,
 			devices: [{ type: "water" }, { type: "water" }],
 		},
 	]);
@@ -44,6 +44,20 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		IDelimitationArea[]
 	>([
 		{ points: [797, 308, 1028, 308, 1028, 460, 797, 460], color: "blue80" },
+		{
+			points: [
+				493, 811, 934, 811, 934, 671, 880, 671, 880, 603, 537, 603, 537,
+				561, 421, 557, 419, 620, 492, 625, 491, 810,
+			],
+			color: "purple80",
+		},
+		{
+			points: [
+				419, 498.28125, 701, 498.28125, 701, 511.28125, 760, 514.28125,
+				760, 390.28125, 443, 391.28125, 443, 427.28125, 415, 428.28125,
+			],
+			color: "yellow80",
+		},
 	]);
 
 	const [image] = useImage(

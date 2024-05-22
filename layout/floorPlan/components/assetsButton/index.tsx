@@ -1,6 +1,7 @@
 import { ActionButton } from "@/components/button/action";
 import Icon from "@/components/icon";
 import { useApp } from "@/hooks/useApp";
+import { DataItemStats, ISectionsProps } from "@/interfaces/assets";
 import { ReactElement, useEffect, useState } from "react";
 import { FaFaucetDrip } from "react-icons/fa6";
 import { MdBolt, MdDeviceThermostat, MdOutlineDeviceHub } from "react-icons/md";
@@ -110,14 +111,14 @@ export const AssetsButton = ({
 								hoverColor="blue80"
 							/>
 						)}
-						{dataItemStats.energy.percentage > 0 && (
+						{dataItemStats.temperature.percentage > 0 && (
 							<ActionButton.Menu.Item
 								icon={MdDeviceThermostat}
 								size={25}
 								hoverColor="red80"
 							/>
 						)}
-						{dataItemStats.temperature.percentage > 0 && (
+						{dataItemStats.energy.percentage > 0 && (
 							<ActionButton.Menu.Item
 								icon={MdBolt}
 								size={25}

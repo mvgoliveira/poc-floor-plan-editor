@@ -2,6 +2,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { Group } from "react-konva";
 import { AssetsButton } from "../assetsButton";
 import { AssetButton } from "../assetButton";
+import { DataItemStats, IActionButtonDataProps } from "@/interfaces/assets";
 
 interface IAssetsProps {
 	data: IActionButtonDataProps[];
@@ -50,6 +51,7 @@ export const Assets = ({ data }: IAssetsProps): ReactElement => {
 				<Group
 					x={data[idx].x}
 					y={data[idx].y}
+					offset={{ x: 60, y: 60 }}
 					key={`AssetButton-${idx}`}
 				>
 					{dataItemStats.energy.percentage !== 100 &&

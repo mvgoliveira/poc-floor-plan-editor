@@ -17,6 +17,7 @@ export const Theme = {
 		blue80: "#1665EE",
 		yellow80: "#FFB800",
 		red80: "#FF000F",
+		purple80: "#5200FF",
 	},
 	fontSize: {
 		fs50: "0.667rem", // 10px
