@@ -26,6 +26,8 @@ type AppContextType = {
 	stageRef: RefObject<Stage>;
 	changeZoomByScale: (scale: number) => void;
 	getScaleByZoom: (zoom: number) => number;
+	editMode: boolean;
+	setEditMode: Dispatch<SetStateAction<boolean>>;
 };
 
 export const AppContext = createContext({} as AppContextType);
@@ -37,6 +39,7 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 	const [maxScale, setMaxScale] = useState(3);
 	const [maxZoom, setMaxZoom] = useState(200);
 	const stageRef = useRef<Konva.Stage>(null);
+	const [editMode, setEditMode] = useState(true);
 
 	const changeZoomByScale = (scale: number): void => {
 		setZoom(
@@ -67,6 +70,8 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 				setMinScale,
 				maxZoom,
 				getScaleByZoom,
+				editMode,
+				setEditMode,
 			}}
 		>
 			{props.children}

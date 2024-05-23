@@ -16,6 +16,7 @@ export function Header() {
 		minScale,
 		maxZoom,
 		getScaleByZoom,
+		editMode,
 	} = useApp();
 	const [zoomInput, setZoomInput] = useState("0%");
 
@@ -63,7 +64,9 @@ export function Header() {
 			>
 				<SectionList sections={["Projetos", "Rio de Janeiro"]} />
 
-				<Link text="Somente visualização" color="gray30" />
+				{!editMode && (
+					<Link text="Somente visualização" color="gray30" />
+				)}
 			</div>
 
 			<div
