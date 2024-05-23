@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 export const Container = styled.div<{ color: keyof typeof Theme.colors }>`
 	p {
-		line-height: 16px;
+		margin-top: 1px;
 		cursor: pointer;
 		text-decoration: underline;
 	}
