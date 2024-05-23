@@ -6,7 +6,7 @@ interface ISectionListProps {
 	sections: string[];
 }
 
-export const SectionList = ({ sections }: ISectionListProps): ReactElement => {
+export const Breadcrumb = ({ sections }: ISectionListProps): ReactElement => {
 	return (
 		<Container>
 			{sections.map((section, idx) => (

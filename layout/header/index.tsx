@@ -5,7 +5,7 @@ import { Popover } from "@/components/popover";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { FormEvent, useState } from "react";
 import { useApp } from "@/hooks/useApp";
-import { SectionList } from "@/components/sectionList";
+import { Breadcrumb } from "@/components/breadcrumb";
 import { Link } from "@/components/Link";
 
 export function Header() {
@@ -62,7 +62,7 @@ export function Header() {
 					gap: 12,
 				}}
 			>
-				<SectionList sections={["Projetos", "Rio de Janeiro"]} />
+				<Breadcrumb sections={["Projetos", "Rio de Janeiro"]} />
 
 				{!editMode && (
 					<Link text="Somente visualização" color="gray30" />
