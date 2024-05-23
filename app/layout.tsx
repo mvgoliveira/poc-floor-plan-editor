@@ -10,6 +10,7 @@ import { poppins, roboto } from "./fonts";
 import ClientContextWrapper from "./client-context-wrapper";
 import MatineThemeWrapper from "./mantine-theme-wrapper";
 import { ColorSchemeScript } from "@mantine/core";
+import BlueprintProvierWrapper from "./blueprint-provider-wrapper";
 
 export const metadata: Metadata = {
 	title: "Floor Plan",
@@ -28,11 +29,15 @@ export default function RootLayout({
 			</head>
 			<body className={`${roboto.className} ${poppins.className}`}>
 				<StyledComponentsRegistry>
-					<MatineThemeWrapper>
-						<ClientContextWrapper>
-							<ClientThemeWrapper>{children}</ClientThemeWrapper>
-						</ClientContextWrapper>
-					</MatineThemeWrapper>
+					<BlueprintProvierWrapper>
+						<MatineThemeWrapper>
+							<ClientContextWrapper>
+								<ClientThemeWrapper>
+									{children}
+								</ClientThemeWrapper>
+							</ClientContextWrapper>
+						</MatineThemeWrapper>
+					</BlueprintProvierWrapper>
 				</StyledComponentsRegistry>
 			</body>
 		</html>

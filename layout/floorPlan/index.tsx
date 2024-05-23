@@ -6,6 +6,7 @@ import useImage from "use-image";
 import { Assets } from "./components/assets";
 import { DelimitationArea } from "./components/delimitationArea";
 import { IActionButtonDataProps, IDelimitationArea } from "@/interfaces/assets";
+import { ContextMenu } from "@/components/contextMenu";
 
 interface IFloorPlanProps {
 	width: number;
@@ -313,41 +314,43 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 			onKeyDown={handleSpaceBarKeyDown}
 			onKeyUp={handleSpaceBarKeyUp}
 		>
-			<Stage
-				width={width}
-				height={height}
-				onWheel={handleScroll}
-				ref={stageRef}
-				draggable
-				dragDistance={5}
-				onDragStart={handleDragStageStart}
-				onDragMove={handleDragStage}
-				onDragEnd={handleDragStageEnd}
-				onClick={(e) =>
-					console.log(
-						`X = ${e.currentTarget.getRelativePointerPosition()?.x} \nY = ${e.currentTarget.getRelativePointerPosition()?.y}`
-					)
-				}
-				style={{ background: "rgba(100,100,100, 0.8)" }}
-			>
-				<Layer>
-					{image && (
-						<Image
-							key={0}
-							x={(limitWidth - Number(image.width)) / 2}
-							y={0}
-							image={image}
-							opacity={0.8}
-						/>
-					)}
+			<ContextMenu>
+				<Stage
+					width={width}
+					height={height}
+					onWheel={handleScroll}
+					ref={stageRef}
+					draggable
+					dragDistance={5}
+					onDragStart={handleDragStageStart}
+					onDragMove={handleDragStage}
+					onDragEnd={handleDragStageEnd}
+					onClick={(e) =>
+						console.log(
+							`X = ${e.currentTarget.getRelativePointerPosition()?.x} \nY = ${e.currentTarget.getRelativePointerPosition()?.y}`
+						)
+					}
+					style={{ background: "rgba(100,100,100, 0.8)" }}
+				>
+					<Layer>
+						{image && (
+							<Image
+								key={0}
+								x={(limitWidth - Number(image.width)) / 2}
+								y={0}
+								image={image}
+								opacity={0.8}
+							/>
+						)}
 
-					{delimitationAreas.map((delimitationArea) => (
-						<DelimitationArea metadata={delimitationArea} />
-					))}
+						{delimitationAreas.map((delimitationArea) => (
+							<DelimitationArea metadata={delimitationArea} />
+						))}
 
-					<Assets data={assets} />
-				</Layer>
-			</Stage>
+						<Assets data={assets} />
+					</Layer>
+				</Stage>
+			</ContextMenu>
 		</div>
 	);
 }

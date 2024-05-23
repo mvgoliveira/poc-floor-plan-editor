@@ -26,6 +26,7 @@ export function Sidebar() {
 
 				<div>
 					<MdCreateNewFolder
+						className="my-context-menu-target"
 						size={18}
 						color={Theme.colors.gray10}
 						style={{ cursor: "pointer", marginTop: 1 }}
