@@ -9,7 +9,7 @@ import {
 import { forwardRef, MouseEventHandler, ReactElement } from "react";
 import { Center, RingProgress as MantineRingProgress } from "@mantine/core";
 import { Typography } from "@/components/typography";
-import Icon from "@/components/icon";
+import { Icon } from "@/components/icon";
 import { IconType } from "react-icons";
 import { Theme } from "@/themes";
 import { Popover } from "@/components/popover";

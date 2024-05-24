@@ -7,6 +7,7 @@ import { Assets } from "./components/assets";
 import { DelimitationArea } from "./components/delimitationArea";
 import { IActionButtonDataProps, IDelimitationArea } from "@/interfaces/assets";
 import { ContextMenu } from "@/components/contextMenu";
+import { EditorMenu } from "@/components/menu/editor";
 
 interface IFloorPlanProps {
 	width: number;
@@ -314,7 +315,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 			onKeyDown={handleSpaceBarKeyDown}
 			onKeyUp={handleSpaceBarKeyUp}
 		>
-			<ContextMenu>
+			<ContextMenu content={<EditorMenu />}>
 				<Stage
 					width={width}
 					height={height}

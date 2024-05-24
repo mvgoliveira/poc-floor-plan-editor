@@ -1,9 +1,8 @@
 import { ActionButton } from "@/components/button/action";
 import { Drawer } from "@/components/drawer";
-import Icon from "@/components/icon";
-import { useApp } from "@/hooks/useApp";
+import { Icon } from "@/components/icon";
 import { DataItemStats, ISectionsProps } from "@/interfaces/assets";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useState } from "react";
 import { FaFaucetDrip } from "react-icons/fa6";
 import { MdBolt, MdDeviceThermostat, MdOutlineDeviceHub } from "react-icons/md";
 import { Circle } from "react-konva";

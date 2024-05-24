@@ -7,8 +7,10 @@ interface IconProps {
 	color?: keyof typeof Theme.colors;
 }
 
-const Icon: React.FC<IconProps> = ({ Icon, size = 24, color = "white" }) => {
+export const Icon: React.FC<IconProps> = ({
+	Icon,
+	size = 24,
+	color = "white",
+}) => {
 	return <Icon size={size} color={Theme.colors[color]} />;
 };
-
-export default Icon;
