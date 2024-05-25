@@ -1,4 +1,5 @@
 import { ContextMenu } from "@/components/contextMenu";
+import { useApp } from "@/hooks/useApp";
 import { useEditorMenu } from "@/hooks/useEditorMenu";
 import { Theme } from "@/themes";
 import { ReactElement } from "react";
@@ -15,7 +16,8 @@ import {
 } from "react-icons/md";
 
 export const EditorMenu = (): ReactElement => {
-	const { hiddenUi, setHiddenUi } = useEditorMenu();
+	const { hiddenUi, setHiddenUi, handleChangeDelimiter, delimiting } =
+		useEditorMenu();
 
 	const handleClickUiVisibility = (): void => {
 		setHiddenUi((prevState) => !prevState);
@@ -39,6 +41,7 @@ export const EditorMenu = (): ReactElement => {
 				/>
 				<ContextMenu.Item
 					text="Delimitação"
+					onClick={() => handleChangeDelimiter(true)}
 					icon={<BiSelection size={15} />}
 				/>
 			</ContextMenu.Sub>

@@ -3,25 +3,33 @@ import { Theme } from "@/themes";
 import { KonvaEventObject } from "konva/lib/Node";
 import { Vector2d } from "konva/lib/types";
 import { ReactElement, useEffect, useState } from "react";
-import { Circle, Line } from "react-konva";
+import { Circle, Line, Stage, Text } from "react-konva";
 
 interface IPolygonDrawProps {
 	mousePos?: Vector2d | null;
+	closed?: boolean;
+	drawPos?: Vector2d[];
 }
 
-export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
+export const PolygonDraw = ({
+	mousePos,
+	closed = false,
+	drawPos = [],
+}: IPolygonDrawProps): ReactElement => {
 	const { scale, clickPosition } = useApp();
+	const { stageRef } = useApp();
 
-	const [drawerPosition, setDrawerPosition] = useState<Vector2d[]>([
-		{ x: 0, y: 0 },
-	]);
+	const currentStageRef = stageRef.current;
+	const stage = currentStageRef?.getStage();
+
+	const [drawPosition, setDrawPosition] = useState<Vector2d[]>(drawPos);
 	const [startedDraw, setStartedDraw] = useState(false);
 
-	const [isClosed, setIsClosed] = useState(false);
+	const [isClosed, setIsClosed] = useState(closed);
 
 	useEffect(() => {
 		if (mousePos && !isClosed) {
-			setDrawerPosition((prevDrawerPosition) => {
+			setDrawPosition((prevDrawerPosition) => {
 				const newDrawerPosition = [...prevDrawerPosition];
 				newDrawerPosition[0] = mousePos;
 				return newDrawerPosition;
@@ -31,7 +39,8 @@ export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
 
 	useEffect(() => {
 		if (clickPosition && !isClosed) {
-			setDrawerPosition((prevState) => [clickPosition, ...prevState]);
+			setDrawPosition((prevState) => [clickPosition, ...prevState]);
+			setStartedDraw(true);
 		}
 	}, [clickPosition]);
 
@@ -39,12 +48,11 @@ export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
 		e: KonvaEventObject<MouseEvent>,
 		index: number
 	) => {
-		if (index === drawerPosition.length - 1 && startedDraw && !isClosed) {
+		e.evt.preventDefault();
+		if (index === drawPosition.length - 1 && startedDraw && !isClosed) {
 			setIsClosed(true);
 			e.target.scale({ x: 1, y: 1 });
-			setDrawerPosition(drawerPosition.slice(1));
-		} else if (index === drawerPosition.length - 1 && !isClosed) {
-			setStartedDraw(true);
+			setDrawPosition(drawPosition.slice(1));
 		}
 	};
 
@@ -52,8 +60,10 @@ export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
 		e: KonvaEventObject<MouseEvent>,
 		index: number
 	) => {
-		if (index === drawerPosition.length - 1 && startedDraw && !isClosed) {
+		if (index === drawPosition.length - 1 && startedDraw && !isClosed) {
 			e.target.scale({ x: 1.5, y: 1.5 });
+		} else if (isClosed) {
+			document.body.style.cursor = "grab";
 		}
 	};
 
@@ -61,10 +71,37 @@ export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
 		e: KonvaEventObject<MouseEvent>,
 		index: number
 	) => {
-		if (index === drawerPosition.length - 1 && startedDraw && !isClosed) {
-			console.log(scale);
+		if (index === drawPosition.length - 1 && startedDraw && !isClosed) {
 			e.target.scale({ x: 1, y: 1 });
+		} else if (isClosed) {
+			document.body.style.cursor = "default";
 		}
+	};
+
+	const handleDragStart = () => {
+		document.body.style.cursor = "grabbing";
+	};
+
+	const handleDragMove = (e: KonvaEventObject<DragEvent>, index: number) => {
+		e.evt.preventDefault();
+		const currentStageRef = stageRef.current;
+		const stage = currentStageRef?.getStage();
+
+		if (stage) {
+			const newPosition = stage.getRelativePointerPosition();
+
+			if (newPosition) {
+				setDrawPosition([
+					...drawPosition.slice(0, index),
+					newPosition,
+					...drawPosition.slice(index + 1),
+				]);
+			}
+		}
+	};
+
+	const handleDragEnd = () => {
+		document.body.style.cursor = "grab";
 	};
 
 	return (
@@ -72,7 +109,7 @@ export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
 			{isClosed && (
 				<Line
 					key={`polygonDrawFill`}
-					points={drawerPosition.flatMap((obj) => [obj.x, obj.y])}
+					points={drawPosition.flatMap((obj) => [obj.x, obj.y])}
 					fill={Theme.colors.blue80}
 					opacity={0.4}
 					closed={true}
@@ -81,28 +118,31 @@ export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
 
 			<Line
 				key={`polygonDrawStroke`}
-				points={drawerPosition.flatMap((obj) => [obj.x, obj.y])}
+				points={drawPosition.flatMap((obj) => [obj.x, obj.y])}
 				stroke={Theme.colors.blue80}
 				strokeWidth={2}
 				closed={isClosed}
 			/>
 
-			{drawerPosition.map((pos, idx) => (
-				<Circle
-					key={`circleDraw-${idx}`}
-					x={pos.x}
-					y={pos.y}
-					radius={6 / scale}
-					fill={Theme.colors.blue80}
-					stroke={Theme.colors.black}
-					strokeWidth={1 / scale}
-					onClick={(e) => handleClickCircle(e, idx)}
-					onMouseMove={(e) => handleMouseEnterCircle(e, idx)}
-					onMouseLeave={(e) => handleMouseLeaveCircle(e, idx)}
-					// draggable
-					// onDragMove={() => {}}
-				/>
-			))}
+			{stage &&
+				drawPosition.map((pos, idx) => (
+					<Circle
+						key={`circleDraw-${idx}`}
+						x={pos.x}
+						y={pos.y}
+						radius={6 / scale}
+						fill={Theme.colors.blue80}
+						stroke={Theme.colors.black}
+						strokeWidth={1 / scale}
+						onMouseDown={(e) => handleClickCircle(e, idx)}
+						onMouseMove={(e) => handleMouseEnterCircle(e, idx)}
+						onMouseLeave={(e) => handleMouseLeaveCircle(e, idx)}
+						draggable={isClosed}
+						onDragStart={handleDragStart}
+						onDragMove={(e) => handleDragMove(e, idx)}
+						onDragEnd={handleDragEnd}
+					/>
+				))}
 		</>
 	);
 };

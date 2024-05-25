@@ -1,7 +1,7 @@
 import { useApp } from "@/hooks/useApp";
 import { KonvaEventObject } from "konva/lib/Node";
 import { KeyboardEvent, useEffect, useState } from "react";
-import { Image, Layer, Stage } from "react-konva";
+import { Image, Layer, Stage, Text } from "react-konva";
 import useImage from "use-image";
 import { Assets } from "./components/assets";
 import { DelimitationArea } from "./components/delimitationArea";
@@ -61,20 +61,46 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 	const [delimitationAreas, setDelimitationAreas] = useState<
 		IDelimitationArea[]
 	>([
-		{ points: [797, 308, 1028, 308, 1028, 460, 797, 460], color: "blue80" },
 		{
 			points: [
-				493, 811, 934, 811, 934, 671, 880, 671, 880, 603, 537, 603, 537,
-				561, 421, 561, 419, 625, 491, 625, 491, 810,
+				{ x: 797, y: 308 },
+				{ x: 1028, y: 308 },
+				{ x: 1028, y: 460 },
+				{ x: 797, y: 460 },
 			],
-			color: "purple80",
+			color: "blue80",
+			isEditing: false,
 		},
 		{
 			points: [
-				419, 498.28125, 701, 498.28125, 701, 511.28125, 760, 514.28125,
-				760, 390.28125, 443, 391.28125, 443, 427.28125, 415, 428.28125,
+				{ x: 493, y: 811 },
+				{ x: 934, y: 811 },
+				{ x: 934, y: 671 },
+				{ x: 880, y: 671 },
+				{ x: 880, y: 603 },
+				{ x: 537, y: 603 },
+				{ x: 537, y: 561 },
+				{ x: 421, y: 561 },
+				{ x: 419, y: 625 },
+				{ x: 491, y: 625 },
+				{ x: 491, y: 810 },
+			],
+			color: "purple80",
+			isEditing: false,
+		},
+		{
+			points: [
+				{ x: 419, y: 498.28125 },
+				{ x: 701, y: 498.28125 },
+				{ x: 701, y: 511.28125 },
+				{ x: 760, y: 514.28125 },
+				{ x: 760, y: 390.28125 },
+				{ x: 443, y: 391.28125 },
+				{ x: 443, y: 427.28125 },
+				{ x: 415, y: 428.28125 },
 			],
 			color: "yellow80",
+			isEditing: false,
 		},
 	]);
 
@@ -227,59 +253,70 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 
 	const handleDragStageStart = (e: KonvaEventObject<DragEvent>) => {
 		e.evt.preventDefault();
-		if (e.evt.buttons === 1 && !isSpaceBarPressed) {
-			e.target.stopDrag();
-		} else {
-			document.body.style.cursor = "grabbing";
+
+		if (e.target.id() === "STAGE") {
+			if (e.evt.buttons === 1 && !isSpaceBarPressed) {
+				e.target.stopDrag();
+			} else {
+				document.body.style.cursor = "grabbing";
+			}
 		}
 	};
 
 	const handleDragStage = (e: KonvaEventObject<DragEvent>): void => {
 		e.evt.preventDefault();
-		const currentStageRef = stageRef.current;
-		const stage = currentStageRef?.getStage();
 
-		if (stage && (e.evt.buttons === 4 || isSpaceBarPressed)) {
-			const newX = -e.target.x() / stage.scaleX();
-			const newY = -e.target.y() / stage.scaleY();
+		if (e.target.id() === "STAGE") {
+			const currentStageRef = stageRef.current;
+			const stage = currentStageRef?.getStage();
 
-			if (newX < 0) {
-				e.target.setPosition({ x: 0, y: e.target.y() });
-			}
+			if (stage && (e.evt.buttons === 4 || isSpaceBarPressed)) {
+				const newX = -e.target.x() / stage.scaleX();
+				const newY = -e.target.y() / stage.scaleY();
 
-			if (newX > limitWidth - width / stage.scaleX()) {
+				if (newX < 0) {
+					e.target.setPosition({ x: 0, y: e.target.y() });
+				}
+
+				if (newX > limitWidth - width / stage.scaleX()) {
+					e.target.setPosition({
+						x:
+							-(limitWidth - width / stage.scaleX()) *
+							stage.scaleX(),
+						y: e.target.y(),
+					});
+				}
+
+				if (newY < 0) {
+					e.target.setPosition({ x: e.target.x(), y: 0 });
+				}
+
+				if (newY > limitHeight - height / stage.scaleY()) {
+					e.target.setPosition({
+						x: e.target.x(),
+						y:
+							-(limitHeight - height / stage.scaleY()) *
+							stage.scaleY(),
+					});
+				}
+			} else {
+				console.log("exec");
+				e.target.stopDrag();
 				e.target.setPosition({
-					x: -(limitWidth - width / stage.scaleX()) * stage.scaleX(),
-					y: e.target.y(),
+					x: e.target.x() - e.evt.movementX,
+					y: e.target.y() - e.evt.movementY,
 				});
 			}
-
-			if (newY < 0) {
-				e.target.setPosition({ x: e.target.x(), y: 0 });
-			}
-
-			if (newY > limitHeight - height / stage.scaleY()) {
-				e.target.setPosition({
-					x: e.target.x(),
-					y:
-						-(limitHeight - height / stage.scaleY()) *
-						stage.scaleY(),
-				});
-			}
-		} else {
-			e.target.stopDrag();
-			e.target.setPosition({
-				x: e.target.x() - e.evt.movementX,
-				y: e.target.y() - e.evt.movementY,
-			});
 		}
 	};
 
 	const handleDragStageEnd = (e: KonvaEventObject<DragEvent>) => {
-		if (isSpaceBarPressed) {
-			document.body.style.cursor = "grab";
-		} else {
-			document.body.style.cursor = "default";
+		if (e.target.id() === "STAGE") {
+			if (isSpaceBarPressed) {
+				document.body.style.cursor = "grab";
+			} else {
+				document.body.style.cursor = "default";
+			}
 		}
 	};
 
@@ -318,20 +355,10 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 	};
 
 	const handleMouseClick = (e: KonvaEventObject<MouseEvent>): void => {
-		setClickPosition(e.currentTarget.getRelativePointerPosition());
-	};
-
-	useEffect(() => {
-		if (delimiting) {
-			document.body.style.cursor = "default";
-		} else {
-			document.body.style.cursor = "default";
+		if (e.evt.buttons === 1) {
+			setClickPosition(e.currentTarget.getRelativePointerPosition());
 		}
-
-		return () => {
-			document.body.style.cursor = "default";
-		};
-	}, [delimiting]);
+	};
 
 	return (
 		<div
@@ -345,6 +372,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		>
 			<ContextMenu content={<EditorMenu />}>
 				<Stage
+					id="STAGE"
 					width={width}
 					height={height}
 					onWheel={handleScroll}
@@ -355,7 +383,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 					onDragMove={handleDragStage}
 					onDragEnd={handleDragStageEnd}
 					onMouseMove={handleMouseMove}
-					onClick={handleMouseClick}
+					onMouseDown={handleMouseClick}
 					style={{ background: "rgba(100,100,100, 0.8)" }}
 				>
 					<Layer>
@@ -369,13 +397,21 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 							/>
 						)}
 
-						{delimitationAreas.map((delimitationArea) => (
-							<DelimitationArea metadata={delimitationArea} />
-						))}
+						{delimitationAreas.map((delimitationArea) =>
+							!delimitationArea.isEditing ? (
+								<DelimitationArea metadata={delimitationArea} />
+							) : (
+								<PolygonDraw
+									mousePos={mousePos}
+									drawPos={delimitationArea.points}
+									closed
+								/>
+							)
+						)}
 
 						<Assets data={assets} />
 
-						<PolygonDraw mousePos={mousePos} />
+						{delimiting && <PolygonDraw mousePos={mousePos} />}
 					</Layer>
 				</Stage>
 			</ContextMenu>

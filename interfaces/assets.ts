@@ -1,4 +1,5 @@
 import { Theme } from "@/themes";
+import { Vector2d } from "konva/lib/types";
 
 interface IDevice {
 	type: "water" | "energy" | "temperature";
@@ -30,6 +31,7 @@ export type DataItemStats = {
 };
 
 export interface IDelimitationArea {
-	points: number[];
+	points: Vector2d[];
 	color: keyof typeof Theme.colors;
+	isEditing: boolean;
 }
