@@ -8,6 +8,9 @@ import { DelimitationArea } from "./components/delimitationArea";
 import { IActionButtonDataProps, IDelimitationArea } from "@/interfaces/assets";
 import { ContextMenu } from "@/components/contextMenu";
 import { EditorMenu } from "@/components/menu/editor";
+import { useEditorMenu } from "@/hooks/useEditorMenu";
+import { PolygonDraw } from "@/components/polygonDraw";
+import { Vector2d } from "konva/lib/types";
 
 interface IFloorPlanProps {
 	width: number;
@@ -22,7 +25,13 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		stageRef,
 		minScale,
 		maxScale,
+		setClickPosition,
 	} = useApp();
+
+	const currentStageRef = stageRef.current;
+	const stage = currentStageRef?.getStage();
+
+	const { delimiting } = useEditorMenu();
 
 	const [assets, setAssets] = useState<IActionButtonDataProps[]>([
 		{
@@ -78,6 +87,8 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 
 	const [isSpaceBarPressed, setIsSpaceBarPressed] = useState(false);
 
+	const [mousePos, setMousePos] = useState<Vector2d | null>(null);
+
 	useEffect(() => {
 		if (image) {
 			if (
@@ -104,9 +115,6 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 	}, [image, width, height]);
 
 	useEffect(() => {
-		const currentStageRef = stageRef.current;
-		const stage = currentStageRef?.getStage();
-
 		if (stage) {
 			var oldScale = stage.scaleX();
 
@@ -305,6 +313,26 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		}
 	};
 
+	const handleMouseMove = (e: KonvaEventObject<MouseEvent>): void => {
+		setMousePos(e.currentTarget.getRelativePointerPosition());
+	};
+
+	const handleMouseClick = (e: KonvaEventObject<MouseEvent>): void => {
+		setClickPosition(e.currentTarget.getRelativePointerPosition());
+	};
+
+	useEffect(() => {
+		if (delimiting) {
+			document.body.style.cursor = "default";
+		} else {
+			document.body.style.cursor = "default";
+		}
+
+		return () => {
+			document.body.style.cursor = "default";
+		};
+	}, [delimiting]);
+
 	return (
 		<div
 			tabIndex={1}
@@ -326,11 +354,8 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 					onDragStart={handleDragStageStart}
 					onDragMove={handleDragStage}
 					onDragEnd={handleDragStageEnd}
-					onClick={(e) =>
-						console.log(
-							`X = ${e.currentTarget.getRelativePointerPosition()?.x} \nY = ${e.currentTarget.getRelativePointerPosition()?.y}`
-						)
-					}
+					onMouseMove={handleMouseMove}
+					onClick={handleMouseClick}
 					style={{ background: "rgba(100,100,100, 0.8)" }}
 				>
 					<Layer>
@@ -349,6 +374,8 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 						))}
 
 						<Assets data={assets} />
+
+						<PolygonDraw mousePos={mousePos} />
 					</Layer>
 				</Stage>
 			</ContextMenu>

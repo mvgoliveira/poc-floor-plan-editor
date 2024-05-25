@@ -1,7 +1,9 @@
 import { IReactChildren } from "@/interfaces/core";
-import { ReactElement } from "react";
+import { MouseEventHandler, ReactElement, useEffect, useState } from "react";
 import * as RdxContextMenu from "@radix-ui/react-context-menu";
 import {
+	HorizontalLine,
+	IconContainer,
 	StyleContent,
 	StyleItem,
 	StyleLabel,
@@ -9,6 +11,9 @@ import {
 	StyleSubTrigger,
 } from "./styles";
 import { Typography } from "@/components/typography";
+import { MdCheck, MdChevronRight } from "react-icons/md";
+import { Theme } from "@/themes";
+import { FaCheck } from "react-icons/fa6";
 
 interface IContextMenuProps {
 	content: ReactElement;
@@ -45,7 +50,7 @@ const Label = ({ text }: ILabelProps): ReactElement => (
 			tag="p"
 			color="gray30"
 			fontFamily="roboto"
-			fontSize={{ xs: "fs75" }}
+			fontSize={{ xs: "fs50" }}
 			fontWeight="regular"
 		>
 			{text}
@@ -58,44 +63,94 @@ ContextMenu.Label = Label;
 interface IItemProps {
 	text: string;
 	icon?: ReactElement;
+	disabled?: boolean;
+	onClick?: () => void;
 }
 
-const Item = ({ text, icon }: IItemProps): ReactElement => (
-	<StyleItem>
-		{icon}
-
-		<Typography
-			tag="p"
-			color="gray30"
-			fontFamily="roboto"
-			fontSize={{ xs: "fs75" }}
-			fontWeight="regular"
-		>
-			{text}
-		</Typography>
-	</StyleItem>
-);
-Item.displayName = "Item";
-ContextMenu.Item = Item;
-
-const Sub = ({
-	children,
+const Item = ({
 	text,
 	icon,
-}: IReactChildren & IItemProps): ReactElement => (
-	<RdxContextMenu.Sub>
-		<StyleSubTrigger>
-			{icon}
+	disabled = false,
+	onClick,
+}: IItemProps): ReactElement => (
+	<StyleItem
+		className="ContextMenuItem"
+		disabled={disabled}
+		onClick={onClick}
+	>
+		<div style={{ display: "flex", gap: 5 }}>
+			<IconContainer>{icon}</IconContainer>
 
 			<Typography
 				tag="p"
-				color="gray30"
+				color="gray20"
 				fontFamily="roboto"
 				fontSize={{ xs: "fs75" }}
 				fontWeight="regular"
 			>
 				{text}
 			</Typography>
+		</div>
+	</StyleItem>
+);
+Item.displayName = "Item";
+ContextMenu.Item = Item;
+
+interface ICheckItemProps {
+	text: string;
+	isActive?: boolean;
+	disabled?: boolean;
+	onClick?: () => void;
+}
+
+const CheckItem = ({
+	text,
+	onClick,
+	isActive = true,
+	disabled = false,
+}: ICheckItemProps): ReactElement => (
+	<StyleItem onClick={onClick} disabled={disabled}>
+		<div style={{ display: "flex", gap: 5 }}>
+			<IconContainer>{isActive && <FaCheck size={10} />}</IconContainer>
+
+			<Typography
+				tag="p"
+				color="gray20"
+				fontFamily="roboto"
+				fontSize={{ xs: "fs75" }}
+				fontWeight="regular"
+			>
+				{text}
+			</Typography>
+		</div>
+	</StyleItem>
+);
+CheckItem.displayName = "CheckItem";
+ContextMenu.CheckItem = CheckItem;
+
+const Sub = ({
+	children,
+	text,
+	icon,
+	disabled = false,
+}: IReactChildren & IItemProps): ReactElement => (
+	<RdxContextMenu.Sub>
+		<StyleSubTrigger disabled={disabled}>
+			<div style={{ display: "flex", gap: 5 }}>
+				<IconContainer>{icon}</IconContainer>
+
+				<Typography
+					tag="p"
+					color="gray20"
+					fontFamily="roboto"
+					fontSize={{ xs: "fs75" }}
+					fontWeight="regular"
+				>
+					{text}
+				</Typography>
+			</div>
+
+			<MdChevronRight size={15} />
 		</StyleSubTrigger>
 
 		<RdxContextMenu.Portal>
@@ -105,3 +160,7 @@ const Sub = ({
 );
 Sub.displayName = "Sub";
 ContextMenu.Sub = Sub;
+
+const DelimiterLine = (): ReactElement => <HorizontalLine />;
+DelimiterLine.displayName = "DelimiterLine";
+ContextMenu.DelimiterLine = DelimiterLine;

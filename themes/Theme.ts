@@ -6,7 +6,9 @@ export const Theme = {
 		// GRAY SCALE
 		white: "#FFF",
 		gray10: "#E3E3E3",
-		gray30: "#767677",
+		gray20: "#CDCDCD",
+		gray30: "#8B8B8B",
+		gray40: "#51515D",
 		gray50: "#313843",
 		gray60: "#292931",
 		gray70: "#17171b",

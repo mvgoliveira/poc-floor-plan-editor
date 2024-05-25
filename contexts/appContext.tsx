@@ -1,5 +1,6 @@
 import Konva from "konva";
 import { Stage } from "konva/lib/Stage";
+import { Vector2d } from "konva/lib/types";
 import {
 	createContext,
 	Dispatch,
@@ -28,6 +29,8 @@ type AppContextType = {
 	getScaleByZoom: (zoom: number) => number;
 	editMode: boolean;
 	setEditMode: Dispatch<SetStateAction<boolean>>;
+	clickPosition: Vector2d | null;
+	setClickPosition: Dispatch<SetStateAction<Vector2d | null>>;
 };
 
 export const AppContext = createContext({} as AppContextType);
@@ -40,6 +43,7 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 	const [maxZoom, setMaxZoom] = useState(200);
 	const stageRef = useRef<Konva.Stage>(null);
 	const [editMode, setEditMode] = useState(true);
+	const [clickPosition, setClickPosition] = useState<Vector2d | null>(null);
 
 	const changeZoomByScale = (scale: number): void => {
 		setZoom(
@@ -72,6 +76,8 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 				getScaleByZoom,
 				editMode,
 				setEditMode,
+				clickPosition,
+				setClickPosition,
 			}}
 		>
 			{props.children}
