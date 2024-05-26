@@ -21,7 +21,7 @@ type EditorMenuContextType = {
 	hiddenUi: boolean;
 	setHiddenUi: Dispatch<SetStateAction<boolean>>;
 	delimiting: boolean;
-	handleChangeDelimiting: (option: boolean) => void;
+	setDelimiting: Dispatch<SetStateAction<boolean>>;
 	setType: Dispatch<SetStateAction<MenuType>>;
 	handleGetMenuType: () => ReactElement;
 	clickTargetName: string;
@@ -37,10 +37,6 @@ export function EditorMenuContextProvider(
 	const [hiddenUi, setHiddenUi] = useState(false);
 	const [delimiting, setDelimiting] = useState(false);
 	const [clickTargetName, setClickTargetName] = useState("");
-
-	const handleChangeDelimiting = (option: boolean) => {
-		setDelimiting(option);
-	};
 
 	const handleGetMenuType = (): ReactElement => {
 		switch (type) {
@@ -61,7 +57,7 @@ export function EditorMenuContextProvider(
 				hiddenUi,
 				setHiddenUi,
 				delimiting,
-				handleChangeDelimiting,
+				setDelimiting,
 				setType,
 				handleGetMenuType,
 				clickTargetName,

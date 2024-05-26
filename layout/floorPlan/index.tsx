@@ -25,6 +25,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		maxScale,
 		handleStageClick,
 		handleOpenContextMenu,
+		handleScapePress,
 	} = useApp();
 
 	const { assets, delimitationAreas, image } = useData();
@@ -271,6 +272,9 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 	};
 
 	const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>): void => {
+		if (e.code === "Escape") {
+			handleScapePress();
+		}
 		if (e.code === "ControlLeft" && !isCtrlLeftPressed) {
 			document.body.style.cursor = "grab";
 			setIsCtrlLeftPressed(true);

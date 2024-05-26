@@ -13,7 +13,7 @@ import {
 } from "react-icons/md";
 
 export const EditorMenu = (): ReactElement => {
-	const { hiddenUi, setHiddenUi, handleChangeDelimiting } = useEditorMenu();
+	const { hiddenUi, setHiddenUi, setDelimiting } = useEditorMenu();
 
 	const handleClickUiVisibility = (): void => {
 		setHiddenUi((prevState) => !prevState);
@@ -37,7 +37,7 @@ export const EditorMenu = (): ReactElement => {
 				/>
 				<ContextMenu.Item
 					text="Delimitação"
-					onClick={() => handleChangeDelimiting(true)}
+					onClick={() => setDelimiting(true)}
 					icon={<BiSelection size={15} />}
 				/>
 			</ContextMenu.Sub>

@@ -17,7 +17,7 @@ import { TbShapeOff } from "react-icons/tb";
 
 export const EditorDelimiterMenu = (): ReactElement => {
 	const { handleEditDelimitation, handleDeleteDelimitation } = useData();
-	const { hiddenUi, setHiddenUi, handleChangeDelimiting } = useEditorMenu();
+	const { hiddenUi, setHiddenUi, setDelimiting } = useEditorMenu();
 
 	const handleClickUiVisibility = (): void => {
 		setHiddenUi((prevState) => !prevState);
@@ -58,7 +58,7 @@ export const EditorDelimiterMenu = (): ReactElement => {
 				/>
 				<ContextMenu.Item
 					text="Delimitação"
-					onClick={() => handleChangeDelimiting(true)}
+					onClick={() => setDelimiting(true)}
 					icon={<BiSelection size={15} />}
 				/>
 			</ContextMenu.Sub>

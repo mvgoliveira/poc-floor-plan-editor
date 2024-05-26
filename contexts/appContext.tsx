@@ -35,21 +35,16 @@ type AppContextType = {
 	clickPosition: Vector2d | null;
 	handleStageClick: (targetName: string, position: Vector2d | null) => void;
 	handleOpenContextMenu: (targetName: string) => void;
+	handleScapePress: () => void;
 };
 
 export const AppContext = createContext({} as AppContextType);
 
 export function AppContextProvider(props: AppContextProviderPropsType) {
-	const { delimiting, handleChangeDelimiting, clickTargetName } =
-		useEditorMenu();
+	const { delimiting } = useEditorMenu();
 
-	const {
-		setDelimiterClosed,
-		setDelimiterDraw,
-		setDelimitationAreas,
-		delimiterDraw,
-		delimiterClosed,
-	} = useData();
+	const { saveDelimitation, delimiterClosed, handleCancelDelimitation } =
+		useData();
 
 	const [zoom, setZoom] = useState(0);
 	const [scale, setScale] = useState(1);
@@ -59,22 +54,6 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 	const stageRef = useRef<Konva.Stage>(null);
 	const [editMode, setEditMode] = useState(true);
 	const [clickPosition, setClickPosition] = useState<Vector2d | null>(null);
-
-	const resetVariables = () => {
-		handleChangeDelimiting(false);
-		setDelimiterClosed(false);
-		setClickPosition(null);
-		setDelimiterDraw({
-			id: uuid(),
-			color: "blue80",
-			points: [],
-		});
-
-		setDelimitationAreas((prevState) => [
-			...prevState,
-			{ ...delimiterDraw },
-		]);
-	};
 
 	const changeZoomByScale = (scale: number): void => {
 		setZoom(
@@ -96,7 +75,8 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 			targetName !== "DRAW-STROKE" &&
 			targetName !== "DRAW-CIRCLE"
 		) {
-			resetVariables();
+			saveDelimitation();
+			setClickPosition(null);
 		}
 	};
 
@@ -113,7 +93,15 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 			targetName !== "DRAW-STROKE" &&
 			targetName !== "DRAW-CIRCLE"
 		) {
-			resetVariables();
+			saveDelimitation();
+			setClickPosition(null);
+		}
+	};
+
+	const handleScapePress = () => {
+		if (delimiting) {
+			setClickPosition(null);
+			handleCancelDelimitation();
 		}
 	};
 
@@ -139,6 +127,7 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 				clickPosition,
 				handleStageClick,
 				handleOpenContextMenu,
+				handleScapePress,
 			}}
 		>
 			{props.children}

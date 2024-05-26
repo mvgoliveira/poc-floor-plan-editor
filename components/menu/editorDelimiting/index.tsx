@@ -1,4 +1,5 @@
 import { ContextMenu } from "@/components/contextMenu";
+import { useData } from "@/hooks/useData";
 import { useEditorMenu } from "@/hooks/useEditorMenu";
 import { ReactElement } from "react";
 import { BiSelection } from "react-icons/bi";
@@ -15,7 +16,8 @@ import { RiShape2Line } from "react-icons/ri";
 import { TbShapeOff } from "react-icons/tb";
 
 export const EditorDelimitingMenu = (): ReactElement => {
-	const { hiddenUi, setHiddenUi, handleChangeDelimiting } = useEditorMenu();
+	const { hiddenUi, setHiddenUi, setDelimiting } = useEditorMenu();
+	const { handleCancelDelimitation } = useData();
 
 	const handleClickUiVisibility = (): void => {
 		setHiddenUi((prevState) => !prevState);
@@ -34,6 +36,7 @@ export const EditorDelimitingMenu = (): ReactElement => {
 			<ContextMenu.Item
 				text="Remover"
 				type="danger"
+				onClick={handleCancelDelimitation}
 				icon={<TbShapeOff size={15} />}
 			/>
 
@@ -56,7 +59,7 @@ export const EditorDelimitingMenu = (): ReactElement => {
 				/>
 				<ContextMenu.Item
 					text="Delimitação"
-					onClick={() => handleChangeDelimiting(true)}
+					onClick={() => setDelimiting(true)}
 					icon={<BiSelection size={15} />}
 				/>
 			</ContextMenu.Sub>

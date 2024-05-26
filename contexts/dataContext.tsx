@@ -23,16 +23,18 @@ type DataContextType = {
 	setDelimiterClosed: Dispatch<SetStateAction<boolean>>;
 	delimiterDraw: IDelimitationArea;
 	setDelimiterDraw: Dispatch<SetStateAction<IDelimitationArea>>;
+	saveDelimitation: () => void;
 	handleEditDelimitation: () => void;
 	handleDeleteDelimitation: () => void;
 	setDelimitationAreas: Dispatch<SetStateAction<IDelimitationArea[]>>;
+	resetVariables: () => void;
+	handleCancelDelimitation: () => void;
 };
 
 export const DataContext = createContext({} as DataContextType);
 
 export function DataContextProvider(props: DataContextProviderPropsType) {
-	const { delimiting, handleChangeDelimiting, clickTargetName } =
-		useEditorMenu();
+	const { delimiting, setDelimiting, clickTargetName } = useEditorMenu();
 
 	const [delimiterClosed, setDelimiterClosed] = useState(false);
 
@@ -117,6 +119,24 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 		points: [],
 	});
 
+	const resetVariables = () => {
+		setDelimiting(false);
+		setDelimiterClosed(false);
+		setDelimiterDraw({
+			id: uuid(),
+			color: "blue80",
+			points: [],
+		});
+	};
+
+	const saveDelimitation = () => {
+		setDelimitationAreas((prevState) => [
+			...prevState,
+			{ ...delimiterDraw },
+		]);
+		resetVariables();
+	};
+
 	const handleEditDelimitation = () => {
 		if (!delimiting && clickTargetName.match("DELIMITATION-AREA-")) {
 			const index = delimitationAreas.findIndex(
@@ -133,7 +153,7 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 			];
 
 			setDelimitationAreas(newDelimitationAreas);
-			handleChangeDelimiting(true);
+			setDelimiting(true);
 			setDelimiterClosed(true);
 			setDelimiterDraw({ ...delimitationArea });
 		}
@@ -154,6 +174,10 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 
 			setDelimitationAreas(newDelimitationAreas);
 		}
+	};
+
+	const handleCancelDelimitation = () => {
+		resetVariables();
 	};
 
 	useEffect(() => {
@@ -178,6 +202,9 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 				handleEditDelimitation,
 				handleDeleteDelimitation,
 				setDelimitationAreas,
+				saveDelimitation,
+				resetVariables,
+				handleCancelDelimitation,
 			}}
 		>
 			{props.children}
