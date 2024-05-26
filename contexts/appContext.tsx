@@ -2,6 +2,7 @@ import Konva from "konva";
 import { Stage } from "konva/lib/Stage";
 import { Vector2d } from "konva/lib/types";
 import { IActionButtonDataProps, IDelimitationArea } from "@/interfaces/assets";
+import { v4 as uuid } from "uuid";
 import {
 	createContext,
 	Dispatch,
@@ -42,6 +43,7 @@ type AppContextType = {
 	delimiterDraw: IDelimitationArea;
 	setDelimiterDraw: Dispatch<SetStateAction<IDelimitationArea>>;
 	handleEditDelimitation: () => void;
+	handleDeleteDelimitation: () => void;
 };
 
 export const AppContext = createContext({} as AppContextType);
@@ -66,7 +68,7 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 
 	const [assets, setAssets] = useState<IActionButtonDataProps[]>([
 		{
-			id: "1",
+			id: uuid(),
 			x: 694,
 			y: 708,
 			devices: [
@@ -76,13 +78,13 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 			],
 		},
 		{
-			id: "2",
+			id: uuid(),
 			x: 590,
 			y: 445,
 			devices: [{ type: "energy" }],
 		},
 		{
-			id: "3",
+			id: uuid(),
 			x: 912,
 			y: 384,
 			devices: [{ type: "water" }, { type: "water" }],
@@ -93,7 +95,7 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 		IDelimitationArea[]
 	>([
 		{
-			id: `DELIMITATION-${0}`,
+			id: uuid(),
 			points: [
 				{ x: 797, y: 308 },
 				{ x: 1028, y: 308 },
@@ -101,10 +103,9 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 				{ x: 797, y: 460 },
 			],
 			color: "blue80",
-			isEditing: false,
 		},
 		{
-			id: `DELIMITATION-${1}`,
+			id: uuid(),
 			points: [
 				{ x: 493, y: 811 },
 				{ x: 934, y: 811 },
@@ -119,10 +120,9 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 				{ x: 491, y: 810 },
 			],
 			color: "purple80",
-			isEditing: false,
 		},
 		{
-			id: `DELIMITATION-${2}`,
+			id: uuid(),
 			points: [
 				{ x: 419, y: 498.28125 },
 				{ x: 701, y: 498.28125 },
@@ -134,16 +134,25 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 				{ x: 415, y: 428.28125 },
 			],
 			color: "yellow80",
-			isEditing: false,
 		},
 	]);
 
 	const [delimiterDraw, setDelimiterDraw] = useState<IDelimitationArea>({
-		id: `DELIMITATION-${delimitationAreas.length}`,
+		id: uuid(),
 		color: "blue80",
-		isEditing: true,
 		points: [],
 	});
+
+	const resetVariables = () => {
+		handleChangeDelimiting(false);
+		setDelimiterClosed(false);
+		setClickPosition(null);
+		setDelimiterDraw({
+			id: uuid(),
+			color: "blue80",
+			points: [],
+		});
+	};
 
 	const changeZoomByScale = (scale: number): void => {
 		setZoom(
@@ -170,40 +179,67 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 			targetName !== "DRAW-STROKE" &&
 			targetName !== "DRAW-CIRCLE"
 		) {
-			handleChangeDelimiting(false);
-
-			setDelimiterClosed(false);
-
-			setClickPosition(null);
-
-			setDelimiterDraw({
-				id: `DELIMITATION-${delimitationAreas.length}`,
-				color: "blue80",
-				isEditing: true,
-				points: [],
-			});
-
 			setDelimitationAreas((prevState) => [
 				...prevState,
-				{ ...delimiterDraw, isEditing: false },
+				{ ...delimiterDraw },
 			]);
+
+			resetVariables();
 		}
 	};
 
 	const handleEditDelimitation = () => {
-		const index = Number(clickTargetName.replace("DELIMITATION-AREA-", ""));
+		if (!delimiting) {
+			const index = delimitationAreas.findIndex(
+				(delimitationArea) =>
+					delimitationArea.id ===
+					clickTargetName.replace("DELIMITATION-AREA-", "")
+			);
 
-		const delimitationArea = delimitationAreas[index];
+			const delimitationArea = delimitationAreas[index];
 
-		const newDelimitationAreas: IDelimitationArea[] = [
-			...delimitationAreas.slice(0, index),
-			...delimitationAreas.slice(index + 1),
-		];
+			const newDelimitationAreas: IDelimitationArea[] = [
+				...delimitationAreas.slice(0, index),
+				...delimitationAreas.slice(index + 1),
+			];
 
-		setDelimitationAreas(newDelimitationAreas);
-		handleChangeDelimiting(true);
-		setDelimiterClosed(true);
-		setDelimiterDraw({ ...delimitationArea, isEditing: true });
+			setDelimitationAreas(newDelimitationAreas);
+			handleChangeDelimiting(true);
+			setDelimiterClosed(true);
+			setDelimiterDraw({ ...delimitationArea });
+		}
+	};
+
+	const handleDeleteDelimitation = () => {
+		if (!delimiting) {
+			const index = delimitationAreas.findIndex(
+				(delimitationArea) =>
+					delimitationArea.id ===
+					clickTargetName.replace("DELIMITATION-AREA-", "")
+			);
+
+			const newDelimitationAreas: IDelimitationArea[] = [
+				...delimitationAreas.slice(0, index),
+				...delimitationAreas.slice(index + 1),
+			];
+
+			setDelimitationAreas(newDelimitationAreas);
+		} else {
+			resetVariables();
+
+			const index = delimitationAreas.findIndex(
+				(delimitationArea) =>
+					delimitationArea.id ===
+					clickTargetName.replace("DELIMITATION-AREA-", "")
+			);
+
+			const newDelimitationAreas: IDelimitationArea[] = [
+				...delimitationAreas.slice(0, index),
+				...delimitationAreas.slice(index + 1),
+			];
+
+			setDelimitationAreas(newDelimitationAreas);
+		}
 	};
 
 	useEffect(() => {
@@ -214,7 +250,7 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 		if (delimitationAreas) {
 			setDelimiterDraw((prevState) => ({
 				...prevState,
-				id: `DELIMITATION-${delimitationAreas.length}`,
+				id: uuid(),
 			}));
 		}
 	}, [delimitationAreas]);
@@ -244,6 +280,7 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 				delimiterDraw,
 				setDelimiterDraw,
 				handleEditDelimitation,
+				handleDeleteDelimitation,
 			}}
 		>
 			{props.children}

@@ -16,7 +16,7 @@ import { RiShape2Line } from "react-icons/ri";
 import { TbShapeOff } from "react-icons/tb";
 
 export const EditorDelimiterMenu = (): ReactElement => {
-	const { handleEditDelimitation } = useApp();
+	const { handleEditDelimitation, handleDeleteDelimitation } = useApp();
 	const { hiddenUi, setHiddenUi, handleChangeDelimiting } = useEditorMenu();
 
 	const handleClickUiVisibility = (): void => {
@@ -36,6 +36,7 @@ export const EditorDelimiterMenu = (): ReactElement => {
 			<ContextMenu.Item
 				text="Remover"
 				type="danger"
+				onClick={handleDeleteDelimitation}
 				icon={<TbShapeOff size={15} />}
 			/>
 

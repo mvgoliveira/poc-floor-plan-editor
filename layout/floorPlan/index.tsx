@@ -290,6 +290,10 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 
 	const handleContextMenu = (e: KonvaEventObject<PointerEvent>) => {
 		setClickTargetName(e.target.name());
+		handleStageClick(
+			e.target.name(),
+			e.currentTarget.getRelativePointerPosition()
+		);
 	};
 
 	return (
@@ -332,20 +336,13 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 							/>
 						)}
 
-						{delimitationAreas.map((delimitationArea, idx) =>
-							!delimitationArea.isEditing ? (
-								<DelimitationArea
-									name={`DELIMITATION-AREA-${idx}`}
-									metadata={delimitationArea}
-									key={`DELIMITATION-AREA-${idx}`}
-								/>
-							) : (
-								<PolygonDraw
-									key={`POLYGON-DRAW-${idx}`}
-									mousePos={mousePos}
-								/>
-							)
-						)}
+						{delimitationAreas.map((delimitationArea, idx) => (
+							<DelimitationArea
+								name={`DELIMITATION-AREA-${delimitationArea.id}`}
+								metadata={delimitationArea}
+								key={`DELIMITATION-AREA-${idx}`}
+							/>
+						))}
 
 						<Assets data={assets} />
 

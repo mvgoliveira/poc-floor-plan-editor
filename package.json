@@ -24,12 +24,14 @@
     "react-konva": "^18.2.10",
     "react-konva-utils": "^1.0.6",
     "styled-components": "^6.1.11",
-    "use-image": "^1.1.1"
+    "use-image": "^1.1.1",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/uuid": "^9.0.8",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "eslint-config-prettier": "^9.1.0",
