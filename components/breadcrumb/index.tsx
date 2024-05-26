@@ -10,7 +10,10 @@ export const Breadcrumb = ({ sections }: ISectionListProps): ReactElement => {
 	return (
 		<Container>
 			{sections.map((section, idx) => (
-				<>
+				<div
+					style={{ display: "flex", gap: 3 }}
+					key={`BREADCRUMB-${idx}`}
+				>
 					{idx !== sections.length - 1 ? (
 						<>
 							<Typography
@@ -44,7 +47,7 @@ export const Breadcrumb = ({ sections }: ISectionListProps): ReactElement => {
 							{section}
 						</Typography>
 					)}
-				</>
+				</div>
 			))}
 		</Container>
 	);

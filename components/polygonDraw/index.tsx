@@ -1,45 +1,47 @@
 import { useApp } from "@/hooks/useApp";
+import { useEditorMenu } from "@/hooks/useEditorMenu";
 import { Theme } from "@/themes";
 import { KonvaEventObject } from "konva/lib/Node";
 import { Vector2d } from "konva/lib/types";
 import { ReactElement, useEffect, useState } from "react";
-import { Circle, Line, Stage, Text } from "react-konva";
+import { Circle, Line } from "react-konva";
 
 interface IPolygonDrawProps {
 	mousePos?: Vector2d | null;
-	closed?: boolean;
-	drawPos?: Vector2d[];
 }
 
-export const PolygonDraw = ({
-	mousePos,
-	closed = false,
-	drawPos = [],
-}: IPolygonDrawProps): ReactElement => {
-	const { scale, clickPosition } = useApp();
-	const { stageRef } = useApp();
+export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
+	const {
+		scale,
+		clickPosition,
+		stageRef,
+		delimiterClosed,
+		setDelimiterClosed,
+		delimiterDraw,
+		setDelimiterDraw,
+	} = useApp();
 
 	const currentStageRef = stageRef.current;
 	const stage = currentStageRef?.getStage();
 
-	const [drawPosition, setDrawPosition] = useState<Vector2d[]>(drawPos);
 	const [startedDraw, setStartedDraw] = useState(false);
 
-	const [isClosed, setIsClosed] = useState(closed);
-
 	useEffect(() => {
-		if (mousePos && !isClosed) {
-			setDrawPosition((prevDrawerPosition) => {
-				const newDrawerPosition = [...prevDrawerPosition];
-				newDrawerPosition[0] = mousePos;
-				return newDrawerPosition;
+		if (mousePos && !delimiterClosed) {
+			setDelimiterDraw((prevState) => {
+				const newPoints = [...prevState.points];
+				newPoints[0] = mousePos;
+				return { ...prevState, points: newPoints };
 			});
 		}
 	}, [mousePos]);
 
 	useEffect(() => {
-		if (clickPosition && !isClosed) {
-			setDrawPosition((prevState) => [clickPosition, ...prevState]);
+		if (clickPosition && !delimiterClosed) {
+			setDelimiterDraw((prevState) => ({
+				...prevState,
+				points: [clickPosition, ...prevState.points],
+			}));
 			setStartedDraw(true);
 		}
 	}, [clickPosition]);
@@ -49,10 +51,15 @@ export const PolygonDraw = ({
 		index: number
 	) => {
 		e.evt.preventDefault();
-		if (index === drawPosition.length - 1 && startedDraw && !isClosed) {
-			setIsClosed(true);
+		if (
+			index === delimiterDraw.points.length - 1 &&
+			startedDraw &&
+			!delimiterClosed
+		) {
+			setDelimiterClosed(true);
 			e.target.scale({ x: 1, y: 1 });
-			setDrawPosition(drawPosition.slice(1));
+			const newPoints = delimiterDraw.points.slice(1);
+			setDelimiterDraw({ ...delimiterDraw, points: newPoints });
 		}
 	};
 
@@ -60,9 +67,13 @@ export const PolygonDraw = ({
 		e: KonvaEventObject<MouseEvent>,
 		index: number
 	) => {
-		if (index === drawPosition.length - 1 && startedDraw && !isClosed) {
+		if (
+			index === delimiterDraw.points.length - 1 &&
+			startedDraw &&
+			!delimiterClosed
+		) {
 			e.target.scale({ x: 1.5, y: 1.5 });
-		} else if (isClosed) {
+		} else if (delimiterClosed) {
 			document.body.style.cursor = "grab";
 		}
 	};
@@ -71,9 +82,13 @@ export const PolygonDraw = ({
 		e: KonvaEventObject<MouseEvent>,
 		index: number
 	) => {
-		if (index === drawPosition.length - 1 && startedDraw && !isClosed) {
+		if (
+			index === delimiterDraw.points.length - 1 &&
+			startedDraw &&
+			!delimiterClosed
+		) {
 			e.target.scale({ x: 1, y: 1 });
-		} else if (isClosed) {
+		} else if (delimiterClosed) {
 			document.body.style.cursor = "default";
 		}
 	};
@@ -91,11 +106,13 @@ export const PolygonDraw = ({
 			const newPosition = stage.getRelativePointerPosition();
 
 			if (newPosition) {
-				setDrawPosition([
-					...drawPosition.slice(0, index),
+				const newPoints = [
+					...delimiterDraw.points.slice(0, index),
 					newPosition,
-					...drawPosition.slice(index + 1),
-				]);
+					...delimiterDraw.points.slice(index + 1),
+				];
+
+				setDelimiterDraw({ ...delimiterDraw, points: newPoints });
 			}
 		}
 	};
@@ -106,11 +123,15 @@ export const PolygonDraw = ({
 
 	return (
 		<>
-			{isClosed && (
+			{delimiterClosed && (
 				<Line
-					key={`polygonDrawFill`}
-					points={drawPosition.flatMap((obj) => [obj.x, obj.y])}
-					fill={Theme.colors.blue80}
+					key="DRAW-FILL"
+					name="polygonDrawFill"
+					points={delimiterDraw.points.flatMap((obj) => [
+						obj.x,
+						obj.y,
+					])}
+					fill={Theme.colors[delimiterDraw.color]}
 					opacity={0.4}
 					closed={true}
 				/>
@@ -118,26 +139,28 @@ export const PolygonDraw = ({
 
 			<Line
 				key={`polygonDrawStroke`}
-				points={drawPosition.flatMap((obj) => [obj.x, obj.y])}
-				stroke={Theme.colors.blue80}
+				name="DRAW-STROKE"
+				points={delimiterDraw.points.flatMap((obj) => [obj.x, obj.y])}
+				stroke={Theme.colors[delimiterDraw.color]}
 				strokeWidth={2}
-				closed={isClosed}
+				closed={delimiterClosed}
 			/>
 
 			{stage &&
-				drawPosition.map((pos, idx) => (
+				delimiterDraw.points.map((pos, idx) => (
 					<Circle
 						key={`circleDraw-${idx}`}
+						name="DRAW-CIRCLE"
 						x={pos.x}
 						y={pos.y}
 						radius={6 / scale}
-						fill={Theme.colors.blue80}
+						fill={Theme.colors[delimiterDraw.color]}
 						stroke={Theme.colors.black}
 						strokeWidth={1 / scale}
 						onMouseDown={(e) => handleClickCircle(e, idx)}
 						onMouseMove={(e) => handleMouseEnterCircle(e, idx)}
 						onMouseLeave={(e) => handleMouseLeaveCircle(e, idx)}
-						draggable={isClosed}
+						draggable={delimiterClosed}
 						onDragStart={handleDragStart}
 						onDragMove={(e) => handleDragMove(e, idx)}
 						onDragEnd={handleDragEnd}

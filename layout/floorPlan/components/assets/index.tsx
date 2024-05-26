@@ -52,7 +52,7 @@ export const Assets = ({ data }: IAssetsProps): ReactElement => {
 					x={data[idx].x}
 					y={data[idx].y}
 					offset={{ x: 60, y: 60 }}
-					key={`AssetButton-${idx}`}
+					key={`ASSET-BUTTON${idx}`}
 				>
 					{dataItemStats.energy.percentage !== 100 &&
 					dataItemStats.temperature.percentage !== 100 &&

@@ -30,14 +30,20 @@ export const StyleLabel = styled.div`
 	padding: 10px 8px 5px 8px;
 `;
 
-export const StyleItem = styled(Item)`
+export const StyleItem = styled(Item)<{ type: "default" | "danger" }>`
 	cursor: pointer;
 	outline: none;
 	padding: 8px;
 	border-radius: 3px;
 
+	p {
+		color: ${({ theme, type }) =>
+			type === "default" ? theme.colors.gray20 : theme.colors.red90};
+	}
+
 	svg {
-		color: ${({ theme }) => theme.colors.gray20};
+		color: ${({ theme, type }) =>
+			type === "default" ? theme.colors.gray20 : theme.colors.red90};
 	}
 
 	&[data-disabled] {
@@ -57,7 +63,8 @@ export const StyleItem = styled(Item)`
 	}
 
 	&:hover {
-		background: ${({ theme }) => theme.colors.gray80};
+		background: ${({ theme, type }) =>
+			type === "default" ? theme.colors.gray80 : theme.colors.red100};
 	}
 `;
 

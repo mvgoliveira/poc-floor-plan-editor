@@ -1,13 +1,10 @@
 import { useApp } from "@/hooks/useApp";
 import { KonvaEventObject } from "konva/lib/Node";
-import { KeyboardEvent, useEffect, useState } from "react";
-import { Image, Layer, Stage, Text } from "react-konva";
-import useImage from "use-image";
+import { KeyboardEvent, ReactElement, useEffect, useState } from "react";
+import { Image, Layer, Stage } from "react-konva";
 import { Assets } from "./components/assets";
 import { DelimitationArea } from "./components/delimitationArea";
-import { IActionButtonDataProps, IDelimitationArea } from "@/interfaces/assets";
 import { ContextMenu } from "@/components/contextMenu";
-import { EditorMenu } from "@/components/menu/editor";
 import { useEditorMenu } from "@/hooks/useEditorMenu";
 import { PolygonDraw } from "@/components/polygonDraw";
 import { Vector2d } from "konva/lib/types";
@@ -25,88 +22,17 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		stageRef,
 		minScale,
 		maxScale,
-		setClickPosition,
+		assets,
+		delimitationAreas,
+		image,
+		handleStageClick,
 	} = useApp();
 
 	const currentStageRef = stageRef.current;
 	const stage = currentStageRef?.getStage();
 
-	const { delimiting } = useEditorMenu();
-
-	const [assets, setAssets] = useState<IActionButtonDataProps[]>([
-		{
-			id: "1",
-			x: 694,
-			y: 708,
-			devices: [
-				{ type: "temperature" },
-				{ type: "energy" },
-				{ type: "water" },
-			],
-		},
-		{
-			id: "2",
-			x: 590,
-			y: 445,
-			devices: [{ type: "energy" }],
-		},
-		{
-			id: "3",
-			x: 912,
-			y: 384,
-			devices: [{ type: "water" }, { type: "water" }],
-		},
-	]);
-
-	const [delimitationAreas, setDelimitationAreas] = useState<
-		IDelimitationArea[]
-	>([
-		{
-			points: [
-				{ x: 797, y: 308 },
-				{ x: 1028, y: 308 },
-				{ x: 1028, y: 460 },
-				{ x: 797, y: 460 },
-			],
-			color: "blue80",
-			isEditing: false,
-		},
-		{
-			points: [
-				{ x: 493, y: 811 },
-				{ x: 934, y: 811 },
-				{ x: 934, y: 671 },
-				{ x: 880, y: 671 },
-				{ x: 880, y: 603 },
-				{ x: 537, y: 603 },
-				{ x: 537, y: 561 },
-				{ x: 421, y: 561 },
-				{ x: 419, y: 625 },
-				{ x: 491, y: 625 },
-				{ x: 491, y: 810 },
-			],
-			color: "purple80",
-			isEditing: false,
-		},
-		{
-			points: [
-				{ x: 419, y: 498.28125 },
-				{ x: 701, y: 498.28125 },
-				{ x: 701, y: 511.28125 },
-				{ x: 760, y: 514.28125 },
-				{ x: 760, y: 390.28125 },
-				{ x: 443, y: 391.28125 },
-				{ x: 443, y: 427.28125 },
-				{ x: 415, y: 428.28125 },
-			],
-			color: "yellow80",
-			isEditing: false,
-		},
-	]);
-
-	const [image] = useImage(
-		"https://images.adsttc.com/media/images/5e4d/5730/6ee6/7e29/3700/03bc/slideshow/Unit_Kharkiv_Ground_Floor.jpg?1582126824"
-	);
+	const { delimiting, setType, handleGetMenuType, setClickTargetName } =
+		useEditorMenu();
 
 	const [limitWidth, setLimitWidth] = useState(0);
 	const [limitHeight, setLimitHeight] = useState(0);
@@ -254,7 +180,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 	const handleDragStageStart = (e: KonvaEventObject<DragEvent>) => {
 		e.evt.preventDefault();
 
-		if (e.target.id() === "STAGE") {
+		if (e.target.name() === "STAGE") {
 			if (e.evt.buttons === 1 && !isSpaceBarPressed) {
 				e.target.stopDrag();
 			} else {
@@ -266,7 +192,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 	const handleDragStage = (e: KonvaEventObject<DragEvent>): void => {
 		e.evt.preventDefault();
 
-		if (e.target.id() === "STAGE") {
+		if (e.target.name() === "STAGE") {
 			const currentStageRef = stageRef.current;
 			const stage = currentStageRef?.getStage();
 
@@ -300,7 +226,6 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 					});
 				}
 			} else {
-				console.log("exec");
 				e.target.stopDrag();
 				e.target.setPosition({
 					x: e.target.x() - e.evt.movementX,
@@ -311,7 +236,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 	};
 
 	const handleDragStageEnd = (e: KonvaEventObject<DragEvent>) => {
-		if (e.target.id() === "STAGE") {
+		if (e.target.name() === "STAGE") {
 			if (isSpaceBarPressed) {
 				document.body.style.cursor = "grab";
 			} else {
@@ -356,8 +281,15 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 
 	const handleMouseClick = (e: KonvaEventObject<MouseEvent>): void => {
 		if (e.evt.buttons === 1) {
-			setClickPosition(e.currentTarget.getRelativePointerPosition());
+			handleStageClick(
+				e.target.name(),
+				e.currentTarget.getRelativePointerPosition()
+			);
 		}
+	};
+
+	const handleContextMenu = (e: KonvaEventObject<PointerEvent>) => {
+		setClickTargetName(e.target.name());
 	};
 
 	return (
@@ -370,9 +302,9 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 			onKeyDown={handleSpaceBarKeyDown}
 			onKeyUp={handleSpaceBarKeyUp}
 		>
-			<ContextMenu content={<EditorMenu />}>
+			<ContextMenu content={handleGetMenuType()}>
 				<Stage
-					id="STAGE"
+					name="STAGE"
 					width={width}
 					height={height}
 					onWheel={handleScroll}
@@ -384,27 +316,33 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 					onDragEnd={handleDragStageEnd}
 					onMouseMove={handleMouseMove}
 					onMouseDown={handleMouseClick}
+					onContextMenu={handleContextMenu}
 					style={{ background: "rgba(100,100,100, 0.8)" }}
 				>
 					<Layer>
 						{image && (
 							<Image
+								name="STAGE-IMG"
 								key={0}
 								x={(limitWidth - Number(image.width)) / 2}
 								y={0}
 								image={image}
 								opacity={0.8}
+								onContextMenu={() => setType("stage")}
 							/>
 						)}
 
-						{delimitationAreas.map((delimitationArea) =>
+						{delimitationAreas.map((delimitationArea, idx) =>
 							!delimitationArea.isEditing ? (
-								<DelimitationArea metadata={delimitationArea} />
+								<DelimitationArea
+									name={`DELIMITATION-AREA-${idx}`}
+									metadata={delimitationArea}
+									key={`DELIMITATION-AREA-${idx}`}
+								/>
 							) : (
 								<PolygonDraw
+									key={`POLYGON-DRAW-${idx}`}
 									mousePos={mousePos}
-									drawPos={delimitationArea.points}
-									closed
 								/>
 							)
 						)}

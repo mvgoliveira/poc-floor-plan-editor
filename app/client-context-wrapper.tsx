@@ -10,8 +10,8 @@ export default function ClientContextWrapper({
 	children: React.ReactNode;
 }): ReactElement {
 	return (
-		<AppContextProvider>
-			<EditorMenuContextProvider>{children}</EditorMenuContextProvider>
-		</AppContextProvider>
+		<EditorMenuContextProvider>
+			<AppContextProvider>{children}</AppContextProvider>
+		</EditorMenuContextProvider>
 	);
 }

@@ -1,10 +1,16 @@
+import { EditorMenu } from "@/components/menu/editor";
+import { EditorDelimiterMenu } from "@/components/menu/editorDelimiter";
+
 import {
 	createContext,
 	Dispatch,
+	ReactElement,
 	ReactNode,
 	SetStateAction,
 	useState,
 } from "react";
+
+type MenuType = "stage" | "delimiter";
 
 type EditorMenuContextProviderPropsType = {
 	children: ReactNode;
@@ -14,7 +20,11 @@ type EditorMenuContextType = {
 	hiddenUi: boolean;
 	setHiddenUi: Dispatch<SetStateAction<boolean>>;
 	delimiting: boolean;
-	handleChangeDelimiter: (option: boolean) => void;
+	handleChangeDelimiting: (option: boolean) => void;
+	setType: Dispatch<SetStateAction<MenuType>>;
+	handleGetMenuType: () => ReactElement;
+	clickTargetName: string;
+	setClickTargetName: Dispatch<SetStateAction<string>>;
 };
 
 export const EditorMenuContext = createContext({} as EditorMenuContextType);
@@ -22,11 +32,20 @@ export const EditorMenuContext = createContext({} as EditorMenuContextType);
 export function EditorMenuContextProvider(
 	props: EditorMenuContextProviderPropsType
 ) {
+	const [type, setType] = useState<MenuType>("stage");
 	const [hiddenUi, setHiddenUi] = useState(false);
-	const [delimiting, setDelimiter] = useState(false);
+	const [delimiting, setDelimiting] = useState(false);
+	const [clickTargetName, setClickTargetName] = useState("");
 
-	const handleChangeDelimiter = (option: boolean) => {
-		setDelimiter(option);
+	const handleChangeDelimiting = (option: boolean) => {
+		setDelimiting(option);
+	};
+
+	const handleGetMenuType = (): ReactElement => {
+		if (type === "delimiter") {
+			return <EditorDelimiterMenu />;
+		}
+		return <EditorMenu />;
 	};
 
 	return (
@@ -35,7 +54,11 @@ export function EditorMenuContextProvider(
 				hiddenUi,
 				setHiddenUi,
 				delimiting,
-				handleChangeDelimiter,
+				handleChangeDelimiting,
+				setType,
+				handleGetMenuType,
+				clickTargetName,
+				setClickTargetName,
 			}}
 		>
 			{props.children}

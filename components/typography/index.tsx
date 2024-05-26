@@ -20,7 +20,7 @@ export interface ITypography extends IReactChildren {
 	fontWeight?: "regular" | "medium" | "semibold" | "bold";
 	fontSize?: FontSizeBreakpoints;
 	fontFamily?: keyof typeof Theme.fontFamily;
-	textAlign?: string;
+	$textAlign?: string;
 }
 
 const Typography = ({
@@ -36,7 +36,7 @@ const Typography = ({
 		xl: "fs100",
 		xxl: "fs100",
 	},
-	textAlign = "left",
+	$textAlign = "left",
 	children,
 }: ITypography): ReactElement => {
 	let size: keyof typeof Theme.fontSize | undefined = "fs100";
@@ -59,7 +59,7 @@ const Typography = ({
 			color={color}
 			fontWeight={fontWeight}
 			fontFamily={fontFamily}
-			textAlign={textAlign}
+			$textAlign={$textAlign}
 			fontSize={fontSize}
 		>
 			{children}

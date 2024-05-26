@@ -1,5 +1,5 @@
 import { IReactChildren } from "@/interfaces/core";
-import { MouseEventHandler, ReactElement, useEffect, useState } from "react";
+import { ReactElement } from "react";
 import * as RdxContextMenu from "@radix-ui/react-context-menu";
 import {
 	HorizontalLine,
@@ -11,8 +11,7 @@ import {
 	StyleSubTrigger,
 } from "./styles";
 import { Typography } from "@/components/typography";
-import { MdCheck, MdChevronRight } from "react-icons/md";
-import { Theme } from "@/themes";
+import { MdChevronRight } from "react-icons/md";
 import { FaCheck } from "react-icons/fa6";
 
 interface IContextMenuProps {
@@ -62,6 +61,7 @@ ContextMenu.Label = Label;
 
 interface IItemProps {
 	text: string;
+	type?: "default" | "danger";
 	icon?: ReactElement;
 	disabled?: boolean;
 	onClick?: () => void;
@@ -69,6 +69,7 @@ interface IItemProps {
 
 const Item = ({
 	text,
+	type = "default",
 	icon,
 	disabled = false,
 	onClick,
@@ -77,6 +78,7 @@ const Item = ({
 		className="ContextMenuItem"
 		disabled={disabled}
 		onClick={onClick}
+		type={type}
 	>
 		<div style={{ display: "flex", gap: 5 }}>
 			<IconContainer>{icon}</IconContainer>
@@ -101,6 +103,7 @@ interface ICheckItemProps {
 	isActive?: boolean;
 	disabled?: boolean;
 	onClick?: () => void;
+	type?: "default" | "danger";
 }
 
 const CheckItem = ({
@@ -108,8 +111,9 @@ const CheckItem = ({
 	onClick,
 	isActive = true,
 	disabled = false,
+	type = "default",
 }: ICheckItemProps): ReactElement => (
-	<StyleItem onClick={onClick} disabled={disabled}>
+	<StyleItem onClick={onClick} disabled={disabled} type={type}>
 		<div style={{ display: "flex", gap: 5 }}>
 			<IconContainer>{isActive && <FaCheck size={10} />}</IconContainer>
 

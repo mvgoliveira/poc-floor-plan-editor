@@ -18,9 +18,14 @@ export const Theme = {
 		black: "#000",
 
 		blue80: "#1665EE",
+
 		yellow80: "#FFB800",
-		red80: "#FF000F",
+
 		purple80: "#5200FF",
+
+		red80: "#FF000F",
+		red90: "#D13939",
+		red100: "#472828",
 	},
 	fontSize: {
 		fs50: "0.667rem", // 10px

@@ -5,7 +5,7 @@ import { forwardRef, ReactElement } from "react";
 interface IPrimaryButtonProps {
 	text?: string;
 	icon?: ReactElement;
-	iconPosition?: "left" | "right";
+	$iconPosition?: "left" | "right";
 	height?: string;
 	width?: string;
 	padding?: string;
@@ -18,7 +18,7 @@ export const PrimaryButton = forwardRef<HTMLButtonElement, IPrimaryButtonProps>(
 			height = "100%",
 			width = "100%",
 			padding = "0 15px",
-			iconPosition = "left",
+			$iconPosition = "left",
 			icon,
 			text,
 		} = props;
@@ -31,7 +31,7 @@ export const PrimaryButton = forwardRef<HTMLButtonElement, IPrimaryButtonProps>(
 				ref={ref}
 				{...props}
 			>
-				{iconPosition === "left" && icon}
+				{$iconPosition === "left" && icon}
 
 				<Typography
 					tag="p"
@@ -43,7 +43,7 @@ export const PrimaryButton = forwardRef<HTMLButtonElement, IPrimaryButtonProps>(
 					{text}
 				</Typography>
 
-				{iconPosition === "right" && icon}
+				{$iconPosition === "right" && icon}
 			</Container>
 		);
 	}

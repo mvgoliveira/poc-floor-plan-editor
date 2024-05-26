@@ -1,4 +1,5 @@
 import { ContextMenu } from "@/components/contextMenu";
+import { useApp } from "@/hooks/useApp";
 import { useEditorMenu } from "@/hooks/useEditorMenu";
 import { ReactElement } from "react";
 import { BiSelection } from "react-icons/bi";
@@ -11,8 +12,11 @@ import {
 	MdZoomIn,
 	MdZoomOut,
 } from "react-icons/md";
+import { RiShape2Line } from "react-icons/ri";
+import { TbShapeOff } from "react-icons/tb";
 
-export const EditorMenu = (): ReactElement => {
+export const EditorDelimiterMenu = (): ReactElement => {
+	const { handleEditDelimitation } = useApp();
 	const { hiddenUi, setHiddenUi, handleChangeDelimiting } = useEditorMenu();
 
 	const handleClickUiVisibility = (): void => {
@@ -21,6 +25,22 @@ export const EditorMenu = (): ReactElement => {
 
 	return (
 		<ContextMenu.Content>
+			<ContextMenu.Label text="Delimitação" />
+
+			<ContextMenu.Item
+				text="Editar"
+				onClick={handleEditDelimitation}
+				icon={<RiShape2Line size={15} />}
+			/>
+
+			<ContextMenu.Item
+				text="Remover"
+				type="danger"
+				icon={<TbShapeOff size={15} />}
+			/>
+
+			<ContextMenu.DelimiterLine />
+
 			<ContextMenu.Label text="Aplicação" />
 
 			<ContextMenu.Sub
@@ -55,7 +75,9 @@ export const EditorMenu = (): ReactElement => {
 			/>
 
 			<ContextMenu.DelimiterLine />
+
 			<ContextMenu.Label text="Layout" />
+
 			<ContextMenu.CheckItem
 				text="Mostrar UI"
 				isActive={!hiddenUi}

@@ -31,6 +31,7 @@ export type DataItemStats = {
 };
 
 export interface IDelimitationArea {
+	id: string;
 	points: Vector2d[];
 	color: keyof typeof Theme.colors;
 	isEditing: boolean;
