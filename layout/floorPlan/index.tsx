@@ -8,6 +8,7 @@ import { ContextMenu } from "@/components/contextMenu";
 import { useEditorMenu } from "@/hooks/useEditorMenu";
 import { PolygonDraw } from "@/components/polygonDraw";
 import { Vector2d } from "konva/lib/types";
+import { useData } from "@/hooks/useData";
 
 interface IFloorPlanProps {
 	width: number;
@@ -22,12 +23,11 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		stageRef,
 		minScale,
 		maxScale,
-		assets,
-		delimitationAreas,
-		image,
 		handleStageClick,
 		handleOpenContextMenu,
 	} = useApp();
+
+	const { assets, delimitationAreas, image } = useData();
 
 	const currentStageRef = stageRef.current;
 	const stage = currentStageRef?.getStage();

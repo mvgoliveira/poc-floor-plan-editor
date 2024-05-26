@@ -1,5 +1,4 @@
 import { ContextMenu } from "@/components/contextMenu";
-import { useApp } from "@/hooks/useApp";
 import { useEditorMenu } from "@/hooks/useEditorMenu";
 import { ReactElement } from "react";
 import { BiSelection } from "react-icons/bi";
@@ -16,7 +15,6 @@ import { RiShape2Line } from "react-icons/ri";
 import { TbShapeOff } from "react-icons/tb";
 
 export const EditorDelimitingMenu = (): ReactElement => {
-	const {} = useApp();
 	const { hiddenUi, setHiddenUi, handleChangeDelimiting } = useEditorMenu();
 
 	const handleClickUiVisibility = (): void => {

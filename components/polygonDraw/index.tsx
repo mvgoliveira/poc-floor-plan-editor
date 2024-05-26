@@ -1,4 +1,5 @@
 import { useApp } from "@/hooks/useApp";
+import { useData } from "@/hooks/useData";
 import { useEditorMenu } from "@/hooks/useEditorMenu";
 import { Theme } from "@/themes";
 import { KonvaEventObject } from "konva/lib/Node";
@@ -11,15 +12,14 @@ interface IPolygonDrawProps {
 }
 
 export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
+	const { scale, clickPosition, stageRef } = useApp();
+
 	const {
-		scale,
-		clickPosition,
-		stageRef,
 		delimiterClosed,
 		setDelimiterClosed,
 		delimiterDraw,
 		setDelimiterDraw,
-	} = useApp();
+	} = useData();
 
 	const { setType } = useEditorMenu();
 

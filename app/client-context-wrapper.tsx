@@ -3,6 +3,7 @@
 import { ReactElement } from "react";
 import { AppContextProvider } from "@/contexts/appContext";
 import { EditorMenuContextProvider } from "@/contexts/editorMenuContext";
+import { DataContextProvider } from "@/contexts/dataContext";
 
 export default function ClientContextWrapper({
 	children,
@@ -11,7 +12,9 @@ export default function ClientContextWrapper({
 }): ReactElement {
 	return (
 		<EditorMenuContextProvider>
-			<AppContextProvider>{children}</AppContextProvider>
+			<DataContextProvider>
+				<AppContextProvider>{children}</AppContextProvider>
+			</DataContextProvider>
 		</EditorMenuContextProvider>
 	);
 }
