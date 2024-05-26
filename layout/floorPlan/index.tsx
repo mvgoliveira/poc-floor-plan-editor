@@ -1,6 +1,6 @@
 import { useApp } from "@/hooks/useApp";
 import { KonvaEventObject } from "konva/lib/Node";
-import { KeyboardEvent, ReactElement, useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 import { Image, Layer, Stage } from "react-konva";
 import { Assets } from "./components/assets";
 import { DelimitationArea } from "./components/delimitationArea";
@@ -39,6 +39,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 	const [limitHeight, setLimitHeight] = useState(0);
 
 	const [isSpaceBarPressed, setIsSpaceBarPressed] = useState(false);
+	const [isCtrlLeftPressed, setIsCtrlLeftPressed] = useState(false);
 
 	const [mousePos, setMousePos] = useState<Vector2d | null>(null);
 
@@ -182,7 +183,11 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		e.evt.preventDefault();
 
 		if (e.target.name() === "STAGE") {
-			if (e.evt.buttons === 1 && !isSpaceBarPressed) {
+			if (
+				e.evt.buttons === 1 &&
+				!isSpaceBarPressed &&
+				!isCtrlLeftPressed
+			) {
 				e.target.stopDrag();
 			} else {
 				document.body.style.cursor = "grabbing";
@@ -197,7 +202,10 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 			const currentStageRef = stageRef.current;
 			const stage = currentStageRef?.getStage();
 
-			if (stage && (e.evt.buttons === 4 || isSpaceBarPressed)) {
+			if (
+				stage &&
+				(e.evt.buttons === 4 || isSpaceBarPressed || isCtrlLeftPressed)
+			) {
 				const newX = -e.target.x() / stage.scaleX();
 				const newY = -e.target.y() / stage.scaleY();
 
@@ -238,7 +246,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 
 	const handleDragStageEnd = (e: KonvaEventObject<DragEvent>) => {
 		if (e.target.name() === "STAGE") {
-			if (isSpaceBarPressed) {
+			if (isSpaceBarPressed || isCtrlLeftPressed) {
 				document.body.style.cursor = "grab";
 			} else {
 				document.body.style.cursor = "default";
@@ -262,14 +270,22 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		}
 	};
 
-	const handleSpaceBarKeyDown = (e: KeyboardEvent<HTMLDivElement>): void => {
+	const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>): void => {
+		if (e.code === "ControlLeft" && !isCtrlLeftPressed) {
+			document.body.style.cursor = "grab";
+			setIsCtrlLeftPressed(true);
+		}
 		if (e.code === "Space" && !isSpaceBarPressed) {
 			document.body.style.cursor = "grab";
 			setIsSpaceBarPressed(true);
 		}
 	};
 
-	const handleSpaceBarKeyUp = (e: KeyboardEvent<HTMLDivElement>): void => {
+	const handleKeyUp = (e: KeyboardEvent<HTMLDivElement>): void => {
+		if (e.code === "ControlLeft" && isCtrlLeftPressed) {
+			document.body.style.cursor = "default";
+			setIsCtrlLeftPressed(false);
+		}
 		if (e.code === "Space" && isSpaceBarPressed) {
 			document.body.style.cursor = "default";
 			setIsSpaceBarPressed(false);
@@ -302,8 +318,8 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 				outline: "none",
 				overflow: "hidden",
 			}}
-			onKeyDown={handleSpaceBarKeyDown}
-			onKeyUp={handleSpaceBarKeyUp}
+			onKeyDown={handleKeyDown}
+			onKeyUp={handleKeyUp}
 		>
 			<ContextMenu content={handleGetMenuType()}>
 				<Stage
