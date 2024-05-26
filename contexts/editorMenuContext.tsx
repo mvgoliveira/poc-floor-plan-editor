@@ -1,5 +1,6 @@
 import { EditorMenu } from "@/components/menu/editor";
 import { EditorDelimiterMenu } from "@/components/menu/editorDelimiter";
+import { EditorDelimitingMenu } from "@/components/menu/editorDelimiting";
 
 import {
 	createContext,
@@ -10,7 +11,7 @@ import {
 	useState,
 } from "react";
 
-type MenuType = "stage" | "delimiter";
+type MenuType = "stage" | "delimiter" | "delimiting";
 
 type EditorMenuContextProviderPropsType = {
 	children: ReactNode;
@@ -42,10 +43,16 @@ export function EditorMenuContextProvider(
 	};
 
 	const handleGetMenuType = (): ReactElement => {
-		if (type === "delimiter") {
-			return <EditorDelimiterMenu />;
+		switch (type) {
+			case "delimiter":
+				return <EditorDelimiterMenu />;
+
+			case "delimiting":
+				return <EditorDelimitingMenu />;
+
+			default:
+				return <EditorMenu />;
 		}
-		return <EditorMenu />;
 	};
 
 	return (

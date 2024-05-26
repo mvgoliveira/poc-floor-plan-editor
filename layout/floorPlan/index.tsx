@@ -26,6 +26,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		delimitationAreas,
 		image,
 		handleStageClick,
+		handleOpenContextMenu,
 	} = useApp();
 
 	const currentStageRef = stageRef.current;
@@ -290,10 +291,8 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 
 	const handleContextMenu = (e: KonvaEventObject<PointerEvent>) => {
 		setClickTargetName(e.target.name());
-		handleStageClick(
-			e.target.name(),
-			e.currentTarget.getRelativePointerPosition()
-		);
+
+		handleOpenContextMenu(e.target.name());
 	};
 
 	return (

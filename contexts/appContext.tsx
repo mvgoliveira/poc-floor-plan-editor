@@ -44,6 +44,7 @@ type AppContextType = {
 	setDelimiterDraw: Dispatch<SetStateAction<IDelimitationArea>>;
 	handleEditDelimitation: () => void;
 	handleDeleteDelimitation: () => void;
+	handleOpenContextMenu: (targetName: string) => void;
 };
 
 export const AppContext = createContext({} as AppContextType);
@@ -152,6 +153,11 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 			color: "blue80",
 			points: [],
 		});
+
+		setDelimitationAreas((prevState) => [
+			...prevState,
+			{ ...delimiterDraw },
+		]);
 	};
 
 	const changeZoomByScale = (scale: number): void => {
@@ -164,6 +170,18 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 
 	const getScaleByZoom = (zoom: number): number => {
 		return (Number(zoom) * (maxScale - minScale)) / maxZoom + minScale;
+	};
+
+	const handleOpenContextMenu = (targetName: string) => {
+		if (
+			delimiting &&
+			delimiterClosed &&
+			targetName !== "DRAW-FILL" &&
+			targetName !== "DRAW-STROKE" &&
+			targetName !== "DRAW-CIRCLE"
+		) {
+			resetVariables();
+		}
 	};
 
 	const handleStageClick = (
@@ -179,17 +197,12 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 			targetName !== "DRAW-STROKE" &&
 			targetName !== "DRAW-CIRCLE"
 		) {
-			setDelimitationAreas((prevState) => [
-				...prevState,
-				{ ...delimiterDraw },
-			]);
-
 			resetVariables();
 		}
 	};
 
 	const handleEditDelimitation = () => {
-		if (!delimiting) {
+		if (!delimiting && clickTargetName.match("DELIMITATION-AREA-")) {
 			const index = delimitationAreas.findIndex(
 				(delimitationArea) =>
 					delimitationArea.id ===
@@ -211,22 +224,7 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 	};
 
 	const handleDeleteDelimitation = () => {
-		if (!delimiting) {
-			const index = delimitationAreas.findIndex(
-				(delimitationArea) =>
-					delimitationArea.id ===
-					clickTargetName.replace("DELIMITATION-AREA-", "")
-			);
-
-			const newDelimitationAreas: IDelimitationArea[] = [
-				...delimitationAreas.slice(0, index),
-				...delimitationAreas.slice(index + 1),
-			];
-
-			setDelimitationAreas(newDelimitationAreas);
-		} else {
-			resetVariables();
-
+		if (!delimiting && clickTargetName.match("DELIMITATION-AREA-")) {
 			const index = delimitationAreas.findIndex(
 				(delimitationArea) =>
 					delimitationArea.id ===
@@ -281,6 +279,7 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 				setDelimiterDraw,
 				handleEditDelimitation,
 				handleDeleteDelimitation,
+				handleOpenContextMenu,
 			}}
 		>
 			{props.children}

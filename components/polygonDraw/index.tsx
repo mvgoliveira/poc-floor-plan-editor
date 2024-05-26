@@ -21,6 +21,8 @@ export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
 		setDelimiterDraw,
 	} = useApp();
 
+	const { setType } = useEditorMenu();
+
 	const currentStageRef = stageRef.current;
 	const stage = currentStageRef?.getStage();
 
@@ -134,6 +136,7 @@ export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
 					fill={Theme.colors[delimiterDraw.color]}
 					opacity={0.4}
 					closed={true}
+					onContextMenu={() => setType("delimiting")}
 				/>
 			)}
 
@@ -144,6 +147,7 @@ export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
 				stroke={Theme.colors[delimiterDraw.color]}
 				strokeWidth={2}
 				closed={delimiterClosed}
+				onContextMenu={() => setType("delimiting")}
 			/>
 
 			{stage &&
@@ -164,6 +168,7 @@ export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
 						onDragStart={handleDragStart}
 						onDragMove={(e) => handleDragMove(e, idx)}
 						onDragEnd={handleDragEnd}
+						onContextMenu={() => setType("delimiting")}
 					/>
 				))}
 		</>
