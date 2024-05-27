@@ -21,7 +21,7 @@ export const EditorMenu = (): ReactElement => {
 
 	const handleClickNewDelimiter = (e: MouseEvent<HTMLDivElement>) => {
 		e.preventDefault();
-		setType("delimiter-color");
+		setType("delimiting-color");
 	};
 
 	return (

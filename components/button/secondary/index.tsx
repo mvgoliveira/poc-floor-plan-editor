@@ -1,6 +1,6 @@
 import { Typography } from "@/components/typography";
 import { Container } from "./styles";
-import { forwardRef, ReactElement } from "react";
+import { forwardRef, MouseEventHandler, ReactElement } from "react";
 
 interface ISecondaryButtonProps {
 	text?: string;
@@ -9,7 +9,7 @@ interface ISecondaryButtonProps {
 	height?: string;
 	width?: string;
 	padding?: string;
-	onClick?: () => any;
+	onClick?: MouseEventHandler<HTMLDivElement>;
 }
 
 export const SecondaryButton = (props: ISecondaryButtonProps): ReactElement => {

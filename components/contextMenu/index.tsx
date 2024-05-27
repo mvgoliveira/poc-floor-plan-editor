@@ -220,15 +220,17 @@ interface IButtonProps {
 	height?: string;
 	width?: string;
 	padding?: string;
-	onClick?: () => any;
+	onClick?: MouseEventHandler<HTMLDivElement>;
 }
 
 const Button = (props: IButtonProps): ReactElement => {
-	const { variant } = props;
+	const { variant, onClick } = props;
 
 	return (
 		<>
-			{variant === "primary" && <PrimaryButton {...props} />}
+			{variant === "primary" && (
+				<PrimaryButton onClick={onClick} {...props} />
+			)}
 
 			{variant === "secondary" && <SecondaryButton {...props} />}
 		</>

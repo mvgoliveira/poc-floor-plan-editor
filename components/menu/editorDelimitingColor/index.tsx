@@ -23,7 +23,7 @@ export const EditorDelimitingColorMenu = (): ReactElement => {
 
 	return (
 		<ContextMenu.Content>
-			<ContextMenu.Label text="Alterar cor" />
+			<ContextMenu.Label text="Escolher cor" />
 
 			<ContextMenu.ColorPicker
 				selectedColor={selectedColor}

@@ -126,7 +126,7 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 
 	const [delimiterDraw, setDelimiterDraw] = useState<TDelimitationArea>({
 		id: uuid(),
-		color: Theme.colors.black,
+		color: delimiterDrawColor,
 		points: [],
 	});
 
@@ -237,6 +237,15 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 			}));
 		}
 	}, [delimitationAreas]);
+
+	useEffect(() => {
+		if (delimiterDrawColor) {
+			setDelimiterDraw((prevState) => ({
+				...prevState,
+				color: delimiterDrawColor,
+			}));
+		}
+	}, [delimiterDrawColor]);
 
 	return (
 		<DataContext.Provider
