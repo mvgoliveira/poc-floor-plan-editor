@@ -1,12 +1,13 @@
 import { ContextMenu } from "@/components/contextMenu";
 import { useData } from "@/hooks/useData";
 import { useEditorMenu } from "@/hooks/useEditorMenu";
-import { ReactElement } from "react";
+import { MouseEvent, ReactElement } from "react";
 import { BiSelection } from "react-icons/bi";
 import { HiOutlineViewGridAdd } from "react-icons/hi";
 import {
 	MdDataSaverOn,
 	MdDeviceHub,
+	MdFormatColorFill,
 	MdRefresh,
 	MdSelectAll,
 	MdZoomIn,
@@ -16,11 +17,16 @@ import { RiShape2Line } from "react-icons/ri";
 import { TbShapeOff } from "react-icons/tb";
 
 export const EditorDelimitingMenu = (): ReactElement => {
-	const { hiddenUi, setHiddenUi, setDelimiting } = useEditorMenu();
+	const { hiddenUi, setHiddenUi, setDelimiting, setType } = useEditorMenu();
 	const { handleCancelDelimitation } = useData();
 
 	const handleClickUiVisibility = (): void => {
 		setHiddenUi((prevState) => !prevState);
+	};
+
+	const handleClickNewDelimiter = (e: MouseEvent<HTMLDivElement>) => {
+		e.preventDefault();
+		setType("delimiter-draw-color");
 	};
 
 	return (
@@ -31,6 +37,12 @@ export const EditorDelimitingMenu = (): ReactElement => {
 				text="Editar"
 				disabled
 				icon={<RiShape2Line size={15} />}
+			/>
+
+			<ContextMenu.Item
+				text="Alterar cor"
+				icon={<MdFormatColorFill size={15} />}
+				onClick={handleClickNewDelimiter}
 			/>
 
 			<ContextMenu.Item

@@ -9,16 +9,19 @@ import {
 	ReactElement,
 	ReactNode,
 	SetStateAction,
+	useEffect,
 	useState,
 } from "react";
 import { EditorDelimitingColorMenu } from "@/components/menu/editorDelimitingColor";
+import { EditorDelimiterDrawColorMenu } from "@/components/menu/editorDelimiterDrawColor";
 
 type MenuType =
 	| "stage"
 	| "delimiter"
 	| "delimiter-color"
 	| "delimiting"
-	| "delimiting-color";
+	| "delimiting-color"
+	| "delimiter-draw-color";
 
 type EditorMenuContextProviderPropsType = {
 	children: ReactNode;
@@ -63,6 +66,9 @@ export function EditorMenuContextProvider(
 
 			case "delimiting-color":
 				return <EditorDelimitingColorMenu />;
+
+			case "delimiter-draw-color":
+				return <EditorDelimiterDrawColorMenu />;
 
 			default:
 				return <EditorMenu />;

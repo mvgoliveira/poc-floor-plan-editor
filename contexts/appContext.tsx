@@ -71,7 +71,12 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 	};
 
 	const handleOpenContextMenu = (targetName: string) => {
-		if (targetName.match("DELIMITATION-AREA-")) {
+		if (
+			targetName.startsWith("DELIMITATION-AREA-") ||
+			targetName === "DRAW-FILL" ||
+			targetName === "DRAW-STROKE" ||
+			targetName === "DRAW-CIRCLE"
+		) {
 			setClickTargetColor(getDelimiterColor(targetName));
 		} else {
 			setClickTargetColor(null);

@@ -4,28 +4,38 @@ import { useEditorMenu } from "@/hooks/useEditorMenu";
 import { Theme } from "@/themes";
 import { ReactElement, useEffect, useState } from "react";
 
-export const EditorDelimitingColorMenu = (): ReactElement => {
-	const { setDelimiterDrawColor, handleCancelDelimitation } = useData();
-	const { setDelimiting } = useEditorMenu();
+export const EditorDelimiterDrawColorMenu = (): ReactElement => {
+	const { setDelimiterDrawColor } = useData();
+	const { setDelimiting, clickTargetColor } = useEditorMenu();
 
 	const [selectedColor, setSelectedColor] = useState<string>(
 		Theme.colors.blue70
 	);
 
 	const handleChoseColor = () => {
-		setDelimiterDrawColor(selectedColor);
 		setDelimiting(true);
 	};
 
 	const handleCancel = () => {
-		handleCancelDelimitation();
+		setDelimiterDrawColor(selectedColor);
 	};
+
+	useEffect(() => {
+		setDelimiterDrawColor(selectedColor);
+	}, [selectedColor]);
+
+	useEffect(() => {
+		if (clickTargetColor) {
+			setSelectedColor(clickTargetColor);
+		}
+	}, [clickTargetColor]);
 
 	return (
 		<ContextMenu.Content>
-			<ContextMenu.Label text="Escolher cor" />
+			<ContextMenu.Label text="Alterar cor" />
 
 			<ContextMenu.ColorPicker
+				defaultColor={clickTargetColor ? clickTargetColor : undefined}
 				selectedColor={selectedColor}
 				onChange={setSelectedColor}
 				swatches={["blue70", "red70", "yellow70"]}

@@ -131,14 +131,22 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 	});
 
 	const getDelimiterColor = (targetName: string): string | null => {
-		const delimitationArea = delimitationAreas.findLast(
-			(delimitationArea) =>
-				delimitationArea.id ===
-				targetName.replace("DELIMITATION-AREA-", "")
-		);
+		if (targetName.startsWith("DELIMITATION-AREA-")) {
+			const delimitationArea = delimitationAreas.findLast(
+				(delimitationArea) =>
+					delimitationArea.id ===
+					targetName.replace("DELIMITATION-AREA-", "")
+			);
 
-		if (delimitationArea) {
-			return delimitationArea.color;
+			if (delimitationArea) {
+				return delimitationArea.color;
+			}
+		} else if (
+			targetName === "DRAW-FILL" ||
+			targetName === "DRAW-STROKE" ||
+			targetName === "DRAW-CIRCLE"
+		) {
+			return delimiterDraw.color;
 		}
 
 		return null;
@@ -148,7 +156,7 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 		delimitationName: string,
 		newColor: string
 	) => {
-		if (delimitationName.match("DELIMITATION-AREA-")) {
+		if (delimitationName.startsWith("DELIMITATION-AREA-")) {
 			const index = delimitationAreas.findIndex(
 				(delimitationArea) =>
 					delimitationArea.id ===
@@ -187,7 +195,7 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 	};
 
 	const handleEditDelimitation = () => {
-		if (!delimiting && clickTargetName.match("DELIMITATION-AREA-")) {
+		if (!delimiting && clickTargetName.startsWith("DELIMITATION-AREA-")) {
 			const index = delimitationAreas.findIndex(
 				(delimitationArea) =>
 					delimitationArea.id ===
@@ -209,7 +217,7 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 	};
 
 	const handleDeleteDelimitation = () => {
-		if (!delimiting && clickTargetName.match("DELIMITATION-AREA-")) {
+		if (!delimiting && clickTargetName.startsWith("DELIMITATION-AREA-")) {
 			const index = delimitationAreas.findIndex(
 				(delimitationArea) =>
 					delimitationArea.id ===
