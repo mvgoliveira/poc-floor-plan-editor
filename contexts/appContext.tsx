@@ -41,10 +41,15 @@ type AppContextType = {
 export const AppContext = createContext({} as AppContextType);
 
 export function AppContextProvider(props: AppContextProviderPropsType) {
-	const { delimiting } = useEditorMenu();
+	const { delimiting, setClickTargetName, setClickTargetColor } =
+		useEditorMenu();
 
-	const { saveDelimitation, delimiterClosed, handleCancelDelimitation } =
-		useData();
+	const {
+		saveDelimitation,
+		delimiterClosed,
+		handleCancelDelimitation,
+		getDelimiterColor,
+	} = useData();
 
 	const [zoom, setZoom] = useState(0);
 	const [scale, setScale] = useState(1);
@@ -68,6 +73,14 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 	};
 
 	const handleOpenContextMenu = (targetName: string) => {
+		if (targetName.match("DELIMITATION-AREA-")) {
+			setClickTargetColor(getDelimiterColor(targetName));
+		} else {
+			setClickTargetColor(null);
+		}
+
+		setClickTargetName(targetName);
+
 		if (
 			delimiting &&
 			delimiterClosed &&

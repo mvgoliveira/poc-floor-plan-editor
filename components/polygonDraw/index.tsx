@@ -133,7 +133,7 @@ export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
 						obj.x,
 						obj.y,
 					])}
-					fill={Theme.colors[delimiterDraw.color]}
+					fill={delimiterDraw.color}
 					opacity={0.4}
 					closed={true}
 					onContextMenu={() => setType("delimiting")}
@@ -144,7 +144,7 @@ export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
 				key={`polygonDrawStroke`}
 				name="DRAW-STROKE"
 				points={delimiterDraw.points.flatMap((obj) => [obj.x, obj.y])}
-				stroke={Theme.colors[delimiterDraw.color]}
+				stroke={delimiterDraw.color}
 				strokeWidth={2}
 				closed={delimiterClosed}
 				onContextMenu={() => setType("delimiting")}
@@ -158,7 +158,7 @@ export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
 						x={pos.x}
 						y={pos.y}
 						radius={6 / scale}
-						fill={Theme.colors[delimiterDraw.color]}
+						fill={delimiterDraw.color}
 						stroke={Theme.colors.black}
 						strokeWidth={1 / scale}
 						onMouseDown={(e) => handleClickCircle(e, idx)}

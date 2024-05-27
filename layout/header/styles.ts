@@ -13,7 +13,7 @@ export const Input = styled.input`
 	width: 150px;
 	border-radius: 2px;
 	background: transparent;
-	outline: 2px solid ${({ theme }) => theme.colors.blue80};
+	outline: 2px solid ${({ theme }) => theme.colors.blue70};
 	padding: 5px 8px;
 	font-family: ${({ theme }) => theme.fontFamily.roboto};
 	font-size: ${({ theme }) => theme.fontSize.fs75};

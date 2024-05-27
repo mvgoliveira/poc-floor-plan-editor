@@ -1,10 +1,13 @@
 import { IReactChildren } from "@/interfaces/core";
-import { ReactElement } from "react";
+import { MouseEventHandler, ReactElement } from "react";
 import * as RdxContextMenu from "@radix-ui/react-context-menu";
+import { ColorPicker as MantineColorPicker } from "@mantine/core";
 import {
 	HorizontalLine,
 	IconContainer,
 	StyleContent,
+	StyledButtonsContainer,
+	StyledColorPickerContainer,
 	StyleItem,
 	StyleLabel,
 	StyleSubContentContent,
@@ -12,7 +15,10 @@ import {
 } from "./styles";
 import { Typography } from "@/components/typography";
 import { MdChevronRight } from "react-icons/md";
-import { FaCheck } from "react-icons/fa6";
+import { FaCheck } from "react-icons/fa";
+import { Theme } from "@/themes";
+import { PrimaryButton } from "../button/primary";
+import { SecondaryButton } from "../button/secondary";
 
 interface IContextMenuProps {
 	content: ReactElement;
@@ -33,7 +39,7 @@ export const ContextMenu = ({
 
 const Content = ({ children }: IReactChildren): ReactElement => (
 	<RdxContextMenu.Portal>
-		<StyleContent>{children}</StyleContent>
+		<StyleContent data-state="closed">{children}</StyleContent>
 	</RdxContextMenu.Portal>
 );
 Content.displayName = "Content";
@@ -64,7 +70,7 @@ interface IItemProps {
 	type?: "default" | "danger";
 	icon?: ReactElement;
 	disabled?: boolean;
-	onClick?: () => void;
+	onClick?: MouseEventHandler<HTMLDivElement> | undefined;
 }
 
 const Item = ({
@@ -102,7 +108,7 @@ interface ICheckItemProps {
 	text: string;
 	isActive?: boolean;
 	disabled?: boolean;
-	onClick?: () => void;
+	onClick?: MouseEventHandler<HTMLDivElement> | undefined;
 	type?: "default" | "danger";
 }
 
@@ -131,6 +137,37 @@ const CheckItem = ({
 );
 CheckItem.displayName = "CheckItem";
 ContextMenu.CheckItem = CheckItem;
+
+interface IColorPickerProps {
+	defaultColor?: string;
+	selectedColor?: string;
+	swatches: (keyof typeof Theme.colors)[];
+	onChange: (value: string) => void;
+}
+
+const ColorPicker = ({
+	defaultColor,
+	selectedColor,
+	swatches,
+	onChange,
+}: IColorPickerProps): ReactElement => (
+	<StyledColorPickerContainer>
+		<MantineColorPicker
+			defaultValue={defaultColor}
+			value={selectedColor}
+			onChange={onChange}
+			fullWidth
+			size="sm"
+			format="hexa"
+			swatches={swatches.map((swatch) => Theme.colors[swatch])}
+			classNames={{
+				body: "cl-picker-body",
+			}}
+		/>
+	</StyledColorPickerContainer>
+);
+ColorPicker.displayName = "ColorPicker";
+ContextMenu.ColorPicker = ColorPicker;
 
 const Sub = ({
 	children,
@@ -165,6 +202,37 @@ const Sub = ({
 Sub.displayName = "Sub";
 ContextMenu.Sub = Sub;
 
-const DelimiterLine = (): ReactElement => <HorizontalLine />;
-DelimiterLine.displayName = "DelimiterLine";
-ContextMenu.DelimiterLine = DelimiterLine;
+const Separator = (): ReactElement => <HorizontalLine />;
+Separator.displayName = "Separator";
+ContextMenu.Separator = Separator;
+
+const Buttons = ({ children }: IReactChildren): ReactElement => (
+	<StyledButtonsContainer>{children}</StyledButtonsContainer>
+);
+Buttons.displayName = "Buttons";
+ContextMenu.Buttons = Buttons;
+
+interface IButtonProps {
+	variant: "primary" | "secondary";
+	text?: string;
+	icon?: ReactElement;
+	$iconPosition?: "left" | "right";
+	height?: string;
+	width?: string;
+	padding?: string;
+	onClick?: () => any;
+}
+
+const Button = (props: IButtonProps): ReactElement => {
+	const { variant } = props;
+
+	return (
+		<>
+			{variant === "primary" && <PrimaryButton {...props} />}
+
+			{variant === "secondary" && <SecondaryButton {...props} />}
+		</>
+	);
+};
+Button.displayName = "Button";
+Buttons.Button = Button;

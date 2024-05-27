@@ -123,7 +123,7 @@ export const AssetsButton = ({
 							<ActionButton.Menu.Item
 								icon={FaFaucetDrip}
 								size={18}
-								hoverColor="blue80"
+								hoverColor="blue70"
 								onClick={handleMenuItemClick}
 							/>
 						)}
@@ -131,7 +131,7 @@ export const AssetsButton = ({
 							<ActionButton.Menu.Item
 								icon={MdDeviceThermostat}
 								size={25}
-								hoverColor="red80"
+								hoverColor="red70"
 								onClick={handleMenuItemClick}
 							/>
 						)}
@@ -139,7 +139,7 @@ export const AssetsButton = ({
 							<ActionButton.Menu.Item
 								icon={MdBolt}
 								size={25}
-								hoverColor="yellow80"
+								hoverColor="yellow70"
 								onClick={handleMenuItemClick}
 							/>
 						)}

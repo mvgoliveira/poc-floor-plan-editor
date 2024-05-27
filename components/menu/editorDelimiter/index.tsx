@@ -1,12 +1,20 @@
 import { ContextMenu } from "@/components/contextMenu";
 import { useData } from "@/hooks/useData";
 import { useEditorMenu } from "@/hooks/useEditorMenu";
-import { ReactElement } from "react";
+import { Theme } from "@/themes";
+import {
+	MouseEvent,
+	MouseEventHandler,
+	ReactElement,
+	useEffect,
+	useState,
+} from "react";
 import { BiSelection } from "react-icons/bi";
 import { HiOutlineViewGridAdd } from "react-icons/hi";
 import {
 	MdDataSaverOn,
 	MdDeviceHub,
+	MdFormatColorFill,
 	MdRefresh,
 	MdSelectAll,
 	MdZoomIn,
@@ -17,10 +25,16 @@ import { TbShapeOff } from "react-icons/tb";
 
 export const EditorDelimiterMenu = (): ReactElement => {
 	const { handleEditDelimitation, handleDeleteDelimitation } = useData();
-	const { hiddenUi, setHiddenUi, setDelimiting } = useEditorMenu();
+
+	const { hiddenUi, setHiddenUi, setDelimiting, setType } = useEditorMenu();
 
 	const handleClickUiVisibility = (): void => {
 		setHiddenUi((prevState) => !prevState);
+	};
+
+	const handleClickChangeColor = (e: MouseEvent<HTMLDivElement>) => {
+		e.preventDefault();
+		setType("delimiter-color");
 	};
 
 	return (
@@ -34,13 +48,19 @@ export const EditorDelimiterMenu = (): ReactElement => {
 			/>
 
 			<ContextMenu.Item
+				text="Alterar cor"
+				icon={<MdFormatColorFill size={15} />}
+				onClick={handleClickChangeColor}
+			/>
+
+			<ContextMenu.Item
 				text="Remover"
 				type="danger"
 				onClick={handleDeleteDelimitation}
 				icon={<TbShapeOff size={15} />}
 			/>
 
-			<ContextMenu.DelimiterLine />
+			<ContextMenu.Separator />
 
 			<ContextMenu.Label text="Aplicação" />
 
@@ -50,10 +70,12 @@ export const EditorDelimiterMenu = (): ReactElement => {
 			>
 				<ContextMenu.Item
 					text="Ativo"
+					disabled
 					icon={<MdDeviceHub size={15} />}
 				/>
 				<ContextMenu.Item
 					text="Dispositivo"
+					disabled
 					icon={<MdDataSaverOn size={15} />}
 				/>
 				<ContextMenu.Item
@@ -75,7 +97,7 @@ export const EditorDelimiterMenu = (): ReactElement => {
 				icon={<MdRefresh size={15} />}
 			/>
 
-			<ContextMenu.DelimiterLine />
+			<ContextMenu.Separator />
 
 			<ContextMenu.Label text="Layout" />
 

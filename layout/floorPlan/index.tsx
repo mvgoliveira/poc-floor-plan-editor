@@ -310,8 +310,6 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 	};
 
 	const handleContextMenu = (e: KonvaEventObject<PointerEvent>) => {
-		setClickTargetName(e.target.name());
-
 		handleOpenContextMenu(e.target.name());
 	};
 

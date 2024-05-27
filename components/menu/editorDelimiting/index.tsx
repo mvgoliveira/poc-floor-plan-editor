@@ -40,7 +40,7 @@ export const EditorDelimitingMenu = (): ReactElement => {
 				icon={<TbShapeOff size={15} />}
 			/>
 
-			<ContextMenu.DelimiterLine />
+			<ContextMenu.Separator />
 
 			<ContextMenu.Label text="Aplicação" />
 
@@ -51,10 +51,12 @@ export const EditorDelimitingMenu = (): ReactElement => {
 			>
 				<ContextMenu.Item
 					text="Ativo"
+					disabled
 					icon={<MdDeviceHub size={15} />}
 				/>
 				<ContextMenu.Item
 					text="Dispositivo"
+					disabled
 					icon={<MdDataSaverOn size={15} />}
 				/>
 				<ContextMenu.Item
@@ -76,7 +78,7 @@ export const EditorDelimitingMenu = (): ReactElement => {
 				icon={<MdRefresh size={15} />}
 			/>
 
-			<ContextMenu.DelimiterLine />
+			<ContextMenu.Separator />
 
 			<ContextMenu.Label text="Layout" />
 

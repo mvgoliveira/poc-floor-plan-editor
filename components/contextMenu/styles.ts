@@ -2,6 +2,7 @@ import styled from "styled-components";
 import {
 	Content,
 	Item,
+	Separator,
 	SubContent,
 	SubTrigger,
 } from "@radix-ui/react-context-menu";
@@ -68,6 +69,31 @@ export const StyleItem = styled(Item)<{ type: "default" | "danger" }>`
 	}
 `;
 
+export const StyledColorPickerContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	padding: 8px;
+
+	span {
+		background: transparent;
+	}
+
+	.cl-picker-body {
+		padding-top: 10px;
+		margin-bottom: 20px;
+	}
+`;
+
+export const StyledButtonsContainer = styled.div`
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+	gap: 10px;
+	padding: 8px;
+	margin-top: 4px;
+`;
+
 export const StyleSubTrigger = styled(SubTrigger)`
 	display: flex;
 	justify-content: space-between;
@@ -109,7 +135,8 @@ export const IconContainer = styled.div`
 	height: 15px;
 `;
 
-export const HorizontalLine = styled.div`
+export const HorizontalLine = styled(Separator)`
+	display: flex;
 	border-bottom: 1px solid ${({ theme }) => theme.colors.gray60};
 	width: 100%;
 	margin-top: 5px;

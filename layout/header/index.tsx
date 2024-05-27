@@ -1,5 +1,5 @@
 import { Container, Input } from "./styles";
-import { PrimaryButton } from "@/components/button/primary";
+import { HeaderButton } from "@/components/button/header";
 import { LogoIcon } from "@/assets/svg/icons";
 import { Popover } from "@/components/popover";
 import { MdKeyboardArrowDown } from "react-icons/md";
@@ -61,9 +61,9 @@ export function Header() {
 						height: "100%",
 					}}
 				>
-					<PrimaryButton icon={<LogoIcon />} onClick={() => {}} />
-					<PrimaryButton text="Início" onClick={() => {}} />
-					<PrimaryButton text="Arquivo" onClick={() => {}} />
+					<HeaderButton icon={<LogoIcon />} onClick={() => {}} />
+					<HeaderButton text="Início" onClick={() => {}} />
+					<HeaderButton text="Arquivo" onClick={() => {}} />
 				</div>
 
 				<div
@@ -88,7 +88,7 @@ export function Header() {
 				>
 					<Popover onOpenChange={handleOpenPopoverChange}>
 						<Popover.Trigger>
-							<PrimaryButton
+							<HeaderButton
 								width="80px"
 								text={`${zoom}%`}
 								$iconPosition="right"

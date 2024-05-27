@@ -30,8 +30,8 @@ export type DataItemStats = {
 	temperature: DeviceTypeStats;
 };
 
-export interface IDelimitationArea {
+export type TDelimitationArea = {
 	id: string;
 	points: Vector2d[];
-	color: keyof typeof Theme.colors;
-}
+	color: string;
+};

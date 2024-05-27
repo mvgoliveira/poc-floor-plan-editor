@@ -1,4 +1,5 @@
 import { EditorMenu } from "@/components/menu/editor";
+import { EditorDelimiterColorMenu } from "@/components/menu/editorDelimiterColor";
 import { EditorDelimiterMenu } from "@/components/menu/editorDelimiter";
 import { EditorDelimitingMenu } from "@/components/menu/editorDelimiting";
 
@@ -10,8 +11,14 @@ import {
 	SetStateAction,
 	useState,
 } from "react";
+import { EditorDelimitingColorMenu } from "@/components/menu/editorDelimitingColor";
 
-type MenuType = "stage" | "delimiter" | "delimiting";
+type MenuType =
+	| "stage"
+	| "delimiter"
+	| "delimiter-color"
+	| "delimiting"
+	| "delimiting-color";
 
 type EditorMenuContextProviderPropsType = {
 	children: ReactNode;
@@ -26,6 +33,8 @@ type EditorMenuContextType = {
 	handleGetMenuType: () => ReactElement;
 	clickTargetName: string;
 	setClickTargetName: Dispatch<SetStateAction<string>>;
+	clickTargetColor: string | null;
+	setClickTargetColor: Dispatch<SetStateAction<string | null>>;
 };
 
 export const EditorMenuContext = createContext({} as EditorMenuContextType);
@@ -37,6 +46,9 @@ export function EditorMenuContextProvider(
 	const [hiddenUi, setHiddenUi] = useState(false);
 	const [delimiting, setDelimiting] = useState(false);
 	const [clickTargetName, setClickTargetName] = useState("");
+	const [clickTargetColor, setClickTargetColor] = useState<string | null>(
+		null
+	);
 
 	const handleGetMenuType = (): ReactElement => {
 		switch (type) {
@@ -45,6 +57,12 @@ export function EditorMenuContextProvider(
 
 			case "delimiting":
 				return <EditorDelimitingMenu />;
+
+			case "delimiter-color":
+				return <EditorDelimiterColorMenu />;
+
+			case "delimiting-color":
+				return <EditorDelimitingColorMenu />;
 
 			default:
 				return <EditorMenu />;
@@ -62,6 +80,8 @@ export function EditorMenuContextProvider(
 				handleGetMenuType,
 				clickTargetName,
 				setClickTargetName,
+				clickTargetColor,
+				setClickTargetColor,
 			}}
 		>
 			{props.children}

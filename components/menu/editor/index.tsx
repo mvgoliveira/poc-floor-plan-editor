@@ -1,6 +1,6 @@
 import { ContextMenu } from "@/components/contextMenu";
 import { useEditorMenu } from "@/hooks/useEditorMenu";
-import { ReactElement } from "react";
+import { MouseEvent, ReactElement } from "react";
 import { BiSelection } from "react-icons/bi";
 import { HiOutlineViewGridAdd } from "react-icons/hi";
 import {
@@ -13,10 +13,15 @@ import {
 } from "react-icons/md";
 
 export const EditorMenu = (): ReactElement => {
-	const { hiddenUi, setHiddenUi, setDelimiting } = useEditorMenu();
+	const { hiddenUi, setHiddenUi, setType } = useEditorMenu();
 
 	const handleClickUiVisibility = (): void => {
 		setHiddenUi((prevState) => !prevState);
+	};
+
+	const handleClickNewDelimiter = (e: MouseEvent<HTMLDivElement>) => {
+		e.preventDefault();
+		setType("delimiter-color");
 	};
 
 	return (
@@ -29,15 +34,17 @@ export const EditorMenu = (): ReactElement => {
 			>
 				<ContextMenu.Item
 					text="Ativo"
+					disabled
 					icon={<MdDeviceHub size={15} />}
 				/>
 				<ContextMenu.Item
 					text="Dispositivo"
+					disabled
 					icon={<MdDataSaverOn size={15} />}
 				/>
 				<ContextMenu.Item
 					text="Delimitação"
-					onClick={() => setDelimiting(true)}
+					onClick={handleClickNewDelimiter}
 					icon={<BiSelection size={15} />}
 				/>
 			</ContextMenu.Sub>
@@ -54,7 +61,7 @@ export const EditorMenu = (): ReactElement => {
 				icon={<MdRefresh size={15} />}
 			/>
 
-			<ContextMenu.DelimiterLine />
+			<ContextMenu.Separator />
 			<ContextMenu.Label text="Layout" />
 			<ContextMenu.CheckItem
 				text="Mostrar UI"

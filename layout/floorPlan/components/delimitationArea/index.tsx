@@ -1,11 +1,11 @@
 import { ReactElement, useEffect, useState } from "react";
 import { Line } from "react-konva";
-import { IDelimitationArea } from "@/interfaces/assets";
+import { TDelimitationArea } from "@/interfaces/assets";
 import { Theme } from "@/themes";
 import { useEditorMenu } from "@/hooks/useEditorMenu";
 
 interface IAssetsProps {
-	metadata: IDelimitationArea;
+	metadata: TDelimitationArea;
 	name: string;
 }
 
@@ -19,13 +19,13 @@ export const DelimitationArea = ({
 		<>
 			<Line
 				points={metadata.points.flatMap((obj) => [obj.x, obj.y])}
-				fill={Theme.colors[metadata.color]}
+				fill={metadata.color}
 				opacity={0.4}
 				closed
 			/>
 			<Line
 				points={metadata.points.flatMap((obj) => [obj.x, obj.y])}
-				stroke={Theme.colors[metadata.color]}
+				stroke={metadata.color}
 				strokeWidth={2}
 				name={name}
 				onContextMenu={() => setType("delimiter")}

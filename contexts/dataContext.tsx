@@ -1,4 +1,4 @@
-import { IActionButtonDataProps, IDelimitationArea } from "@/interfaces/assets";
+import { IActionButtonDataProps, TDelimitationArea } from "@/interfaces/assets";
 import { v4 as uuid } from "uuid";
 import {
 	createContext,
@@ -10,6 +10,7 @@ import {
 } from "react";
 import useImage from "use-image";
 import { useEditorMenu } from "@/hooks/useEditorMenu";
+import { Theme } from "@/themes";
 
 type DataContextProviderPropsType = {
 	children: ReactNode;
@@ -17,18 +18,24 @@ type DataContextProviderPropsType = {
 
 type DataContextType = {
 	assets: IActionButtonDataProps[];
-	delimitationAreas: IDelimitationArea[];
+	delimitationAreas: TDelimitationArea[];
 	image: HTMLImageElement | undefined;
 	delimiterClosed: boolean;
 	setDelimiterClosed: Dispatch<SetStateAction<boolean>>;
-	delimiterDraw: IDelimitationArea;
-	setDelimiterDraw: Dispatch<SetStateAction<IDelimitationArea>>;
+	delimiterDraw: TDelimitationArea;
+	setDelimiterDraw: Dispatch<SetStateAction<TDelimitationArea>>;
 	saveDelimitation: () => void;
 	handleEditDelimitation: () => void;
 	handleDeleteDelimitation: () => void;
-	setDelimitationAreas: Dispatch<SetStateAction<IDelimitationArea[]>>;
+	setDelimitationAreas: Dispatch<SetStateAction<TDelimitationArea[]>>;
 	resetVariables: () => void;
 	handleCancelDelimitation: () => void;
+	getDelimiterColor: (targetName: string) => string | null;
+	changeDelimitationColor: (
+		delimitationName: string,
+		newColor: string
+	) => void;
+	setDelimiterDrawColor: (value: SetStateAction<string>) => void;
 };
 
 export const DataContext = createContext({} as DataContextType);
@@ -68,7 +75,7 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 	]);
 
 	const [delimitationAreas, setDelimitationAreas] = useState<
-		IDelimitationArea[]
+		TDelimitationArea[]
 	>([
 		{
 			id: uuid(),
@@ -78,7 +85,7 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 				{ x: 1028, y: 460 },
 				{ x: 797, y: 460 },
 			],
-			color: "blue80",
+			color: Theme.colors.blue70,
 		},
 		{
 			id: uuid(),
@@ -95,7 +102,7 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 				{ x: 491, y: 625 },
 				{ x: 491, y: 810 },
 			],
-			color: "purple80",
+			color: Theme.colors.purple70,
 		},
 		{
 			id: uuid(),
@@ -109,22 +116,64 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 				{ x: 443, y: 427.28125 },
 				{ x: 415, y: 428.28125 },
 			],
-			color: "yellow80",
+			color: Theme.colors.yellow70,
 		},
 	]);
 
-	const [delimiterDraw, setDelimiterDraw] = useState<IDelimitationArea>({
+	const [delimiterDrawColor, setDelimiterDrawColor] = useState<string>(
+		Theme.colors.blue70
+	);
+
+	const [delimiterDraw, setDelimiterDraw] = useState<TDelimitationArea>({
 		id: uuid(),
-		color: "blue80",
+		color: Theme.colors.black,
 		points: [],
 	});
+
+	const getDelimiterColor = (targetName: string): string | null => {
+		const delimitationArea = delimitationAreas.findLast(
+			(delimitationArea) =>
+				delimitationArea.id ===
+				targetName.replace("DELIMITATION-AREA-", "")
+		);
+
+		if (delimitationArea) {
+			return delimitationArea.color;
+		}
+
+		return null;
+	};
+
+	const changeDelimitationColor = (
+		delimitationName: string,
+		newColor: string
+	) => {
+		if (delimitationName.match("DELIMITATION-AREA-")) {
+			const index = delimitationAreas.findIndex(
+				(delimitationArea) =>
+					delimitationArea.id ===
+					delimitationName.replace("DELIMITATION-AREA-", "")
+			);
+
+			const delimitationArea = delimitationAreas[index];
+			delimitationArea.color = newColor;
+
+			const newDelimitationAreas: TDelimitationArea[] = [
+				...delimitationAreas.slice(0, index),
+				delimitationArea,
+				...delimitationAreas.slice(index + 1),
+			];
+
+			setDelimitationAreas(newDelimitationAreas);
+		}
+	};
 
 	const resetVariables = () => {
 		setDelimiting(false);
 		setDelimiterClosed(false);
 		setDelimiterDraw({
 			id: uuid(),
-			color: "blue80",
+			color: delimiterDrawColor,
 			points: [],
 		});
 	};
@@ -147,7 +196,7 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 
 			const delimitationArea = delimitationAreas[index];
 
-			const newDelimitationAreas: IDelimitationArea[] = [
+			const newDelimitationAreas: TDelimitationArea[] = [
 				...delimitationAreas.slice(0, index),
 				...delimitationAreas.slice(index + 1),
 			];
@@ -167,7 +216,7 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 					clickTargetName.replace("DELIMITATION-AREA-", "")
 			);
 
-			const newDelimitationAreas: IDelimitationArea[] = [
+			const newDelimitationAreas: TDelimitationArea[] = [
 				...delimitationAreas.slice(0, index),
 				...delimitationAreas.slice(index + 1),
 			];
@@ -205,6 +254,9 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 				saveDelimitation,
 				resetVariables,
 				handleCancelDelimitation,
+				getDelimiterColor,
+				changeDelimitationColor,
+				setDelimiterDrawColor,
 			}}
 		>
 			{props.children}

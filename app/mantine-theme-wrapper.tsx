@@ -6,6 +6,18 @@ import { ReactElement } from "react";
 
 const theme = createTheme({
 	colors: {
+		transparent: [
+			"transparent",
+			"transparent",
+			"transparent",
+			"transparent",
+			"transparent",
+			"transparent",
+			"transparent",
+			"transparent",
+			"transparent",
+			"transparent",
+		],
 		blue: [
 			"#e6f2ff",
 			"#cee1ff",

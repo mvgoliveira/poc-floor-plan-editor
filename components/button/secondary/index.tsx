@@ -2,7 +2,7 @@ import { Typography } from "@/components/typography";
 import { Container } from "./styles";
 import { forwardRef, ReactElement } from "react";
 
-interface IPrimaryButtonProps {
+interface ISecondaryButtonProps {
 	text?: string;
 	icon?: ReactElement;
 	$iconPosition?: "left" | "right";
@@ -12,7 +12,7 @@ interface IPrimaryButtonProps {
 	onClick?: () => any;
 }
 
-export const PrimaryButton = (props: IPrimaryButtonProps): ReactElement => {
+export const SecondaryButton = (props: ISecondaryButtonProps): ReactElement => {
 	const {
 		height = "100%",
 		width = "fit-content",
@@ -28,7 +28,7 @@ export const PrimaryButton = (props: IPrimaryButtonProps): ReactElement => {
 
 			<Typography
 				tag="p"
-				color="gray10"
+				color="gray30"
 				fontFamily="roboto"
 				fontSize={{ xs: "fs75" }}
 				fontWeight="regular"
