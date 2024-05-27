@@ -1,7 +1,6 @@
 import Konva from "konva";
 import { Stage } from "konva/lib/Stage";
 import { Vector2d } from "konva/lib/types";
-import { v4 as uuid } from "uuid";
 import {
 	createContext,
 	Dispatch,
@@ -35,7 +34,6 @@ type AppContextType = {
 	clickPosition: Vector2d | null;
 	handleStageClick: (targetName: string, position: Vector2d | null) => void;
 	handleOpenContextMenu: (targetName: string) => void;
-	handleScapePress: () => void;
 };
 
 export const AppContext = createContext({} as AppContextType);
@@ -111,12 +109,21 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 		}
 	};
 
-	const handleScapePress = () => {
-		if (delimiting) {
-			setClickPosition(null);
-			handleCancelDelimitation();
-		}
-	};
+	useEffect(() => {
+		document.onkeydown = (evt) => {
+			evt = evt;
+			var isEscape = false;
+			if ("key" in evt) {
+				isEscape = evt.key === "Escape" || evt.key === "Esc";
+			}
+			if (isEscape) {
+				if (delimiting) {
+					handleCancelDelimitation();
+					setClickPosition(null);
+				}
+			}
+		};
+	}, [delimiting]);
 
 	useEffect(() => {
 		changeZoomByScale(minScale);
@@ -140,7 +147,6 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 				clickPosition,
 				handleStageClick,
 				handleOpenContextMenu,
-				handleScapePress,
 			}}
 		>
 			{props.children}

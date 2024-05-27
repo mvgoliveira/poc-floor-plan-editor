@@ -25,7 +25,6 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		maxScale,
 		handleStageClick,
 		handleOpenContextMenu,
-		handleScapePress,
 	} = useApp();
 
 	const { assets, delimitationAreas, image } = useData();
@@ -33,8 +32,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 	const currentStageRef = stageRef.current;
 	const stage = currentStageRef?.getStage();
 
-	const { delimiting, setType, handleGetMenuType, setClickTargetName } =
-		useEditorMenu();
+	const { delimiting, setType, handleGetMenuType } = useEditorMenu();
 
 	const [limitWidth, setLimitWidth] = useState(0);
 	const [limitHeight, setLimitHeight] = useState(0);
@@ -272,9 +270,6 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 	};
 
 	const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>): void => {
-		if (e.code === "Escape") {
-			handleScapePress();
-		}
 		if (e.code === "ControlLeft" && !isCtrlLeftPressed) {
 			document.body.style.cursor = "grab";
 			setIsCtrlLeftPressed(true);
@@ -315,6 +310,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 
 	return (
 		<div
+			id="STAGE"
 			tabIndex={1}
 			style={{
 				outline: "none",
