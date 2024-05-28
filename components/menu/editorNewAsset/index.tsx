@@ -15,8 +15,8 @@ import {
 } from "react-icons/md";
 import { TbDiscOff } from "react-icons/tb";
 
-export const EditorAssetMenu = (): ReactElement => {
-	const { handleMoveAsset, handleDeleteAsset, handleCreateDevice } =
+export const EditorNewAssetMenu = (): ReactElement => {
+	const { handleMoveAsset, handleCreateDevice, handleCancelNewAsset } =
 		useData();
 	const { hiddenUi, setHiddenUi, setType } = useEditorMenu();
 
@@ -35,14 +35,15 @@ export const EditorAssetMenu = (): ReactElement => {
 
 			<ContextMenu.Item
 				text="Mover"
+				disabled
 				onClick={handleMoveAsset}
 				icon={<IoMdMove size={15} />}
 			/>
 
 			<ContextMenu.Item
-				text="Remover"
+				text="Cancelar"
 				type="danger"
-				onClick={handleDeleteAsset}
+				onClick={handleCancelNewAsset}
 				icon={<TbDiscOff size={15} />}
 			/>
 
@@ -52,6 +53,7 @@ export const EditorAssetMenu = (): ReactElement => {
 
 			<ContextMenu.Sub
 				text="Inserir..."
+				disabled
 				icon={<HiOutlineViewGridAdd size={15} />}
 			>
 				<ContextMenu.Item

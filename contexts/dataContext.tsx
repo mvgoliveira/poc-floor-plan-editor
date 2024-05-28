@@ -1,4 +1,8 @@
-import { IActionButtonDataProps, TDelimitationArea } from "@/interfaces/assets";
+import {
+	IActionButtonDataProps,
+	IDevice,
+	TDelimitationArea,
+} from "@/interfaces/assets";
 import { v4 as uuid } from "uuid";
 import {
 	createContext,
@@ -11,6 +15,7 @@ import {
 import useImage from "use-image";
 import { useEditorMenu } from "@/hooks/useEditorMenu";
 import { Theme } from "@/themes";
+import { Vector2d } from "konva/lib/types";
 
 type DataContextProviderPropsType = {
 	children: ReactNode;
@@ -37,9 +42,14 @@ type DataContextType = {
 		newColor: string
 	) => void;
 	setDelimiterDrawColor: (value: SetStateAction<string>) => void;
+	handleCreateDevice: (device?: IDevice) => void;
 	handleMoveAsset: () => void;
 	handleCancelMoveAsset: () => void;
 	handleDeleteAsset: () => void;
+	newAsset: IActionButtonDataProps | null;
+	handleMoveNewDevice: (newPosition: Vector2d) => void;
+	handleSaveNewDevice: () => void;
+	handleCancelNewAsset: () => void;
 };
 
 export const DataContext = createContext({} as DataContextType);
@@ -104,6 +114,10 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 			],
 		},
 	]);
+
+	const [newAsset, setNewAsset] = useState<IActionButtonDataProps | null>(
+		null
+	);
 
 	const [delimitationAreas, setDelimitationAreas] = useState<
 		TDelimitationArea[]
@@ -208,6 +222,7 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 	};
 
 	const resetVariables = () => {
+		setNewAsset(null);
 		setAssetMovingId(null);
 		setDelimiting(false);
 		setDelimiterClosed(false);
@@ -269,6 +284,38 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 		resetVariables();
 	};
 
+	const handleCreateDevice = (device?: IDevice) => {
+		const newDevice: IDevice = {
+			id: uuid(),
+			mac: uuid(),
+			name: "created-device",
+			type: "energy",
+		};
+
+		const newAsset: IActionButtonDataProps = {
+			id: uuid(),
+			devices: [newDevice],
+			position: { x: 0, y: 0 },
+		};
+
+		setNewAsset(newAsset);
+	};
+
+	const handleMoveNewDevice = (newPosition: Vector2d) => {
+		if (newAsset) {
+			const updatedNewAsset = newAsset;
+			updatedNewAsset.position = newPosition;
+			setNewAsset(updatedNewAsset);
+		}
+	};
+
+	const handleSaveNewDevice = () => {
+		if (newAsset) {
+			setAssets((prevState) => [...prevState, newAsset]);
+			resetVariables();
+		}
+	};
+
 	const handleMoveAsset = () => {
 		if (
 			clickTargetName.startsWith("ACT-BUTTON-OUTLINE") ||
@@ -305,6 +352,10 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 
 			setAssets(newAssets);
 		}
+	};
+
+	const handleCancelNewAsset = () => {
+		resetVariables();
 	};
 
 	useEffect(() => {
@@ -348,6 +399,11 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 				handleMoveAsset,
 				handleCancelMoveAsset,
 				handleDeleteAsset,
+				newAsset,
+				handleCreateDevice,
+				handleMoveNewDevice,
+				handleSaveNewDevice,
+				handleCancelNewAsset,
 			}}
 		>
 			{props.children}

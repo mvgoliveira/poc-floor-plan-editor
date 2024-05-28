@@ -25,6 +25,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		maxScale,
 		handleStageClick,
 		handleOpenContextMenu,
+		setMousePosition,
 	} = useApp();
 
 	const { assets, delimitationAreas, image } = useData();
@@ -39,8 +40,6 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 
 	const [isSpaceBarPressed, setIsSpaceBarPressed] = useState(false);
 	const [isCtrlLeftPressed, setIsCtrlLeftPressed] = useState(false);
-
-	const [mousePos, setMousePos] = useState<Vector2d | null>(null);
 
 	useEffect(() => {
 		if (image) {
@@ -292,7 +291,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 	};
 
 	const handleMouseMove = (e: KonvaEventObject<MouseEvent>): void => {
-		setMousePos(e.currentTarget.getRelativePointerPosition());
+		setMousePosition(e.currentTarget.getRelativePointerPosition());
 	};
 
 	const handleMouseClick = (e: KonvaEventObject<MouseEvent>): void => {
@@ -359,7 +358,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 
 						<Assets metadata={assets} />
 
-						{delimiting && <PolygonDraw mousePos={mousePos} />}
+						{delimiting && <PolygonDraw />}
 					</Layer>
 				</Stage>
 			</ContextMenu>

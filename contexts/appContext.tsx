@@ -34,6 +34,8 @@ type AppContextType = {
 	clickPosition: Vector2d | null;
 	handleStageClick: (targetName: string, position: Vector2d | null) => void;
 	handleOpenContextMenu: (targetName: string) => void;
+	mousePosition: Vector2d | null;
+	setMousePosition: Dispatch<SetStateAction<Vector2d | null>>;
 };
 
 export const AppContext = createContext({} as AppContextType);
@@ -52,6 +54,8 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 		handleCancelDelimitation,
 		getDelimiterColor,
 		handleCancelMoveAsset,
+		newAsset,
+		handleCancelNewAsset,
 	} = useData();
 
 	const [zoom, setZoom] = useState(0);
@@ -62,6 +66,7 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 	const stageRef = useRef<Konva.Stage>(null);
 	const [editMode, setEditMode] = useState(true);
 	const [clickPosition, setClickPosition] = useState<Vector2d | null>(null);
+	const [mousePosition, setMousePosition] = useState<Vector2d | null>(null);
 
 	const changeZoomByScale = (scale: number): void => {
 		setZoom(
@@ -177,6 +182,28 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 	}, [assetMovingId]);
 
 	useEffect(() => {
+		if (newAsset) {
+			const handleKeyDown = (evt: KeyboardEvent) => {
+				var isEscape = false;
+				if ("key" in evt) {
+					isEscape = evt.key === "Escape" || evt.key === "Esc";
+				}
+				if (isEscape) {
+					handleCancelNewAsset();
+					setClickPosition(null);
+				}
+				document.removeEventListener("keydown", handleKeyDown);
+			};
+
+			document.addEventListener("keydown", handleKeyDown);
+
+			return () => {
+				document.removeEventListener("keydown", handleKeyDown);
+			};
+		}
+	}, [newAsset]);
+
+	useEffect(() => {
 		changeZoomByScale(minScale);
 	}, [minScale]);
 
@@ -198,6 +225,8 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 				clickPosition,
 				handleStageClick,
 				handleOpenContextMenu,
+				mousePosition,
+				setMousePosition,
 			}}
 		>
 			{props.children}

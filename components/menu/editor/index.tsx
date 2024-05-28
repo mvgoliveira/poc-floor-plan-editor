@@ -1,8 +1,11 @@
 import { ContextMenu } from "@/components/contextMenu";
+import { useData } from "@/hooks/useData";
 import { useEditorMenu } from "@/hooks/useEditorMenu";
+import { IDevice } from "@/interfaces/assets";
 import { MouseEvent, ReactElement } from "react";
 import { BiSelection } from "react-icons/bi";
 import { HiOutlineViewGridAdd } from "react-icons/hi";
+import { v4 as uuid } from "uuid";
 import {
 	MdDataSaverOn,
 	MdDeviceHub,
@@ -13,6 +16,7 @@ import {
 } from "react-icons/md";
 
 export const EditorMenu = (): ReactElement => {
+	const { handleCreateDevice } = useData();
 	const { hiddenUi, setHiddenUi, setType } = useEditorMenu();
 
 	const handleClickUiVisibility = (): void => {
@@ -39,7 +43,7 @@ export const EditorMenu = (): ReactElement => {
 				/>
 				<ContextMenu.Item
 					text="Dispositivo"
-					disabled
+					onClick={() => handleCreateDevice()}
 					icon={<MdDataSaverOn size={15} />}
 				/>
 				<ContextMenu.Item

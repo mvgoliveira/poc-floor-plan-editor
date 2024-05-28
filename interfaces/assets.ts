@@ -1,7 +1,7 @@
 import { Theme } from "@/themes";
 import { Vector2d } from "konva/lib/types";
 
-interface IDevice {
+export interface IDevice {
 	id: string;
 	mac: string;
 	name: string;

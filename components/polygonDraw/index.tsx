@@ -3,16 +3,11 @@ import { useData } from "@/hooks/useData";
 import { useEditorMenu } from "@/hooks/useEditorMenu";
 import { Theme } from "@/themes";
 import { KonvaEventObject } from "konva/lib/Node";
-import { Vector2d } from "konva/lib/types";
 import { ReactElement, useEffect, useState } from "react";
 import { Circle, Line } from "react-konva";
 
-interface IPolygonDrawProps {
-	mousePos?: Vector2d | null;
-}
-
-export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
-	const { scale, clickPosition } = useApp();
+export const PolygonDraw = (): ReactElement => {
+	const { scale, clickPosition, mousePosition } = useApp();
 
 	const {
 		delimiterClosed,
@@ -26,14 +21,14 @@ export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
 	const [startedDraw, setStartedDraw] = useState(false);
 
 	useEffect(() => {
-		if (mousePos && !delimiterClosed) {
+		if (mousePosition && !delimiterClosed) {
 			setDelimiterDraw((prevState) => {
 				const newPoints = [...prevState.points];
-				newPoints[0] = mousePos;
+				newPoints[0] = mousePosition;
 				return { ...prevState, points: newPoints };
 			});
 		}
-	}, [mousePos]);
+	}, [mousePosition]);
 
 	useEffect(() => {
 		if (clickPosition && !delimiterClosed) {

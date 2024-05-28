@@ -24,9 +24,13 @@ import { RiShape2Line } from "react-icons/ri";
 import { TbShapeOff } from "react-icons/tb";
 
 export const EditorDelimiterMenu = (): ReactElement => {
-	const { handleEditDelimitation, handleDeleteDelimitation } = useData();
+	const {
+		handleEditDelimitation,
+		handleDeleteDelimitation,
+		handleCreateDevice,
+	} = useData();
 
-	const { hiddenUi, setHiddenUi, setDelimiting, setType } = useEditorMenu();
+	const { hiddenUi, setHiddenUi, setType } = useEditorMenu();
 
 	const handleClickUiVisibility = (): void => {
 		setHiddenUi((prevState) => !prevState);
@@ -80,7 +84,7 @@ export const EditorDelimiterMenu = (): ReactElement => {
 				/>
 				<ContextMenu.Item
 					text="Dispositivo"
-					disabled
+					onClick={() => handleCreateDevice()}
 					icon={<MdDataSaverOn size={15} />}
 				/>
 				<ContextMenu.Item
