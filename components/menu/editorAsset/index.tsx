@@ -14,11 +14,14 @@ import {
 	MdZoomOut,
 } from "react-icons/md";
 import { TbDiscOff } from "react-icons/tb";
+import { TiCancel } from "react-icons/ti";
 
 export const EditorAssetMenu = (): ReactElement => {
 	const { handleMoveAsset, handleDeleteAsset, handleCreateDevice } =
 		useData();
-	const { hiddenUi, setHiddenUi, setType } = useEditorMenu();
+
+	const { hiddenUi, setHiddenUi, setType, assetMovingId, clickTargetName } =
+		useEditorMenu();
 
 	const handleClickUiVisibility = (): void => {
 		setHiddenUi((prevState) => !prevState);
@@ -29,14 +32,34 @@ export const EditorAssetMenu = (): ReactElement => {
 		setType("delimiting-color");
 	};
 
+	const getMoveItemOption = (): "Mover" | "Cancelar" => {
+		if (assetMovingId) {
+			const clickTargetId = clickTargetName
+				.replace("ACT-BUTTON-OUTLINE-", "")
+				.replace("ACTION-BUTTON-", "")
+				.replace("BADGE-BUTTON-", "");
+
+			if (clickTargetId === assetMovingId) {
+				return "Cancelar";
+			}
+		}
+		return "Mover";
+	};
+
 	return (
 		<ContextMenu.Content>
 			<ContextMenu.Label text="Ativo" />
 
 			<ContextMenu.Item
-				text="Mover"
+				text={getMoveItemOption()}
 				onClick={handleMoveAsset}
-				icon={<IoMdMove size={15} />}
+				icon={
+					getMoveItemOption() === "Mover" ? (
+						<IoMdMove size={15} />
+					) : (
+						<TiCancel size={15} />
+					)
+				}
 			/>
 
 			<ContextMenu.Item
