@@ -357,7 +357,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 							/>
 						))}
 
-						<Assets data={assets} />
+						<Assets metadata={assets} />
 
 						{delimiting && <PolygonDraw mousePos={mousePos} />}
 					</Layer>

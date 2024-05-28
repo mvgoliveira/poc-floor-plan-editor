@@ -54,11 +54,11 @@ const Content = ({
 }: IContentProps): ReactElement => (
 	<RadixPortal>
 		<PopoverContent
-			height={height}
 			side={side}
-			width={width}
-			margin={margin}
-			background={background}
+			$height={height}
+			$width={width}
+			$margin={margin}
+			$background={background}
 		>
 			{children}
 			{hasCloseIcon && (

@@ -23,7 +23,12 @@ export const SecondaryButton = (props: ISecondaryButtonProps): ReactElement => {
 	} = props;
 
 	return (
-		<Container width={width} height={height} padding={padding} {...props}>
+		<Container
+			$width={width}
+			$height={height}
+			$padding={padding}
+			{...props}
+		>
 			{$iconPosition === "left" && icon}
 
 			<Typography

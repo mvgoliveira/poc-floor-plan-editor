@@ -1,40 +1,27 @@
 import { ContextMenu } from "@/components/contextMenu";
 import { useData } from "@/hooks/useData";
 import { useEditorMenu } from "@/hooks/useEditorMenu";
-import { Theme } from "@/themes";
-import {
-	MouseEvent,
-	MouseEventHandler,
-	ReactElement,
-	useEffect,
-	useState,
-} from "react";
+import { MouseEvent, ReactElement } from "react";
 import { BiSelection } from "react-icons/bi";
 import { HiOutlineViewGridAdd } from "react-icons/hi";
+import { IoMdMove } from "react-icons/io";
 import {
 	MdDataSaverOn,
 	MdDeviceHub,
-	MdFormatColorFill,
 	MdRefresh,
 	MdSelectAll,
 	MdZoomIn,
 	MdZoomOut,
 } from "react-icons/md";
-import { RiShape2Line } from "react-icons/ri";
-import { TbShapeOff } from "react-icons/tb";
+import { TbDiscOff } from "react-icons/tb";
 
-export const EditorDelimiterMenu = (): ReactElement => {
-	const { handleEditDelimitation, handleDeleteDelimitation } = useData();
+export const EditorAssetMenu = (): ReactElement => {
+	const { handleMoveAsset, handleDeleteAsset } = useData();
 
 	const { hiddenUi, setHiddenUi, setDelimiting, setType } = useEditorMenu();
 
 	const handleClickUiVisibility = (): void => {
 		setHiddenUi((prevState) => !prevState);
-	};
-
-	const handleClickChangeColor = (e: MouseEvent<HTMLDivElement>) => {
-		e.preventDefault();
-		setType("delimiter-color");
 	};
 
 	const handleClickNewDelimiter = (e: MouseEvent<HTMLDivElement>) => {
@@ -44,25 +31,19 @@ export const EditorDelimiterMenu = (): ReactElement => {
 
 	return (
 		<ContextMenu.Content>
-			<ContextMenu.Label text="Delimitação" />
+			<ContextMenu.Label text="Ativo" />
 
 			<ContextMenu.Item
-				text="Editar"
-				onClick={handleEditDelimitation}
-				icon={<RiShape2Line size={15} />}
-			/>
-
-			<ContextMenu.Item
-				text="Alterar cor"
-				icon={<MdFormatColorFill size={15} />}
-				onClick={handleClickChangeColor}
+				text="Mover"
+				onClick={handleMoveAsset}
+				icon={<IoMdMove size={15} />}
 			/>
 
 			<ContextMenu.Item
 				text="Remover"
 				type="danger"
-				onClick={handleDeleteDelimitation}
-				icon={<TbShapeOff size={15} />}
+				onClick={handleDeleteAsset}
+				icon={<TbDiscOff size={15} />}
 			/>
 
 			<ContextMenu.Separator />

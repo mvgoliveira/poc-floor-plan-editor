@@ -39,14 +39,19 @@ type AppContextType = {
 export const AppContext = createContext({} as AppContextType);
 
 export function AppContextProvider(props: AppContextProviderPropsType) {
-	const { delimiting, setClickTargetName, setClickTargetColor } =
-		useEditorMenu();
+	const {
+		delimiting,
+		setClickTargetName,
+		setClickTargetColor,
+		assetMovingId,
+	} = useEditorMenu();
 
 	const {
 		saveDelimitation,
 		delimiterClosed,
 		handleCancelDelimitation,
 		getDelimiterColor,
+		handleCancelMoveAsset,
 	} = useData();
 
 	const [zoom, setZoom] = useState(0);
@@ -71,6 +76,9 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 	};
 
 	const handleOpenContextMenu = (targetName: string) => {
+		setClickPosition(null);
+		setClickTargetName(targetName);
+
 		if (
 			targetName.startsWith("DELIMITATION-AREA-") ||
 			targetName === "DRAW-FILL" ||
@@ -81,8 +89,6 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 		} else {
 			setClickTargetColor(null);
 		}
-
-		setClickTargetName(targetName);
 
 		if (
 			delimiting &&
@@ -112,23 +118,63 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 			saveDelimitation();
 			setClickPosition(null);
 		}
+
+		if (assetMovingId) {
+			const id = targetName
+				.replace("ACT-BUTTON-OUTLINE-", "")
+				.replace("ACTION-BUTTON-", "")
+				.replace("BADGE-BUTTON-", "");
+
+			if (assetMovingId !== id || !id) {
+				handleCancelMoveAsset();
+				setClickPosition(null);
+			}
+		}
 	};
 
 	useEffect(() => {
-		document.onkeydown = (evt) => {
-			evt = evt;
-			var isEscape = false;
-			if ("key" in evt) {
-				isEscape = evt.key === "Escape" || evt.key === "Esc";
-			}
-			if (isEscape) {
-				if (delimiting) {
+		if (delimiting) {
+			const handleKeyDown = (evt: KeyboardEvent) => {
+				var isEscape = false;
+				if ("key" in evt) {
+					isEscape = evt.key === "Escape" || evt.key === "Esc";
+				}
+				if (isEscape) {
 					handleCancelDelimitation();
 					setClickPosition(null);
 				}
-			}
-		};
+				document.removeEventListener("keydown", handleKeyDown);
+			};
+
+			document.addEventListener("keydown", handleKeyDown);
+
+			return () => {
+				document.removeEventListener("keydown", handleKeyDown);
+			};
+		}
 	}, [delimiting]);
+
+	useEffect(() => {
+		if (assetMovingId) {
+			const handleKeyDown = (evt: KeyboardEvent) => {
+				var isEscape = false;
+				if ("key" in evt) {
+					isEscape = evt.key === "Escape" || evt.key === "Esc";
+				}
+				if (isEscape) {
+					handleCancelMoveAsset();
+					setClickPosition(null);
+				}
+				document.removeEventListener("keydown", handleKeyDown);
+			};
+
+			document.addEventListener("keydown", handleKeyDown);
+
+			return () => {
+				document.removeEventListener("keydown", handleKeyDown);
+			};
+		}
+	}, [assetMovingId]);
 
 	useEffect(() => {
 		changeZoomByScale(minScale);

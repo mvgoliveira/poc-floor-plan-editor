@@ -1,6 +1,6 @@
 import { Typography } from "@/components/typography";
 import { Container } from "./styles";
-import { forwardRef, MouseEventHandler, ReactElement } from "react";
+import { MouseEventHandler, ReactElement } from "react";
 
 interface IPrimaryButtonProps {
 	text?: string;
@@ -20,11 +20,15 @@ export const PrimaryButton = (props: IPrimaryButtonProps): ReactElement => {
 		$iconPosition = "left",
 		icon,
 		text,
-		onClick,
 	} = props;
 
 	return (
-		<Container width={width} height={height} padding={padding} {...props}>
+		<Container
+			$width={width}
+			$height={height}
+			$padding={padding}
+			{...props}
+		>
 			{$iconPosition === "left" && icon}
 
 			<Typography

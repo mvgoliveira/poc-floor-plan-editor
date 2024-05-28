@@ -18,6 +18,7 @@ type DataContextProviderPropsType = {
 
 type DataContextType = {
 	assets: IActionButtonDataProps[];
+	setAssets: Dispatch<SetStateAction<IActionButtonDataProps[]>>;
 	delimitationAreas: TDelimitationArea[];
 	image: HTMLImageElement | undefined;
 	delimiterClosed: boolean;
@@ -36,12 +37,16 @@ type DataContextType = {
 		newColor: string
 	) => void;
 	setDelimiterDrawColor: (value: SetStateAction<string>) => void;
+	handleMoveAsset: () => void;
+	handleCancelMoveAsset: () => void;
+	handleDeleteAsset: () => void;
 };
 
 export const DataContext = createContext({} as DataContextType);
 
 export function DataContextProvider(props: DataContextProviderPropsType) {
-	const { delimiting, setDelimiting, clickTargetName } = useEditorMenu();
+	const { delimiting, setDelimiting, setAssetMovingId, clickTargetName } =
+		useEditorMenu();
 
 	const [delimiterClosed, setDelimiterClosed] = useState(false);
 
@@ -52,25 +57,51 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 	const [assets, setAssets] = useState<IActionButtonDataProps[]>([
 		{
 			id: uuid(),
-			x: 694,
-			y: 708,
+			position: {
+				x: 694,
+				y: 708,
+			},
 			devices: [
-				{ type: "temperature" },
-				{ type: "energy" },
-				{ type: "water" },
+				{
+					id: uuid(),
+					type: "temperature",
+					mac: uuid(),
+					name: "device-name",
+				},
+				{
+					id: uuid(),
+					type: "energy",
+					mac: uuid(),
+					name: "device-name",
+				},
+				{ id: uuid(), type: "water", mac: uuid(), name: "device-name" },
 			],
 		},
 		{
 			id: uuid(),
-			x: 590,
-			y: 445,
-			devices: [{ type: "energy" }],
+			position: {
+				x: 590,
+				y: 445,
+			},
+			devices: [
+				{
+					id: uuid(),
+					type: "energy",
+					mac: uuid(),
+					name: "device-name",
+				},
+			],
 		},
 		{
 			id: uuid(),
-			x: 912,
-			y: 384,
-			devices: [{ type: "water" }, { type: "water" }],
+			position: {
+				x: 912,
+				y: 384,
+			},
+			devices: [
+				{ id: uuid(), type: "water", mac: uuid(), name: "device-name" },
+				{ id: uuid(), type: "water", mac: uuid(), name: "device-name" },
+			],
 		},
 	]);
 
@@ -177,6 +208,7 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 	};
 
 	const resetVariables = () => {
+		setAssetMovingId(null);
 		setDelimiting(false);
 		setDelimiterClosed(false);
 		setDelimiterDraw({
@@ -237,6 +269,44 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 		resetVariables();
 	};
 
+	const handleMoveAsset = () => {
+		if (
+			clickTargetName.startsWith("ACT-BUTTON-OUTLINE") ||
+			clickTargetName.startsWith("ACTION-BUTTON") ||
+			clickTargetName.startsWith("BADGE-BUTTON")
+		) {
+			const id = clickTargetName
+				.replace("ACT-BUTTON-OUTLINE-", "")
+				.replace("ACTION-BUTTON-", "")
+				.replace("BADGE-BUTTON-", "");
+
+			setAssetMovingId(id);
+		}
+	};
+
+	const handleCancelMoveAsset = () => {
+		resetVariables();
+	};
+
+	const handleDeleteAsset = () => {
+		if (
+			clickTargetName.startsWith("ACT-BUTTON-OUTLINE") ||
+			clickTargetName.startsWith("ACTION-BUTTON") ||
+			clickTargetName.startsWith("BADGE-BUTTON")
+		) {
+			const clickTargetId = clickTargetName
+				.replace("ACT-BUTTON-OUTLINE-", "")
+				.replace("ACTION-BUTTON-", "")
+				.replace("BADGE-BUTTON-", "");
+
+			const newAssets = assets.filter(
+				(asset) => asset.id !== clickTargetId
+			);
+
+			setAssets(newAssets);
+		}
+	};
+
 	useEffect(() => {
 		if (delimitationAreas) {
 			setDelimiterDraw((prevState) => ({
@@ -259,6 +329,7 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 		<DataContext.Provider
 			value={{
 				assets,
+				setAssets,
 				delimitationAreas,
 				image,
 				delimiterClosed,
@@ -274,6 +345,9 @@ export function DataContextProvider(props: DataContextProviderPropsType) {
 				getDelimiterColor,
 				changeDelimitationColor,
 				setDelimiterDrawColor,
+				handleMoveAsset,
+				handleCancelMoveAsset,
+				handleDeleteAsset,
 			}}
 		>
 			{props.children}

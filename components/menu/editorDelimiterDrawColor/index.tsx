@@ -17,7 +17,9 @@ export const EditorDelimiterDrawColorMenu = (): ReactElement => {
 	};
 
 	const handleCancel = () => {
-		setDelimiterDrawColor(selectedColor);
+		if (clickTargetColor) {
+			setDelimiterDrawColor(clickTargetColor);
+		}
 	};
 
 	useEffect(() => {

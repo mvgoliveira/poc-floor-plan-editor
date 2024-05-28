@@ -11,7 +11,7 @@ interface ILinkProps {
 
 export const Link = ({ text, color, onClick }: ILinkProps): ReactElement => {
 	return (
-		<Container color={color} onClick={onClick}>
+		<Container onClick={onClick}>
 			<Typography
 				tag="p"
 				color={color}

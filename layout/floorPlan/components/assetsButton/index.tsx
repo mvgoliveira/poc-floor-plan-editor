@@ -8,13 +8,13 @@ import { MdBolt, MdDeviceThermostat, MdOutlineDeviceHub } from "react-icons/md";
 import { Circle } from "react-konva";
 import { Html } from "react-konva-utils";
 
-interface IAssetButtonProps {
+interface IAssetsButtonProps {
 	dataItemStats: DataItemStats;
 }
 
 export const AssetsButton = ({
 	dataItemStats,
-}: IAssetButtonProps): ReactElement => {
+}: IAssetsButtonProps): ReactElement => {
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [isOpen, setIsOpen] = useState(false);
 

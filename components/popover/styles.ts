@@ -52,16 +52,16 @@ const slideLeftAndFade = keyframes`
 `;
 
 export const PopoverContent = styled(Content)<{
-	width: string;
-	height: string;
-	margin: string;
-	background: keyof typeof Theme.colors;
+	$width: string;
+	$height: string;
+	$margin: string;
+	$background: keyof typeof Theme.colors;
 }>`
 	border-radius: 2px;
-	width: ${({ width }) => width};
-	height: ${({ height }) => height};
-	margin: ${({ margin }) => margin};
-	background: ${({ background, theme }) => theme.colors[background]};
+	width: ${({ $width }) => $width};
+	height: ${({ $height }) => $height};
+	margin: ${({ $margin }) => $margin};
+	background: ${({ $background, theme }) => theme.colors[$background]};
 	box-shadow:
 		hsl(206 22% 7% / 35%) 0 10px 38px -10px,
 		hsl(206 22% 7% / 20%) 0 10px 20px -15px;

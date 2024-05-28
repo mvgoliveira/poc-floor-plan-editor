@@ -12,7 +12,7 @@ interface IPolygonDrawProps {
 }
 
 export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
-	const { scale, clickPosition, stageRef } = useApp();
+	const { scale, clickPosition } = useApp();
 
 	const {
 		delimiterClosed,
@@ -22,9 +22,6 @@ export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
 	} = useData();
 
 	const { setType } = useEditorMenu();
-
-	const currentStageRef = stageRef.current;
-	const stage = currentStageRef?.getStage();
 
 	const [startedDraw, setStartedDraw] = useState(false);
 
@@ -100,23 +97,13 @@ export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
 	};
 
 	const handleDragMove = (e: KonvaEventObject<DragEvent>, index: number) => {
-		e.evt.preventDefault();
-		const currentStageRef = stageRef.current;
-		const stage = currentStageRef?.getStage();
+		const newPoints = [
+			...delimiterDraw.points.slice(0, index),
+			{ x: e.target.x(), y: e.target.y() },
+			...delimiterDraw.points.slice(index + 1),
+		];
 
-		if (stage) {
-			const newPosition = stage.getRelativePointerPosition();
-
-			if (newPosition) {
-				const newPoints = [
-					...delimiterDraw.points.slice(0, index),
-					newPosition,
-					...delimiterDraw.points.slice(index + 1),
-				];
-
-				setDelimiterDraw({ ...delimiterDraw, points: newPoints });
-			}
-		}
+		setDelimiterDraw({ ...delimiterDraw, points: newPoints });
 	};
 
 	const handleDragEnd = () => {
@@ -150,27 +137,26 @@ export const PolygonDraw = ({ mousePos }: IPolygonDrawProps): ReactElement => {
 				onContextMenu={() => setType("delimiting")}
 			/>
 
-			{stage &&
-				delimiterDraw.points.map((pos, idx) => (
-					<Circle
-						key={`circleDraw-${idx}`}
-						name="DRAW-CIRCLE"
-						x={pos.x}
-						y={pos.y}
-						radius={6 / scale}
-						fill={delimiterDraw.color}
-						stroke={Theme.colors.black}
-						strokeWidth={1 / scale}
-						onMouseDown={(e) => handleClickCircle(e, idx)}
-						onMouseMove={(e) => handleMouseEnterCircle(e, idx)}
-						onMouseLeave={(e) => handleMouseLeaveCircle(e, idx)}
-						draggable={delimiterClosed}
-						onDragStart={handleDragStart}
-						onDragMove={(e) => handleDragMove(e, idx)}
-						onDragEnd={handleDragEnd}
-						onContextMenu={() => setType("delimiting")}
-					/>
-				))}
+			{delimiterDraw.points.map((pos, idx) => (
+				<Circle
+					key={`circleDraw-${idx}`}
+					name="DRAW-CIRCLE"
+					x={pos.x}
+					y={pos.y}
+					radius={6 / scale}
+					fill={delimiterDraw.color}
+					stroke={Theme.colors.black}
+					strokeWidth={1 / scale}
+					onMouseDown={(e) => handleClickCircle(e, idx)}
+					onMouseMove={(e) => handleMouseEnterCircle(e, idx)}
+					onMouseLeave={(e) => handleMouseLeaveCircle(e, idx)}
+					draggable={delimiterClosed}
+					onDragStart={handleDragStart}
+					onDragMove={(e) => handleDragMove(e, idx)}
+					onDragEnd={handleDragEnd}
+					onContextMenu={() => setType("delimiting")}
+				/>
+			))}
 		</>
 	);
 };

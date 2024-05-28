@@ -25,9 +25,9 @@ export const HeaderButton = forwardRef<HTMLButtonElement, IHeaderButtonProps>(
 
 		return (
 			<Container
-				width={width}
-				height={height}
-				padding={padding}
+				$width={width}
+				$height={height}
+				$padding={padding}
 				ref={ref}
 				{...props}
 			>

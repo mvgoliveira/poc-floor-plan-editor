@@ -70,7 +70,7 @@ const Trigger = forwardRef<HTMLButtonElement, ITriggerProps & IReactChildren>(
 		const { padding = "0px", children } = props;
 
 		return (
-			<Button padding={padding} ref={ref} {...props}>
+			<Button $padding={padding} ref={ref} {...props}>
 				{children}
 			</Button>
 		);
@@ -81,11 +81,12 @@ ActionButton.Trigger = Trigger;
 
 interface IBadgeProps {
 	value: number;
+	isHovered?: boolean;
 }
 
-const Badge = ({ value }: IBadgeProps): ReactElement => {
+const Badge = ({ value, isHovered = false }: IBadgeProps): ReactElement => {
 	return (
-		<BadgeContainer>
+		<BadgeContainer isHovered={isHovered}>
 			<Typography
 				tag="p"
 				color="white"

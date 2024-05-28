@@ -10,19 +10,19 @@ export const Container = styled.div`
 `;
 
 export const Button = styled.button<{
-	padding: string;
+	$padding: string;
 }>`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: ${({ padding }) => padding};
+	padding: ${({ $padding }) => $padding};
 	background: ${({ theme }) => theme.colors.gray70};
 	border-radius: 50%;
 	min-width: 90px;
 	min-height: 90px;
 `;
 
-export const BadgeContainer = styled.div`
+export const BadgeContainer = styled.div<{ isHovered: boolean }>`
 	position: absolute;
 	z-index: 2;
 	top: 5px;
@@ -36,6 +36,9 @@ export const BadgeContainer = styled.div`
 	background: ${({ theme }) => theme.colors.gray50};
 	border: 3px solid ${({ theme }) => theme.colors.gray70};
 	cursor: default;
+
+	filter: ${({ isHovered }) =>
+		isHovered ? "brightness(0.8)" : "brightness(1)"};
 `;
 
 export const MenuContainer = styled.div`

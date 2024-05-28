@@ -9,14 +9,15 @@ import {
 	ReactElement,
 	ReactNode,
 	SetStateAction,
-	useEffect,
 	useState,
 } from "react";
 import { EditorDelimitingColorMenu } from "@/components/menu/editorDelimitingColor";
 import { EditorDelimiterDrawColorMenu } from "@/components/menu/editorDelimiterDrawColor";
+import { EditorAssetMenu } from "@/components/menu/editorAsset";
 
 type MenuType =
 	| "stage"
+	| "asset"
 	| "delimiter"
 	| "delimiter-color"
 	| "delimiting"
@@ -38,6 +39,8 @@ type EditorMenuContextType = {
 	setClickTargetName: Dispatch<SetStateAction<string>>;
 	clickTargetColor: string | null;
 	setClickTargetColor: Dispatch<SetStateAction<string | null>>;
+	assetMovingId: string | null;
+	setAssetMovingId: Dispatch<SetStateAction<string | null>>;
 };
 
 export const EditorMenuContext = createContext({} as EditorMenuContextType);
@@ -48,6 +51,7 @@ export function EditorMenuContextProvider(
 	const [type, setType] = useState<MenuType>("stage");
 	const [hiddenUi, setHiddenUi] = useState(false);
 	const [delimiting, setDelimiting] = useState(false);
+	const [assetMovingId, setAssetMovingId] = useState<string | null>(null);
 	const [clickTargetName, setClickTargetName] = useState("");
 	const [clickTargetColor, setClickTargetColor] = useState<string | null>(
 		null
@@ -70,6 +74,9 @@ export function EditorMenuContextProvider(
 			case "delimiter-draw-color":
 				return <EditorDelimiterDrawColorMenu />;
 
+			case "asset":
+				return <EditorAssetMenu />;
+
 			default:
 				return <EditorMenu />;
 		}
@@ -88,6 +95,8 @@ export function EditorMenuContextProvider(
 				setClickTargetName,
 				clickTargetColor,
 				setClickTargetColor,
+				assetMovingId,
+				setAssetMovingId,
 			}}
 		>
 			{props.children}

@@ -2,13 +2,15 @@ import { Theme } from "@/themes";
 import { Vector2d } from "konva/lib/types";
 
 interface IDevice {
+	id: string;
+	mac: string;
+	name: string;
 	type: "water" | "energy" | "temperature";
 }
 
 export interface IActionButtonDataProps {
 	id: string;
-	x: number;
-	y: number;
+	position: Vector2d;
 	devices: IDevice[];
 }
 
