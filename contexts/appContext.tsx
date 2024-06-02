@@ -36,6 +36,7 @@ type AppContextType = {
 	handleOpenContextMenu: (targetName: string) => void;
 	mousePosition: Vector2d | null;
 	setMousePosition: Dispatch<SetStateAction<Vector2d | null>>;
+	changeFullScreen: () => void;
 };
 
 export const AppContext = createContext({} as AppContextType);
@@ -46,6 +47,7 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 		setClickTargetName,
 		setClickTargetColor,
 		assetMovingId,
+		setHiddenUi,
 	} = useEditorMenu();
 
 	const {
@@ -137,6 +139,18 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 		}
 	};
 
+	const changeFullScreen = () => {
+		if (document.fullscreenElement === null) {
+			document.getElementById("STAGE")?.requestFullscreen();
+		} else {
+			document.exitFullscreen();
+		}
+	};
+
+	const exitFullscreen = () => {
+		setHiddenUi(false);
+	};
+
 	useEffect(() => {
 		if (delimiting) {
 			const handleKeyDown = (evt: KeyboardEvent) => {
@@ -207,6 +221,14 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 		changeZoomByScale(minScale);
 	}, [minScale]);
 
+	useEffect(() => {
+		document.addEventListener(
+			"fullscreenchange",
+			() => exitFullscreen(),
+			false
+		);
+	}, []);
+
 	return (
 		<AppContext.Provider
 			value={{
@@ -227,6 +249,7 @@ export function AppContextProvider(props: AppContextProviderPropsType) {
 				handleOpenContextMenu,
 				mousePosition,
 				setMousePosition,
+				changeFullScreen,
 			}}
 		>
 			{props.children}

@@ -9,6 +9,9 @@ import { useEditorMenu } from "@/hooks/useEditorMenu";
 import { PolygonDraw } from "@/components/polygonDraw";
 import { Vector2d } from "konva/lib/types";
 import { useData } from "@/hooks/useData";
+import { FloatButton } from "@/components/button/float";
+import { MdFullscreen } from "react-icons/md";
+import { Theme } from "@/themes";
 
 interface IFloorPlanProps {
 	width: number;
@@ -26,6 +29,7 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 		handleStageClick,
 		handleOpenContextMenu,
 		setMousePosition,
+		changeFullScreen,
 	} = useApp();
 
 	const { assets, delimitationAreas, image } = useData();
@@ -318,6 +322,24 @@ export function FloorPlan({ width, height }: IFloorPlanProps) {
 			onKeyDown={handleKeyDown}
 			onKeyUp={handleKeyUp}
 		>
+			<div
+				style={{
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "center",
+					justifyContent: "center",
+					position: "absolute",
+					zIndex: 999,
+					right: 20,
+					bottom: 20,
+				}}
+			>
+				<FloatButton
+					icon={<MdFullscreen size={25} color={Theme.colors.white} />}
+					onClick={changeFullScreen}
+				/>
+			</div>
+
 			<ContextMenu content={handleGetMenuType()}>
 				<Stage
 					name="STAGE"

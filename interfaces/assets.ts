@@ -1,4 +1,3 @@
-import { Theme } from "@/themes";
 import { Vector2d } from "konva/lib/types";
 
 export interface IDevice {

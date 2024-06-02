@@ -11,7 +11,10 @@ export default function Home() {
 	const { hiddenUi } = useEditorMenu();
 
 	return (
-		<main className="flex min-h-screen h-screen flex-col bg-theme-gray-100">
+		<main
+			className="flex min-h-screen h-screen flex-col bg-theme-gray-100"
+			id="FULLSCREEN"
+		>
 			{!hiddenUi && <Header />}
 
 			<div
@@ -19,12 +22,21 @@ export default function Home() {
 					display: "flex",
 					height: "100%",
 				}}
+				id="fullscreen-component"
 			>
 				{!hiddenUi && <Sidebar />}
 
 				<FloorPlan
-					width={hiddenUi ? width : width - 300}
-					height={hiddenUi ? height : height - 50}
+					width={
+						hiddenUi || document.fullscreenElement
+							? width
+							: width - 300
+					}
+					height={
+						hiddenUi || document.fullscreenElement
+							? height
+							: height - 50
+					}
 				/>
 			</div>
 		</main>
